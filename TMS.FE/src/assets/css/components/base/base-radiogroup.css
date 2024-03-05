@@ -1,0 +1,22 @@
+.radio__label {
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.radio__container {
+  display: flex;
+  column-gap: 12px;
+}
+
+.radio__item > input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  accent-color: rgb(19, 155, 19);
+  transform: translate(4px, 4px);
+  cursor: pointer;
+}
+
+.radio__item > input[type="radio"]:focus {
+  outline-color: var(--clr-lg500);
+}

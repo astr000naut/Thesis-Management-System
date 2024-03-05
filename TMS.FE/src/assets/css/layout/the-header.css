@@ -1,0 +1,83 @@
+.header {
+    display: flex;
+    height: 56px;
+    width: 100%;
+    background-color: #fff;
+    justify-content: space-between;
+    position: relative;
+    user-select: none;
+  }
+  
+  /* Top left area of header */
+  
+
+  
+  /* Main area of header */
+  
+  .header__mainarea {
+    flex: 2;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding-right: 16px;
+    /* position: absolute;
+      top: 0;
+      right: 0;
+      left: 200px; */
+  }
+  
+  .header__leftarea {
+    height: 100%;
+    /* flex-shrink: 0; */
+    display: flex;
+    column-gap: 20px;
+    align-items: center;
+    padding-left: 10px;
+  }
+  
+  .header__rightarea {
+    /* flex-shrink: 0; */
+    height: 100%;
+    display: flex;
+    align-items: center;
+    column-gap: 24px;
+    justify-content: flex-end;
+    overflow: hidden;
+  }
+  
+  /* Left area */
+  
+  .header__title {
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+  }
+  
+  /* Right area */
+  
+  .header__user {
+    display: flex;
+    column-gap: 5px;
+    align-items: center;
+  }
+  
+  .header__username {
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .header__avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    /* background: url(@/assets/img/avatar-default.png); */
+    background-size: cover;
+    cursor: pointer;
+  }
+  
+  /* Animation */
+  
+  .header__title:hover {
+    cursor: pointer;
+  }

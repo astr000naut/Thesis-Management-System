@@ -1,0 +1,115 @@
+.sidebar {
+    /* flex-basis: 200px; */
+    flex-shrink: 0;
+    height: 100vh;
+    font-weight: 400;
+    background-color: #393a3d;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    user-select: none;
+    transform: translate3d(0, 0, 0);
+    z-index: 21;
+  }
+
+  .sidebar__top {
+    height: 56px;
+    display: flex;
+    background-color: #393a3d;
+    align-items: center;
+    justify-content: center;
+    column-gap: 16px;
+    /* padding-left: 16px; */
+  }
+
+  .sidebar__applogo {
+    width: 120px;
+    height: 36px;
+    background-color: greenyellow;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  
+  .sidebar__main {
+    max-height: calc(100vh - 56px - 44px);
+    row-gap: 4px;
+    padding: 12px;
+    overflow-y: scroll;
+  }
+  
+  .sidebar__main::-webkit-scrollbar {
+    width: 4px;
+    background-color: transparent;
+  }
+  
+  .sidebar__main::-webkit-scrollbar-thumb {
+    background-color: var(--clr-t-border);
+  }
+  
+  .sidebar__item {
+    height: 44px;
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    padding-left: 12px;
+    column-gap: 12px;
+    color: #fff;
+  }
+  
+  .sidebar .item__text {
+    font-size: var(--fs-caption);
+    line-height: var(--lh-caption);
+  }
+  
+  .sidebar__footer {
+    height: 44px;
+    width: 100%;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding-left: 24px;
+    column-gap: 12px;
+    border-top: 1px solid var(--clr-t-setext);
+  }
+  
+  .item__hoverbox {
+    background-color: #393a3d;
+    border-radius: 4px;
+    padding: 12px;
+    position: absolute;
+    width: max-content;
+    left: 85px;
+  }
+  
+  .item__hoverbox .hover__arrow {
+    width: 10px;
+    height: 10px;
+    background-color: #393a3d;
+    position: absolute;
+    left: -5px;
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+  }
+  
+  .sidebar__item:hover {
+    background-color: #616164;
+    cursor: pointer;
+  }
+  
+  .sidebar__footer:hover {
+    background-color: #616164;
+    cursor: pointer;
+  }
+
+  .router-link-active > div {
+    background-color: #616164;
+  }
+  
+  /* .sidebar__item--highlight {
+    background-color: #58595d;
+  } */
+
+  hr {
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }

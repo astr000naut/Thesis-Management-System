@@ -1,0 +1,202 @@
+.m-row {
+    margin-top: 20px;
+    width: fit-content;
+    margin-bottom: 5px;
+  }
+  .m-heading {
+    margin-top: 20px;
+    font-weight: 700;
+    font-size: 24px;
+  }
+  
+  .margin-left20 {
+    margin-left: 20px;
+  }
+  
+  .common-flex-container {
+    display: flex;
+    column-gap: 20px;
+  }
+  
+  
+  .text-left {
+    text-align: left;
+  }
+  
+  .text-right {
+    text-align: right;
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  .align-center {
+    display: flex;
+    justify-content: center;
+  }
+  
+  
+  /* Min width */
+  
+  .mw-40 {
+    min-width: 40px;
+  }
+  
+  .mw-70 {
+    min-width: 70px;
+  }
+  
+  .mw-80 {
+    min-width: 80px;
+  }
+
+  .mw-90 {
+    min-width: 90px;
+  }
+  
+  .mw-100 {
+    min-width: 100px;
+  }
+
+  .mw-120 {
+    min-width: 120px;
+  }
+  
+  .mw-150 {
+    min-width: 150px;
+  }
+
+  .mw-180 {
+    min-width: 180px;
+  }
+  
+  .mw-200 {
+    min-width: 200px;
+  }
+
+  .mw-240 {
+    min-width: 240px;
+  }
+  
+  .mw-300 {
+      min-width: 300px;
+  }
+
+  .w-25 {
+    width: 25px;
+    max-width: 25px;
+  }
+
+  .w-50 {
+    width: 50px;
+    max-width: 50px;
+  }
+
+  .w-70 {
+    width: 70px;
+    max-width: 70px;
+  }
+
+  .w-90 {
+    width: 90px;
+    max-width: 90px;
+  }
+
+  .w-120 {
+    width: 120px;
+    max-width: 120px;
+  }
+
+  .w-150 {
+    width: 150px;
+    max-width: 150px;
+  }
+
+  .w-180 {
+    width: 180px;
+    max-width: 180px;
+  }
+
+  .w-200 {
+    width: 200px;
+    max-width: 200px;
+  }
+
+  .w-250 {
+    width: 250px;
+    max-width: 250px;
+  }
+
+  .w-400 {
+    width: 400px;
+    max-width: 400px;
+  }
+
+  
+  .wrapper {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  
+  .wrapper--dark1 {
+    background-color: #3535358a;
+    z-index: 50;
+  }
+  
+  .wrapper--dark2 {
+    background-color: #39393993;
+    z-index: 60;
+  }
+  
+  .display--none {
+      display: none;
+  }
+
+  .app__tooltip {
+    position: absolute;
+    display: none;
+    color: #ffffff;
+    text-align: center;
+    padding: 2px 8px;
+    border-radius: 4px;
+    min-width: 50px;
+    overflow: hidden;
+    white-space: nowrap;
+    background: #393a3d;
+    z-index: 9999;
+  }
+
+textarea::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background-color: transparent;
+}
+
+textarea::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+}
+
+textarea::-webkit-scrollbar-thumb {
+    background-color: var(--clr-t-border);
+}
+
+input:disabled {
+    background-color: transparent;
+}
+
+.flex {
+  display: flex;
+}
+
+.fl-1 {
+  flex: 1;
+}
+
+.fl-2 {
+  flex: 2;
+}
+

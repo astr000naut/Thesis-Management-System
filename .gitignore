@@ -1,3 +1,7 @@
+.vs
+bin
+obj
+*.bin
 # Logs
 logs
 *.log
@@ -24,7 +28,6 @@ coverage
 *.suo
 *.ntvs*
 *.njsproj
-*.sln
 *.sw?
 
 *.tsbuildinfo

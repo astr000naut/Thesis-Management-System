@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMS.API", "TMS.API\TMS.API.csproj", "{DCE8BA46-E23A-4B44-8C91-60B812FDB760}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TMS.API", "TMS.API\TMS.API.csproj", "{DCE8BA46-E23A-4B44-8C91-60B812FDB760}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMS.BusinessLayer", "TMS.BusinessLayer\TMS.BusinessLayer.csproj", "{29AE4AD6-48BC-4A97-A142-0CD6099949FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TMS.BusinessLayer", "TMS.BusinessLayer\TMS.BusinessLayer.csproj", "{29AE4AD6-48BC-4A97-A142-0CD6099949FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMS.DataLayer", "TMS.DataLayer\TMS.DataLayer.csproj", "{CB9F9A4B-C965-4D38-9E0B-238D8B58D271}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TMS.DataLayer", "TMS.DataLayer\TMS.DataLayer.csproj", "{CB9F9A4B-C965-4D38-9E0B-238D8B58D271}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMS.Shared", "TMS.Shared\TMS.Shared.csproj", "{CBDC8F10-476A-4406-AAF3-8CB7992C3BAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TMS.Shared", "TMS.Shared\TMS.Shared.csproj", "{CBDC8F10-476A-4406-AAF3-8CB7992C3BAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

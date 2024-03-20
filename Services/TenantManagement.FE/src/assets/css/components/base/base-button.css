@@ -1,0 +1,112 @@
+button {
+    border: unset;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    cursor: pointer;
+    overflow: hidden;
+    height: var(--h-default);
+    outline: none;
+  }
+
+  .form__footer button:focus, .form__wrapper button:focus {
+    outline: 2px solid #cdcdcd !important;
+  }
+
+  /* Primary */
+  
+  .btn--primary {
+    min-width: 80px;
+    padding: 0 16px;
+    color: #fff;
+    background-color: var(--clr-lg500);
+  }
+  
+  .btn--primary:disabled {
+    cursor: not-allowed;
+    background-color: var(--clr-lg300);
+  }
+  
+  .btn--primary:hover:not([disabled]) {
+    cursor: pointer;
+    background-color: var(--clr-lg400);
+  }
+  
+  .btn--primary:active:not([disabled]) {
+    cursor: pointer;
+    background-color: var(--clr-lg600);
+  }
+  
+  /* Secondary */
+  
+  .btn--secondary {
+    min-width: 80px;
+    padding: 0 16px;
+    color: var(--clr-t-title);
+    border: 1px solid var(--clr-t-border);
+    background-color: #fff;
+  }
+
+  .btn--secondary:hover:not([disabled]) {
+    cursor: pointer;
+    color: var(--clr-lg500);
+    border: 1px solid var(--clr-lg500);
+  }
+  
+  .btn--secondary:active:not([disabled]) {
+    cursor: pointer;
+    color: var(--clr-lg700);
+    border: 1px solid var(--clr-lg700);
+  }
+  
+  .btn--secondary:disabled {
+    cursor: not-allowed;
+    color: var(--clr-t-disable);
+  }
+  
+  /* Icon button - Refresh */
+  
+  .btn--refresh:hover {
+    background: url(@/assets/img/Sprites.svg) no-repeat -1090px -82px;
+    cursor: pointer;
+  }
+  
+  .btn--refresh:active {
+    background-color: var(--clr-lg300);
+  }
+  
+  /* Icon button - Notification */
+  
+  .btn--notification {
+    width: var(--h-default);
+    background: var(--clr-lg200) url(@/assets/img/Sprites.svg)
+      no-repeat -781px -24px;
+  }
+  
+  .btn--notification:hover {
+    background-color: var(--clr-lg100);
+    cursor: pointer;
+  }
+  
+  .btn--notification:active {
+    background-color: var(--clr-lg300);
+  }
+  
+  /* Icon button - Help */
+  
+  .btn--help {
+    width: var(--h-default);
+    background: url(@/assets/img/Sprites.svg) no-repeat -82px -138px;
+  }
+  
+  /* Icon button - Close */
+  
+  .btn--close {
+    width: var(--h-default);
+    background: url(@/assets/img/Sprites.svg) no-repeat -138px -138px;
+  }
+
+    
+  .btn--setting {
+    width: var(--h-default);
+    background: url(@/assets/img/Sprites.svg) no-repeat -25px -138px;
+  }

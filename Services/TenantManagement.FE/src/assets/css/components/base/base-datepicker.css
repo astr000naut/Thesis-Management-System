@@ -1,0 +1,210 @@
+.dpicker {
+  position: relative;
+  width: 100%;
+}
+
+.dpicker__label {
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.dpicker__input {
+  position: relative;
+  /* background-color: green; */
+  width: 100%;
+}
+
+.dpicker.error-noti input {
+  outline: none;
+  border: 1px solid red;
+}
+
+.dpicker__input > input {
+  height: 36px;
+  width: 100%;
+  padding: 0 30px 0 12px;
+  border: 1px solid var(--clr-t-border);
+}
+
+.dpicker__icon {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  right: 6px;
+  top: 6px;
+}
+
+.dpicker__box {
+  width: 320px;
+  margin-top: 2px;
+  background-color: #fff;
+  border: 1px solid var(--clr-t-border);
+  user-select: none;
+  position: absolute;
+  right: 0;
+  box-shadow: 2px 2px 5px gray;
+  z-index: 999;
+}
+
+.display--none {
+  display: none;
+}
+
+.dpicker__header {
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.dpicker__curdate {
+  height: 48px;
+}
+
+/* Header */
+.dp__header__left {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+  cursor: pointer;
+}
+
+.dp__date {
+  font-size: 16px;
+  font-weight: 600;
+  width: 120px;
+}
+
+.dp__header__right {
+  display: flex;
+  column-gap: 12px;
+}
+
+/* Table */
+
+.daylist__table {
+  display: flex;
+  justify-content: center;
+  /* border: 1px solid green; */
+}
+
+.daylist__table table th {
+  color: var(--clr-t-disable);
+}
+
+.daylist__table table td {
+  text-align: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  /* border: 1px solid black; */
+  color: var(--clr-t-disable);
+}
+
+.daylist__table table td.chooseable:not(.selected):hover {
+  /* background-color: var(--clr-lg500);
+  cursor: pointer;
+  color: #fff; */
+  border: 2px solid var(--clr-lg500);
+  border-radius: 50%;
+  color: #000;
+  cursor: pointer;
+}
+.daylist__table table td:not(.chooseable) {
+  pointer-events: none;
+}
+.daylist__table table td.selected {
+  background-color: var(--clr-lg500);
+  cursor: pointer;
+  color: #fff;
+}
+
+/* Curdate */
+
+.dpicker__curdate {
+  border-top: 1px solid var(--clr-t-border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dp__now {
+  background-color: transparent;
+  border: none;
+  padding: 4px;
+  color: var(--clr-lg500);
+  cursor: pointer;
+}
+
+/* Year list */
+
+.dpicker__yearlist {
+  height: calc(350px - 60px);
+  padding: 0 10px;
+  font-weight: 500;
+}
+
+.yearlist__tablebox {
+  display: flex;
+  justify-content: center;
+  background-color: var(--clr-lg500);
+  border-radius: 15px 15px 0 0;
+}
+.yearlist__tablebox table {
+  border-spacing: 20px;
+  color: #fff;
+}
+
+.yearlist__tablebox td {
+  width: 60px;
+  height: 36px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.dpicker__cancelbox {
+  height: 90px;
+  background-color: var(--clr-lg500);
+  display: flex;
+  border-radius: 0 0 15px 15px;
+  justify-content: center;
+  align-items: center;
+}
+
+.dp__cancel {
+  padding: 12px;
+  cursor: pointer;
+  color: #fff;
+  background-color: transparent;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  border: none;
+}
+
+.yearlist__tablebox td:hover {
+  background-color: #fff;
+  color: var(--clr-lg500);
+}
+
+.dp__cancel:hover {
+  background-color: var(--clr-lg600);
+}
+
+.dpicker:not(.error-noti) input:focus {
+  outline: none;
+  border: 1px solid var(--clr-lg500);
+}
+
+/* Noti */
+.dpicker__noti {
+  /* margin-top: 8px; */
+  color: red;
+  font-size: 12px;
+  position: absolute;
+  top: 64px;
+}
+
+.dpicker:not(.error-noti) .dpicker__noti {
+  display: none;
+}

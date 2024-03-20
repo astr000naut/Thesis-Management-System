@@ -1,0 +1,158 @@
+.cbox {
+    position: relative;
+  }
+  
+  .cbox__label {
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  
+  .cbox.field--required .cbox__label::after {
+    content: " *";
+    color: red;
+  }
+  
+  .select__box {
+    display: flex;
+    height: var(--h-default);
+    border: 1px solid var(--clr-t-border);
+    border-radius: var(--border-radius);
+  }
+  
+  .select__input {
+    flex: 1;
+  }
+  
+  .select__input input {
+    height: 100%;
+    width: 100%;
+    padding: 0 12px;
+    border-radius: 4px 0 0 4px;
+    border: none;
+    outline: none;
+  }
+  
+  .select__button {
+    width: 40px;
+    border: none;
+    outline: none;
+    border-left: 1px solid var(--clr-t-border);
+    border-radius: 0 3px 3px 0;
+    background-color: #fff;
+    cursor: pointer;
+  }
+  
+  .select__optionbox {
+    background-color: #fff;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--clr-t-border);
+    box-shadow: 4px 4px 5px var(--clr-t-bg);
+    padding: 8px;
+    width: 100%;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 10;
+  }
+  
+  .optionlist {
+    user-select: none;
+    overflow-y: scroll;
+  }
+  
+  .option__item {
+    height: var(--h-default);
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 4px;
+  }
+  
+  .option__icon {
+    width: 16px;
+    height: 16px;
+    background: url(@/assets/img/Sprites.svg) no-repeat -1225px -360px;
+  }
+  
+::-webkit-scrollbar {
+    width: 0px;
+    background-color: transparent;
+  }
+  
+  .optionlist.hascrollbar::-webkit-scrollbar {
+    width: 9px;
+    background-color: transparent;
+  }
+  
+  .optionlist::-webkit-scrollbar-thumb {
+    background-color: var(--clr-t-border);
+    border-radius: 8px;
+  }
+  
+  .cbox__noti {
+    position: absolute;
+    top: 64px;
+    color: red;
+    font-size: 12px;
+  }
+  
+  .cbox:not(.error-noti) .cbox__noti {
+    display: none;
+  }
+  
+  .cbox:not(.error-noti) .select__box:has(.select__input input:focus) {
+    border: 1px solid var(--clr-lg500);
+  }
+  
+  .select__button:hover {
+    background-color: var(--clr-t-border);
+  }
+  
+  .select__button:active {
+    background-color: var(--clr-t-bg);
+  }
+  
+  .select__input input:hover {
+    background-color: var(--clr-t-bg);
+  }
+  
+  .cbox:has(input:focus) .select__box {
+    outline: none;
+    border: 1px solid var(--clr-lg500);
+  }
+  
+  .cbox.error-noti:has(.select__optionbox.display--none) .select__box {
+    outline: none;
+    border: 1px solid red;
+  }
+  
+  .cbox:not(:has(.select__optionbox.display--none)) .select__box {
+    outline: none;
+    border: 1px solid var(--clr-lg500);
+  }
+  
+  .cbox:not(:has(.select__optionbox.display--none)) .cbox__noti {
+    display: none;
+  }
+  
+  .option__item:hover {
+    cursor: pointer;
+    background-color: var(--clr-lg100);
+    color: #000;
+  }
+  
+
+  
+  .item--highlighted {
+    background-color: var(--clr-lg100);
+  }
+  
+  .option__item:not(.item--selected) .option__icon {
+    display: none;
+  }
+  
+  /* Loader */
+  .loader__container {
+    height: 200px;
+  }

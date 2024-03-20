@@ -1,0 +1,10 @@
+.checkbox__main {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+}
+
+.checkbox {
+    border: 1px solid var(--clr-t-border);
+    border-radius: var(--border-radius);
+}

@@ -22,11 +22,13 @@ namespace TMS.BaseRepository
         {
             // get table name in the custom attribute of t entity then create a query to insert into that table
 
-            var tableName = (typeof(T).GetCustomAttribute<TableAttribute>()?.TableName);
+/*            var tableName = (typeof(T).GetCustomAttribute<TableAttribute>()?.TableName);
             var properties = typeof(T).GetProperties();
             var columns = string.Join(", ", properties.Select(p => p.Name));
             var values = string.Join(", ", properties.Select(p => $"@{p.Name}"));
             var query = $"INSERT INTO {tableName} ({columns}) VALUES ({values})";
+            var result = await _unitOfWork.Connection.ExecuteAsync(query, t, _unitOfWork.Transaction);*/
+            var query = "CREATE DATABASE db_tenant01";
             var result = await _unitOfWork.Connection.ExecuteAsync(query, t, _unitOfWork.Transaction);
             return result > 0;
         }

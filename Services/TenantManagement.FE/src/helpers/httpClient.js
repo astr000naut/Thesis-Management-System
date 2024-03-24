@@ -1,4 +1,6 @@
 import { useAuthStore } from "@/stores";
+import axios from "axios";
+
 
 export const httpClient = {
     get: request('GET'),
@@ -9,48 +11,51 @@ export const httpClient = {
 
 function request(method) {
     return (url, body) => {
-        const requestOptions = {
-            method,
-            headers: authHeader()
-        };
+        const headers = authHeader();
         if (body) {
-            requestOptions.headers['Content-Type'] = 'application/json';
-            requestOptions.body = JSON.stringify(body);
+            headers['Content-Type'] = 'application/json';
+            body = JSON.stringify(body);
         }
-        return fetch(url, requestOptions).then(handleResponse);
+
+        return axios({
+            method: method,
+            url: url,
+            headers: headers,
+            data: body
+        }).then((response) => response.data)
+        .catch((err) => handleError(err));
     }
 }
 
 // helper functions
 
 function authHeader() {
-    // return auth header with jwt if user is logged in and request is to the api url
-    const { user } = useAuthStore();
-    const isLoggedIn = !!user?.token;
+
+    const { loginInfo } = useAuthStore();
+    const isLoggedIn = !!loginInfo?.accessToken;
     if (isLoggedIn) {
-        return { Authorization: `Bearer ${user.token}` };
+        return { Authorization: `Bearer ${loginInfo.accessToken}` };
     } else {
         return {};
     }
 }
 
-async function handleResponse(response) {
-    const isJson = response.headers?.get('content-type')?.includes('application/json');
-    const data = isJson ? await response.json() : null;
-
-    // check for error response
-    if (!response.ok) {
-        const { user, logout } = useAuthStore();
-        if ([401, 403].includes(response.status) && user) {
-            // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
+async function handleError(err) {
+    const response = err.response;
+    if ([401, 403].includes(response.status))
+    {
+        const { loginInfo, logout, refreshToken } = useAuthStore();
+        if (loginInfo?.refreshToken) {
+            await refreshToken();
+            response.config.headers['Authorization'] = `Bearer ${useAuthStore().loginInfo.accessToken}`;
+            return axios(response.config);
+        } else {
             logout();
         }
-
+    } else {
         // get error message from body or default to response status
         const error = (data && data.message) || response.status;
         return Promise.reject(error);
     }
-
-    return data;
 }
 

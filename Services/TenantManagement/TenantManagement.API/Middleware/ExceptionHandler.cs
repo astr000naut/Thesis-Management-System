@@ -1,4 +1,7 @@
-﻿namespace TenantManagement.API.Middleware
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+
+namespace TenantManagement.API.Middleware
 {
     public class ExceptionHandler
     {
@@ -36,16 +39,13 @@
         private async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
         {
             httpContext.Response.ContentType = "application/json";
-            var exceptionText = new
+            var exceptionResponse = new
             {
-                ErrorCode = 500,
-                UserMessage = exception.Message,
-                DevMessage = exception.Message,
-                TraceId = httpContext.TraceIdentifier
+                Error = true,
+                Message = exception.Message,
+            };
 
-            }.ToString();
-
-            await httpContext.Response.WriteAsync(exceptionText);
+            await httpContext.Response.WriteAsync(JsonSerializer.Serialize(exceptionResponse));
         }
     }
 }

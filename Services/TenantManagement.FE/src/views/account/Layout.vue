@@ -4,7 +4,7 @@ import { router } from '@/router';
 
 // redirect home if already logged in
 const authStore = useAuthStore();
-if (authStore.user) {
+if (authStore.loginInfo) {
     router.push('/');
 }
 </script>

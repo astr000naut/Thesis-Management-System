@@ -2,14 +2,19 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore, useAlertStore } from '@/stores';
 import accountRoutes from './account.routes';
-import Main from "@/views/Main.vue";
+import tenantRoutes from "./tenant.routes";
+import settingRoutes from "./setting.routes";
 
 export const router = createRouter({
   history: createWebHistory(),
   linkActiveClass: 'active',
   routes: [
-      { path: '/', component: Main },
+      { path: '/', redirect: '/tenant' },
       { ...accountRoutes },
+      { ...tenantRoutes },
+      { ...settingRoutes },
+
+
       // catch all redirect to home page
       { path: '/:pathMatch(.*)*', redirect: '/' }
   ]

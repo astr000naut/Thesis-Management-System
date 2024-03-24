@@ -6,6 +6,5 @@ export default {
     children: [
         { path: '', redirect: 'login' },
         { path: 'login', component: Login },
-        { path: 'register', component: Register }
     ]
 };

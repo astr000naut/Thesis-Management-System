@@ -2,23 +2,16 @@
   <div class="header">
     <div class="header__mainarea">
       <div class="header__leftarea">
-        <div class="header__sidebaric mi mi-24 mi-header-three-line"></div>
+        <Icon icon="eos-icons:admin-outlined" style="width: 32px; height: 32px; color: #409EFF;"/>
         <div class="header__title">
-          <div class="header__brandname">
-            TENANT NAME
+          <div class="header__brandname" style="font-weight: bold;">
+            HỆ THỐNG QUẢN LÝ KHÓA LUẬN TỐT NGHIỆP - ADMIN
           </div>
-          <div class="header__title__arrow mi mi-14 mi-arrowdown"></div>
         </div>
       </div>
       <div class="header__rightarea">
-        <div
-          class="header__noti mi mi-24 mi-header-bell"
-          v-tooltip="'Thông báo'"
-        ></div>
         <div class="header__user">
-          <div class="header__avatar"></div>
-          <div class="header__username">Dũng Nguyễn</div>
-          <div class="header__user__arrow mi mi-24 mi-arrowdown-small"></div>
+          <a href="" style="color: blue; text-decoration: underline;" @click="authStore.logout()">Đăng xuất</a>
         </div>
       </div>
     </div>
@@ -28,6 +21,8 @@
 <script setup>
 // #region import
 import { ref, inject, onBeforeUnmount } from "vue";
+import { useAuthStore } from "@/stores";
+const authStore = useAuthStore();
 // #endregion
 
 // #region init

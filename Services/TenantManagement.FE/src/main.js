@@ -2,6 +2,7 @@
 import { createPinia } from 'pinia'
 import { createApp } from "vue";
 import ElementPlus from 'element-plus'
+import vi from 'element-plus/dist/locale/vi.mjs'
 import 'element-plus/dist/index.css'
 import App from "@/App.vue";
 import { router } from './router';
@@ -50,6 +51,6 @@ app.provide("$common", commonVal);
 
 app.use(router);
 app.use(createPinia())
-app.use(ElementPlus)
+app.use(ElementPlus, { locale: vi})
 app.mount("#app");
 

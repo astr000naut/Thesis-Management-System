@@ -104,8 +104,8 @@ async function onSubmit(values) {
 
     .login__container {
         border: 1px solid green;
-        width: 100vw;
-        height: 100vh;
+        width: 100%;
+        height: 100%;
     }
     .login__form {
         width: 500px;

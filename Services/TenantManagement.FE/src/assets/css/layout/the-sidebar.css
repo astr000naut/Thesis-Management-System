@@ -105,9 +105,9 @@
     background-color: #616164;
   }
   
-  /* .sidebar__item--highlight {
+  a.active .sidebar__item {
     background-color: #58595d;
-  } */
+  }
 
   hr {
     margin-top: 4px;

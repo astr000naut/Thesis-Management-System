@@ -1,7 +1,13 @@
-export const userApi = (baseUrl) => {
-    return {
-        authenticate: baseUrl + '/users/authenticate',
-        refreshToken: baseUrl + '/users/refresh-token',
-        test: baseUrl + '/users'
+import { BaseApi } from './baseApi';
+export class userApi extends BaseApi {
+    constructor() {
+        super('users');
     }
-};
+
+    authenticate = this.baseUrl + '/authenticate';
+
+    refreshToken = this.baseUrl + '/refresh-token'
+
+    test = this.baseUrl + '/test';
+     
+}

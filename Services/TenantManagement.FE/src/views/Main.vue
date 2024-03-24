@@ -1,12 +1,10 @@
 <template>
     <el-container>
-        <el-header>Header</el-header>
+        <el-header><TheHeader></TheHeader></el-header>
         <el-container>
             <TheSidebar></TheSidebar>
-            <el-main style="background-color: azure;">
-                <div>{{ loginInfo }}</div>
-                <button @click="btnTestOnClick">Test</button>
-                <button @click="btnLogoutOnClick">Logout</button>
+            <el-main>
+                <router-view></router-view>
             </el-main>
         </el-container>
     </el-container>
@@ -16,7 +14,7 @@
     import { httpClient } from '@/helpers';
     import $api from '@/api';
     import { useAuthStore } from '@/stores';
-    import { TheSidebar } from '@/components/layout';
+    import { TheSidebar, TheHeader } from '@/components/layout';
     import { storeToRefs } from 'pinia';
     const authStore = useAuthStore();
     const {loginInfo} = storeToRefs(authStore);
@@ -33,4 +31,16 @@
 
 </script>
 
-<style scoped></style>
+<style scoped>
+    .el-header {
+        padding: 0px;
+    }
+    
+    .el-container {
+        flex: 1;
+    }
+
+    .el-main {
+        max-height: calc(100vh - 60px);
+    }
+</style>

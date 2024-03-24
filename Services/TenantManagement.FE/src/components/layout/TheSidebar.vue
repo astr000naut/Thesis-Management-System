@@ -3,10 +3,6 @@
     class="sidebar"
     :style="{ 'flex-basis': isSidebarBig ? '200px' : '78px' }"
   >
-    <div class="sidebar__top">
-      <div class="sidebar__navicon mi mi-24 mi-header-nav"></div>
-      <div class="sidebar__applogo" v-show="isSidebarBig"></div>
-    </div>
     <div class="sidebar__main">
       <router-link
         v-for="(item, index) in sidebarItems"
@@ -108,7 +104,7 @@ function sidebarItemOnClick(itemName) {
  * Author: Dũng (27/05/2023)
  */
 function sideBarItemOnMouseOver($event, item) {
-  item.labelPos = $event.currentTarget.getBoundingClientRect().y;
+  item.labelPos = $event.currentTarget.getBoundingClientRect().y - 56;
   item.displayLabel = !isSidebarBig.value & true;
 }
 

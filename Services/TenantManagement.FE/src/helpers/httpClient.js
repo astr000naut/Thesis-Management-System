@@ -41,14 +41,23 @@ function authHeader() {
 }
 
 async function handleError(err) {
+    if (err.code === "ERR_NETWORK") {
+        return Promise.reject("Không thể kết nối đến Server. Vui lòng thử lại sau.");
+    };
+
     const response = err.response;
     if ([401, 403].includes(response.status))
     {
         const { loginInfo, logout, refreshToken } = useAuthStore();
         if (loginInfo?.refreshToken) {
             await refreshToken();
-            response.config.headers['Authorization'] = `Bearer ${useAuthStore().loginInfo.accessToken}`;
-            return axios(response.config);
+            const newToken = useAuthStore().loginInfo?.accessToken;
+            if (newToken) {
+                response.config.headers['Authorization'] = `Bearer ${newToken}`;
+                return axios(response.config);
+            } else {
+                logout();
+            }
         } else {
             logout();
         }

@@ -17,6 +17,8 @@
 <style scoped>
 .mainarea {
   display: flex;
+  width: 100vw;
+  height: 100vh;
 }
 
 .app__alert {

@@ -5,7 +5,7 @@
         Task<Guid?> CreateAsync(TEntityDto t);
         Task<TEntityDto?> GetByIdAsync(Guid id);
 
-        Task<IEnumerable<TEntityDto>> FilterAsync(int skip, int take, int keySearch);
+        Task<(IEnumerable<TEntityDto>, int total)> FilterAsync(int skip, int take, string keySearch, IEnumerable<string> filterColumns);
 
         Task<bool> UpdateAsync(TEntityDto t);
 

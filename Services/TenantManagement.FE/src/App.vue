@@ -21,11 +21,15 @@
   height: 100vh;
 }
 
+.app__wrapper {
+  position: relative;
+}
+
 .app__alert {
   right: 10px;
   top: 10px;
   position: absolute;
-  z-index: 1000;
+  z-index: 99999;
 
 }
 

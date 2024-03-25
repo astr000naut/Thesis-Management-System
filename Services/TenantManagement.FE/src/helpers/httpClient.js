@@ -63,7 +63,7 @@ async function handleError(err) {
         }
     } else {
         // get error message from body or default to response status
-        const error = (data && data.message) || response.status;
+        const error = err.message;;
         return Promise.reject(error);
     }
 }

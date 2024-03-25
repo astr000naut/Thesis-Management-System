@@ -149,6 +149,15 @@
   .fl-2 {
     flex: 2;
   }
+
+  .fl-3 {
+    flex: 3;
+  }
+
+  .fl-4 {
+    flex: 4;
+  }
+
   
   .cg-1 {
     column-gap: 5px;
@@ -228,6 +237,47 @@
   .rg-10 {
     row-gap: 50px;
   }
+
+  .mt-1 {
+    margin-top: 2px;
+  }
+
+  .mt-2 {
+    margin-top: 4px;
+  }
+
+  .mt-3 {
+    margin-top: 6px;
+  }
+
+  .mt-4 {
+    margin-top: 8px;
+  }
+
+  .mt-5 {
+    margin-top: 10px;
+  }
+
+  .mt-6 {
+    margin-top: 12px;
+  }
+
+  .mt-7 {
+    margin-top: 14px;
+  }
+
+  .mt-8 {
+    margin-top: 16px;
+  }
+
+  .mt-9 {
+    margin-top: 18px;
+  }
+
+  .mt-10 {
+    margin-top: 20px;
+  }
+  
 
   .wrapper {
     position: fixed;
@@ -321,4 +371,17 @@ button {
 input {
   height: 36px;
   padding-left: 4px;
+}
+
+.form-group .el-input {
+  width: 100% !important;
+
+}
+
+.form-group .label {
+  margin-bottom: 4px;
+}
+
+.el-dialog__header {
+  font-weight: bold;
 }

@@ -46,6 +46,6 @@ namespace TMS.BaseRepository
         /// </summary>
         /// <param name="entityFilter"></param>
         /// Author: DNT(29/05/2023)
-        Task<IEnumerable<T>> FilterAsync(int? skip, int? take, string keySearch);
+        Task<(IEnumerable<T> data, int total)> FilterAsync(int? skip, int? take, string keySearch, IEnumerable<string> filterColumns);
     }
 }

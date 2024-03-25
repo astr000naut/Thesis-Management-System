@@ -1,40 +1,53 @@
 <template>
   <div class="page__container flex-col rg-4">
+    <router-view></router-view>
     <div class="page__header flex-row">
       <h1 class="page__title" style="font-size: 24px;">Danh sách Khách hàng</h1>
-      <el-button type="primary">Thêm mới</el-button>
+      <el-button type="primary" @click="btnAddOnClick">Thêm mới</el-button>
       
     </div>
+    <div class="search-container flex-row al-center cg-2">
+      <div class="reload-btn">
+        <el-button :icon="Refresh" circle />
+      </div>
+      <div class="search-input">
+        <el-input
+          v-model="input2"
+          style="width: 240px"
+          placeholder="Tìm kiếm"
+          :prefix-icon="Search"
+        />
+      </div>
+    </div>
     <div class="table__container fl-1">
-      <el-table :data="listItem" style="width: 100%">
-        <el-table-column fixed prop="date" label="Date" width="150" />
-        <el-table-column prop="name" label="Name"/>
-        <el-table-column prop="state" label="State" width="120" />
-        <el-table-column prop="city" label="City" width="120" />
-        <el-table-column prop="address" label="Address" width="600" />
-        <el-table-column prop="zip" label="Zip" width="120" />
-        <el-table-column fixed="right" label="Operations" width="120">
+      <el-table :data="tenants" style="width: 100%">
+        <el-table-column fixed prop="tenantCode" label="Mã khách hàng" width="150" />
+        <el-table-column prop="tenantName" label="Tên khách hàng"/>
+        <el-table-column prop="address" label="Địa chỉ" width="300" />
+        <el-table-column prop="domain" label="Domain" width="300" />
+        <el-table-column prop="state" label="Trạng thái" width="200" />
+        <el-table-column fixed="right" label="Thao tác" width="120">
           <template #default>
             <el-button link type="primary" size="small">
-              Detail</el-button
+              Xem</el-button
             >
-            <el-button link type="primary" size="small">Edit</el-button>
+            <el-button link type="primary" size="small">Sửa</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <div class="pagination">
       <el-pagination
-        v-model:current-page="pageNumber"
-        v-model:page-size="pageSize"
+        :current-page="pageNumber"
+        :page-size="pageSize"
         :page-sizes="[10, 20, 50, 100]"
         :small="false"
-        :disabled="false"
+        :disabled="loading"
         :background="false"
         layout="total, sizes, prev, pager, next"
-        :total="100"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
+        :total="total"
+        @size-change="tenantStore.setPageSize"
+        @current-change="tenantStore.setPageNumber"
       />
     </div>
   </div>
@@ -42,18 +55,37 @@
 
 
 <script setup>
-    import {useList} from '@/composables/useList';
-    const {listItem, pageNumber, pageSize, total, loading} = useList();
-    for (let i = 0; i < 5; i++) {
-      listItem.value.push({
-        date: '2016-05-02',
-        name: 'John Smith',
-        state: 'California',
-        city: 'San Francisco',
-        address: 'No. 189, Grove St, Los Angeles',
-        zip: '123456'
-      });
+    import {onMounted} from 'vue';
+    import { useTenantStore } from '@/stores';
+    import { useRouter } from 'vue-router';
+    import { storeToRefs } from 'pinia';
+    import { Refresh, Search } from '@element-plus/icons-vue'
+
+    const router = useRouter();
+    const tenantStore = useTenantStore();
+    const {
+      tenants, 
+      total, 
+      loading, 
+      keySearch, 
+      pageNumber, 
+      pageSize, 
+    } = storeToRefs(tenantStore);
+
+    initData();
+
+    onMounted(() => {
+      console.log('onMounted');
+    });
+
+    async function initData() {
+      await tenantStore.reload();
     }
+
+    const btnAddOnClick = () => {
+      router.push('/tenant/new');
+    }
+
 </script>
 
 <style scoped>
@@ -88,6 +120,15 @@
       position: absolute;
       left: 10px;
       font-weight: bold;
+    }
+
+    .search-container {
+      justify-content: flex-end;
+    }
+
+    :deep(.el-button.is-circle){
+      width: 32px;
+      height: 32px !important;
     }
     
 

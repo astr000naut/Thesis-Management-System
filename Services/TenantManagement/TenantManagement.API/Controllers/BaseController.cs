@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TenantManagement.API.Param;
 using TMS.BaseService;
 
 
@@ -47,11 +48,17 @@ namespace TenantManagement.API.Controllers
         /// <param name="entityFilterDto"></param>
         /// <returns>filtered List</returns>
         /// Author: DNT(29/05/2023)
-        [Route("Filter")]
-        [HttpGet]
-        public Task<IActionResult> FilterAsync()
+        [Route("filter")]
+        [HttpPost]
+        public async Task<IActionResult> FilterAsync([FromBody] FilterParam filterParam)
         {
-            throw new NotImplementedException();
+            var (data, total) = await _baseService.FilterAsync(filterParam.Skip, filterParam.Take, filterParam.KeySearch, filterParam.FilterColumns);
+            var response = new
+            {
+                data = data,
+                total = total,
+            };
+            return Ok(response);
         }
 
         /// <summary>

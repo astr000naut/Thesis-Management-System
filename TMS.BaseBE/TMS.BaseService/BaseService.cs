@@ -57,7 +57,7 @@ namespace TMS.BaseService
 
             } catch (Exception ex)
             {
-                return null;
+                throw;
             }
             finally
             {
@@ -70,9 +70,25 @@ namespace TMS.BaseService
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<TEntityDto>> FilterAsync(int skip, int take, int keySearch)
+        public async Task<(IEnumerable<TEntityDto>, int total)> FilterAsync(int skip, int take, string keySearch, IEnumerable<string> filterColumns)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _unitOfWork.OpenAsync();
+
+                var result = await _baseRepository.FilterAsync(skip, take, keySearch, filterColumns);
+                var (data, total) = result;
+                var dataDto = _mapper.Map<IEnumerable<TEntityDto>>(data);
+                await _unitOfWork.CommitAsync();
+
+                return (dataDto, total);
+            } catch
+            {
+                throw;
+            } finally
+            {
+                await _unitOfWork.CloseAsync();
+            }
         }
 
         public Task<TEntityDto?> GetByIdAsync(Guid id)

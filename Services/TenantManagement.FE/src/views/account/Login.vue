@@ -48,6 +48,13 @@ import * as Yup from 'yup';
 import { ref } from 'vue';
 
 import { useAuthStore } from '@/stores';
+import { router } from '@/router';
+
+// redirect home if already logged in
+const authStore = useAuthStore();
+if (authStore.loginInfo) {
+    router.push('/');
+}
 
 
 const schema = Yup.object().shape({
@@ -60,7 +67,6 @@ const loginMessage = ref('');
 
 async function onSubmit(values) {
     loginMessage.value = '';
-    const authStore = useAuthStore();
     const { username, password } = values;
     const errorMessage = await authStore.login(username, password);
     if (errorMessage) {

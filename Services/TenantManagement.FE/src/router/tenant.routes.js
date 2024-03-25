@@ -1,10 +1,28 @@
 import Main from '@/views/Main.vue';
-import Login from '@/views/account/Login.vue';
+import TenantDetail from '@/views/tenant/TenantDetail.vue';
+import TenantList from '@/views/tenant/TenantList.vue';
 
 export default {
     path: '/tenant',
     component: Main,
-    children: [
-        { path: '', component: () => import('@/views/tenant/TenantList.vue') },
+    children: [ 
+        { 
+            path: '', 
+            component: TenantList,
+            children: [
+                {
+                    path: '',
+                    component: null,
+                },
+                {
+                    path: '/new',
+                    component: TenantDetail,
+                },
+                {
+                    path: ':id',
+                    component: TenantDetail,
+                },
+            ]
+        },
     ]
 };

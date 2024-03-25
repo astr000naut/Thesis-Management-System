@@ -4,7 +4,23 @@ export class BaseApi {
         this.baseUrl = 'https://localhost:44328/api/' + controller;
     }
     
-    filter(skip, take, keySearch) {
-        return this.baseUrl + '?skip=' + skip + '&take=' + take + '&keySearch=' + keySearch;
+    filter() {
+        return this.baseUrl + '/filter';
+    }
+
+    insert() {
+        return this.baseUrl;
+    }
+
+    update(id) {
+        return this.baseUrl + '/' + id;
+    }
+
+    delete(id) {
+        return this.baseUrl + '/' + id;
+    }
+
+    getById(id) {
+        return this.baseUrl + '/' + id;
     }
 }

@@ -15,9 +15,8 @@
     import $api from '@/api';
     import { useAuthStore } from '@/stores';
     import { TheSidebar, TheHeader } from '@/components/layout';
-    import { storeToRefs } from 'pinia';
     const authStore = useAuthStore();
-    const {loginInfo} = storeToRefs(authStore);
+
 
 
     async function btnTestOnClick() {

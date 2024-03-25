@@ -10,21 +10,22 @@ namespace TenantManagement.BusinessLayer.DTO
 {
     public class TenantDto
     {
-        [Key]
-        public Guid TenantId { get; set; }
+        public Guid? TenantId { get; set; }
 
-        [Required]
-        [StringLength(255)]
         public string TenantName { get; set; }
 
-        [Required]
-        [StringLength(255)]
         public string TenantCode { get; set; }
 
-        [StringLength(255)]
-        public string LogoUrl { get; set; }
+        public string DBConnection { get; set; }
 
-        [StringLength(255)]
-        public string ConnectionString { get; set; }
+        public string SurrogateName { get; set; }
+        public string SurrogatePhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Address { get; set; }
+        public string Email { get; set; }
+        public string SurrogateEmail { get; set; }
+        public string Domain { get; set; }
+        public bool AutoCreateDB { get; set; }
+        public int Status { get; set; }
     }
 }

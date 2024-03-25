@@ -1,5 +1,4 @@
 import {defineStore} from 'pinia';
-import { ref } from 'vue';
 
 export const useAlertStore = defineStore('alert', {
     state: () => ({
@@ -10,6 +9,7 @@ export const useAlertStore = defineStore('alert', {
         alert(type, message) {
             let id = ++ this.id;
             this.alerts.push({ id: id, message: message, type: type });
+            console.log('alert', id, message, type)
             setTimeout(() => {
                 console.log('remove', id);
                 this.remove(id);

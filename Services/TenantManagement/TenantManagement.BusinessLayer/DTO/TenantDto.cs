@@ -10,13 +10,14 @@ namespace TenantManagement.BusinessLayer.DTO
 {
     public class TenantDto
     {
+        [Key]
         public Guid? TenantId { get; set; }
 
         public string TenantName { get; set; }
 
         public string TenantCode { get; set; }
 
-        public string DBConnection { get; set; }
+        public string? DBConnection { get; set; }
 
         public string SurrogateName { get; set; }
         public string SurrogatePhoneNumber { get; set; }

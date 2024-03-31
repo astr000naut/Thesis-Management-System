@@ -23,6 +23,21 @@ services:
       - "80:80"
     networks:
       - my_network
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: my-minio
+    command: server --console-address ":9001"
+    environment:
+      MINIO_CONFIG_ENV_FILE: /etc/config.env
+    volumes:
+      - ../../TMS_FS_mount:/mnt/data
+      - ./minio/config.env:/etc/config.env
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - my_network
+
 
 networks:
   my_network:

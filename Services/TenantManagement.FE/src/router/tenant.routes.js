@@ -15,11 +15,15 @@ export default {
                     component: null,
                 },
                 {
-                    path: '/new',
+                    path: 'new',
                     component: TenantDetail,
                 },
                 {
-                    path: ':id',
+                    path: 'view/:id',
+                    component: TenantDetail,
+                },
+                {
+                    path: 'edit/:id',
                     component: TenantDetail,
                 },
             ]

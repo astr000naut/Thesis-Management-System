@@ -16,11 +16,15 @@ export class BaseApi {
         return this.baseUrl + '/' + id;
     }
 
-    delete(id) {
-        return this.baseUrl + '/' + id;
+    delete() {
+        return this.baseUrl + '/delete';
     }
 
     getById(id) {
         return this.baseUrl + '/' + id;
+    }
+
+    getNew() {
+        return this.baseUrl + '/new';
     }
 }

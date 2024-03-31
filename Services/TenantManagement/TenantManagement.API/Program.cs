@@ -7,6 +7,7 @@ using TenantManagement.BusinessLayer.Service;
 using TenantManagement.DataLayer.Interface;
 using TenantManagement.DataLayer.Repository;
 using TMS.BaseRepository;
+using TMS.BaseService;
 using TMS.DataLayer.Entity;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,8 @@ builder.Services.AddCors(options =>
                       policy =>
                       {
                           policy.WithOrigins("http://localhost:8081");
+                          policy.WithOrigins("http://admin.kltn.com");
+
                           policy.AllowAnyHeader();
                           policy.AllowAnyMethod();
                       });
@@ -36,8 +39,11 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ITenantRepository, TenantRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+
 builder.Services.AddScoped<ITenantService, TenantService>();
 builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddHttpContextAccessor();
 
 
 

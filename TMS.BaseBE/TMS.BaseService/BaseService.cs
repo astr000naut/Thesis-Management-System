@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,14 +14,19 @@ namespace TMS.BaseService
     {
 
         protected readonly IBaseRepository<TEntity> _baseRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private IUnitOfWork _unitOfWork;
         protected readonly IMapper _mapper;
+        private readonly string _requestDomain;
 
-        public BaseService(IBaseRepository<TEntity> repository, IMapper mapper, IUnitOfWork unitOfWork)
+        public BaseService(IBaseRepository<TEntity> repository, IMapper mapper, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
         {
             _baseRepository = repository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _httpContextAccessor = httpContextAccessor;
+            _requestDomain = _httpContextAccessor.HttpContext.Request.Headers["Origin"]
+                                                                     .FirstOrDefault()?.Split("://")[1];
         }
 
         public virtual void BeforeCreate() { }
@@ -65,9 +72,10 @@ namespace TMS.BaseService
             }    
         }
 
-        public Task<int> DeleteMultipleAsync(List<Guid> entityIdList)
+        public async Task<int> DeleteMultipleAsync(List<string> entityIdList)
         {
-            throw new NotImplementedException();
+            var result = await _baseRepository.DeleteMultipleAsync(entityIdList);
+            return result;
         }
 
         public async Task<(IEnumerable<TEntityDto>, int total)> FilterAsync(int skip, int take, string keySearch, IEnumerable<string> filterColumns)
@@ -99,6 +107,19 @@ namespace TMS.BaseService
         public Task<bool> UpdateAsync(TEntityDto t)
         {
             throw new NotImplementedException();
+        }
+
+        public TEntityDto GetNew()
+        {
+            var entity = Activator.CreateInstance<TEntity>();
+            var entityDto = _mapper.Map<TEntityDto>(entity);
+            entityDto.GetType().GetProperties()
+                .Where(p => Attribute.IsDefined(p, typeof(KeyAttribute))).ToList()
+                .ForEach(p => p.SetValue(entityDto, Guid.NewGuid()));
+
+            return entityDto;
+
+
         }
     }   
 }

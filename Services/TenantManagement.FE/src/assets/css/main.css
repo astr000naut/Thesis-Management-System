@@ -72,6 +72,7 @@ a {
 
     /*radius*/
     --border-radius: 4px; 
+    --el-disabled-text-color: #000000;
 }
 
 

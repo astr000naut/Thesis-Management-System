@@ -14,11 +14,11 @@
             } : false"
         >
             <el-form
-                ref="refForm"
                 :model="entity"
                 label-width="auto"
                 label-position="top"
                 size="default"
+                :disabled="form.mode === 'view'"
             >
                 <div class="subtitle">Thông tin chung</div>
                 <div class="flex-row cg-4">
@@ -97,10 +97,15 @@
 
         <template #footer>
             <div class="dialog-footer">
-                <el-button @click="btnCancelOnClick">Hủy</el-button>
-                <el-button type="primary" @click="btnConfirmOnClick">
-                    Đồng ý
-                </el-button>
+                <div class="form-add-edit-footer" v-if="form.mode !== 'view'">
+                    <el-button @click="btnCancelOnClick">Hủy</el-button>
+                    <el-button type="primary" @click="btnConfirmOnClick">
+                        Đồng ý
+                    </el-button>
+                </div>
+                <div v-else class="form-view-footer">
+                    <el-button @click="btnCloseOnClick">Đóng</el-button>
+                </div>
             </div>
         </template>
     </el-dialog>
@@ -110,7 +115,8 @@
     import { ref } from 'vue';
     import { useRouter, useRoute } from 'vue-router';
     import {useTenantStore} from '@/stores';
-import { storeToRefs } from 'pinia';
+    import {useForm} from '@/composables'
+    import { storeToRefs } from 'pinia';
 
     const router = useRouter();
     const route = useRoute();
@@ -120,62 +126,44 @@ import { storeToRefs } from 'pinia';
 
     const dialogVisible = ref(true);
 
-    const form = ref({
-        title: '',
-        type: '',
-    });
-    const refForm = ref(null);
-
-    const entity = ref({
-        tenantId: null,
-        tenantName: '',
-        tenantCode: '',
-        dBConnection: '',
-        surrogateName: '',
-        surrogatePhoneNumber: '',
-        surrogateEmail: '',
-        autoCreateDB: true,
-        phoneNumber: '',
-        address: '',
-        email: '',
-        domain: '',
-        state: 1,
-    });
+    const {form, entity} = useForm('Khách hàng');
 
 
+    initData();
 
-    initForm();
-
-    function initForm() {
-        if (route.path.includes('new')) {
-            form.value.title = 'Thêm mới khách hàng';
-            form.value.type = 'add';
+    async function initData() {
+        if (form.value.mode === 'edit' || form.value.mode === 'view') {
+            const tenantId = route.params.id;
+            const tenant = await tenantStore.getById(tenantId);
+            entity.value = {...tenant};
+        } else if (form.value.mode === 'add') {
+            const newEntity = await tenantStore.getNew();
+            entity.value = {...newEntity};
         }
-        console.log(form.value.title)
     }
 
-
-
-
-
-    function gotoTenantList() {
+    function gotoPageList() {
         router.push('/tenant');
     }
 
     async function btnConfirmOnClick() {
-        if (form.value.type === 'add') {
+        if (form.value.mode === 'add') {
             await tenantStore.insert({...entity.value});
         } else {
             await tenantStore.update({...entity.value});
         }
     }
 
+    function btnCloseOnClick() {
+        gotoPageList();
+    }
+
     function dialogOnClose() {
-        gotoTenantList();
+        gotoPageList();
     }
 
     function btnCancelOnClick() {
-        gotoTenantList();
+        gotoPageList();
     }
 
 

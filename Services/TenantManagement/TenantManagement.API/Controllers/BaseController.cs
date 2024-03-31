@@ -25,8 +25,8 @@ namespace TenantManagement.API.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] TEntityDto tEntityInputDto)
         {
-            var newId =  await _baseService.CreateAsync(tEntityInputDto);
-            return Created("", newId);
+            var result =  await _baseService.CreateAsync(tEntityInputDto);
+            return Created("", result);
         }
 
         /// <summary>
@@ -39,6 +39,13 @@ namespace TenantManagement.API.Controllers
         public async Task<IActionResult> GetAsync(Guid id)
         {
             var entity = await _baseService.GetByIdAsync(id);
+            return Ok(entity);
+        }
+
+        [HttpGet("new")]
+        public async Task<IActionResult> GetNew()
+        {
+            var entity = _baseService.GetNew();
             return Ok(entity);
         }
 
@@ -69,18 +76,20 @@ namespace TenantManagement.API.Controllers
         /// <returns>Giá trị boolean đã cập nhật hay chưa</returns>
         /// Author: DNT(24/05/2023)
         [HttpPut("{id}")]
-        public Task<IActionResult> PutAsync(Guid id, [FromBody] TEntityDto tEntityDto)
+        public async Task<IActionResult> PutAsync([FromBody] TEntityDto tEntityDto)
         {
-            throw new NotImplementedException();
+            var updated = await _baseService.UpdateAsync(tEntityDto);
+            return Ok(updated);
         }
 
 
 
-        [Route("DeleteMultiple")]
+        [Route("delete")]
         [HttpPost]
-        public Task<IActionResult> DeleteMultipleAsync([FromBody] List<Guid> entityIdList)
+        public async Task<IActionResult> DeleteMultipleAsync([FromBody] List<string> entityIdList)
         {
-            throw new NotImplementedException();
+            var deleted = await _baseService.DeleteMultipleAsync(entityIdList);
+            return Ok(deleted);
         }
 
     }

@@ -11,6 +11,7 @@ namespace TMS.DataLayer.Entity
     [Table("tenants")]
     public class Tenant
     {
+        [Key]
         public Guid TenantId { get; set; }
         public string TenantName { get; set; }
         public string TenantCode { get; set; }

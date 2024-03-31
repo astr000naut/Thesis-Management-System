@@ -1,6 +1,7 @@
 import { useAuthStore } from "@/stores";
 import axios from "axios";
 
+//axios.defaults.headers.common['Client-Domain'] = window.location.hostname;
 
 export const httpClient = {
     get: request('GET'),

@@ -9,7 +9,9 @@
 
         Task<bool> UpdateAsync(TEntityDto t);
 
-        Task<int> DeleteMultipleAsync(List<Guid> entityIdList);
+        Task<int> DeleteMultipleAsync(List<string> entityIdList);
+
+        TEntityDto GetNew();
 
     }
 }

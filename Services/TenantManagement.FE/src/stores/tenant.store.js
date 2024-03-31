@@ -4,6 +4,7 @@ import {router} from '@/router';
 import { useAlertStore } from './alert.store';
 import { ref } from 'vue';
 import $api from '@/api';
+import { ElMessage } from 'element-plus'
 
 
 export const useTenantStore = defineStore('tenant', {
@@ -20,10 +21,12 @@ export const useTenantStore = defineStore('tenant', {
         async fetchList() {
             this.loading = true;
             try {
+                await new Promise(resolve => setTimeout(resolve, 800));
                 const response = await httpClient.post($api.tenant.filter(), {
                     skip: (this.pageNumber - 1) * this.pageSize,
                     take: this.pageSize,
-                    keySearch: this.keySearch
+                    keySearch: this.keySearch,
+                    filterColumns: this.filterColumns
                 });
 
                 this.tenants = response.data;
@@ -39,7 +42,12 @@ export const useTenantStore = defineStore('tenant', {
             this.loading = true;
             try {
                 const response = await httpClient.get($api.tenant.getById(id));
-                return response.data;
+                
+                if (response.Error) {
+                    throw response.Message;
+                }
+                
+                return response;
             } catch (error) {
                 const alertStore = useAlertStore();
                 alertStore.alert('error', error);
@@ -47,10 +55,7 @@ export const useTenantStore = defineStore('tenant', {
                 this.loading = false;
             }
         },
-        async reload() {
-            this.pageNumber = 1;
-            await this.fetchList();
-        },
+        
         async insert(entity) {
             this.loading = true;
             try {
@@ -59,9 +64,10 @@ export const useTenantStore = defineStore('tenant', {
                 if (response.Error) {
                     throw response.Message;
                 }
-                // await this.reload();
+                
                 this.tenants.unshift(entity);
                 ++ this.total;
+                ElMessage.success('Thêm mới khách hàng thành công');
                 router.push('/tenant');
             } catch (error) {
                 const alertStore = useAlertStore();
@@ -74,14 +80,15 @@ export const useTenantStore = defineStore('tenant', {
         async update(entity) {
             this.loading = true;
             try {
-                const response = await httpClient.put($api.tenant.update(entity.id), entity);
+                const response = await httpClient.put($api.tenant.update(entity.tenantId), entity);
 
                 if (response.Error) {
                     throw response.Message;
                 }
-                // await this.reload();
-                const index = this.tenants.findIndex(x => x.id === entity.id);
+                
+                const index = this.tenants.findIndex(x => x.tenantId === entity.tenantId);
                 this.tenants[index] = entity;
+                ElMessage.success('Cập nhật khách hàng thành công');
                 router.push('/tenant');
             } catch (error) {
                 const alertStore = useAlertStore();
@@ -94,30 +101,66 @@ export const useTenantStore = defineStore('tenant', {
         async delete(id) {
             this.loading = true;
             try {
-                await httpClient.delete($api.tenant.delete(id));
-                this.tenants = this.tenants.filter(x => x.id !== id);
+                const response = await httpClient.post($api.tenant.delete(), [id]);
+
+                if (response.Error) {
+                    throw response.Message;
+                }
+
+                this.tenants = this.tenants.filter(x => x.tenantId !== id);
                 -- this.total;
+                return true;
             } catch (error) {
                 const alertStore = useAlertStore();
                 alertStore.alert('error', error);
+                return false;
             } finally {
                 this.loading = false;
             }
         },
 
         async setPageSize(newPageSize) {
+            if (this.pageSize === newPageSize) {
+                return;
+            }
+
             this.pageSize = newPageSize;
-            await this.reload();
+            await this.fetchList();
         },
 
         async setPageNumber(newPageNumber) {
+
+            if (this.pageNumber === newPageNumber) {
+                return;
+            }
+
             this.pageNumber = newPageNumber;
             await this.fetchList();
         },
 
         async setKeySearch(newKeySearch) {
             this.keySearch = newKeySearch;
-            await this.reload();
+            await this.fetchList();
+        },
+
+        async getNew() {
+            this.loading = true;
+            try {
+                const response = await httpClient.get($api.tenant.getNew());
+
+                if (response.Error) {
+                    throw response.Message;
+                }
+
+                return response;
+            } catch (error) {
+                const alertStore = useAlertStore();
+                alertStore.alert('error', error);
+            } finally {
+                this.loading = false;
+            }
         }
+
+        
     }
 });

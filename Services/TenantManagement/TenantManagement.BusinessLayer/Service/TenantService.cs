@@ -11,6 +11,7 @@ using TMS.BaseRepository;
 using TMS.BaseService;
 using TMS.DataLayer.Entity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Http;
 
 namespace TenantManagement.BusinessLayer.Service
 {
@@ -21,7 +22,7 @@ namespace TenantManagement.BusinessLayer.Service
         private readonly IConfiguration _configuration;
 
 
-        public TenantService(IConfiguration configuration, ITenantRepository tenantRepository, IMapper mapper, IUnitOfWork unitOfWork) : base(tenantRepository, mapper, unitOfWork)
+        public TenantService(IConfiguration configuration, ITenantRepository tenantRepository, IMapper mapper, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(tenantRepository, mapper, unitOfWork, httpContextAccessor)
         {
             _tenantRepository = tenantRepository;
             _unitOfWork = unitOfWork;

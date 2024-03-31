@@ -1,5 +1,5 @@
 <template>
-  <div class="page__container flex-col rg-4">
+  <div class="page__container flex-col rg-2">
     <router-view></router-view>
     <div class="page__header flex-row">
       <h1 class="page__title" style="font-size: 24px;">Danh sách Khách hàng</h1>
@@ -8,30 +8,43 @@
     </div>
     <div class="search-container flex-row al-center cg-2">
       <div class="reload-btn">
-        <el-button :icon="Refresh" circle />
+        <el-button :icon="Refresh" circle @click="btnRefreshOnClick"/>
       </div>
       <div class="search-input">
         <el-input
-          v-model="input2"
+          v-model="searchText"
           style="width: 240px"
           placeholder="Tìm kiếm"
           :prefix-icon="Search"
+          @input="searchTextOnInput"
+          clearable
         />
       </div>
     </div>
     <div class="table__container fl-1">
-      <el-table :data="tenants" style="width: 100%">
+      <el-table :data="tenants" style="width: 100%" row-key="tenantId" v-loading="loading">
         <el-table-column fixed prop="tenantCode" label="Mã khách hàng" width="150" />
         <el-table-column prop="tenantName" label="Tên khách hàng"/>
         <el-table-column prop="address" label="Địa chỉ" width="300" />
         <el-table-column prop="domain" label="Domain" width="300" />
-        <el-table-column prop="state" label="Trạng thái" width="200" />
+        <el-table-column prop="status" label="Trạng thái" width="200" :formatter="tenantStatusFormatter"/>
         <el-table-column fixed="right" label="Thao tác" width="120">
-          <template #default>
-            <el-button link type="primary" size="small">
-              Xem</el-button
+          <template #default="scope">
+            <el-dropdown size="small" split-button type="default"
+              @click="btnViewItemOnClick(scope.row)"
             >
-            <el-button link type="primary" size="small">Sửa</el-button>
+              Xem
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item
+                    @click="btnEditItemOnClick(scope.row)"
+                  >Sửa</el-dropdown-item>
+                  <el-dropdown-item
+                    @click="btnDeleteItemOnClick(scope.row)"  
+                  >Xóa</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -55,11 +68,14 @@
 
 
 <script setup>
-    import {onMounted} from 'vue';
+    import {onMounted, ref} from 'vue';
     import { useTenantStore } from '@/stores';
     import { useRouter } from 'vue-router';
     import { storeToRefs } from 'pinia';
     import { Refresh, Search } from '@element-plus/icons-vue'
+    import { ElMessage, ElMessageBox } from 'element-plus'
+    import { debounce } from "lodash"
+    import {TenantStatus} from '@/common/enum';
 
     const router = useRouter();
     const tenantStore = useTenantStore();
@@ -71,6 +87,9 @@
       pageNumber, 
       pageSize, 
     } = storeToRefs(tenantStore);
+    let debouncedFunction = null;
+
+    const searchText = ref('');
 
     initData();
 
@@ -79,11 +98,54 @@
     });
 
     async function initData() {
-      await tenantStore.reload();
+      await tenantStore.fetchList();
     }
 
     const btnAddOnClick = () => {
       router.push('/tenant/new');
+    }
+
+    const btnDeleteItemOnClick = (row) => {
+      ElMessageBox.confirm(`Bạn có chắc chắn muốn xóa KH ${row.tenantName} ?`, 'Xác nhận', {
+        confirmButtonText: 'Đồng ý',
+        cancelButtonText: 'Hủy',
+        type: 'warning',
+      }).then(async () => {
+        const isDeleted = await tenantStore.delete(row.tenantId);
+        console.log(isDeleted)
+        if (isDeleted) {
+          ElMessage.success('Xóa thành công');
+        } else {
+          // ElMessage.error('Xóa thất bại');
+        }
+      });
+    
+    }
+
+    async function searchTextOnInput() {
+      if (!debouncedFunction) {
+        debouncedFunction = debounce(() => {
+          tenantStore.setKeySearch(searchText.value);
+        }, 800);
+      }
+      debouncedFunction();
+      
+    }
+
+    const btnViewItemOnClick = (row) => {
+      router.push(`/tenant/view/${row.tenantId}`);
+    }
+
+    const btnEditItemOnClick = (row) => {
+      router.push(`/tenant/edit/${row.tenantId}`);
+    }
+
+    async function btnRefreshOnClick() {
+      await tenantStore.fetchList();
+    }
+
+    function tenantStatusFormatter(row, column, cellValue) {
+      return TenantStatus[cellValue];
     }
 
 </script>
@@ -129,6 +191,14 @@
     :deep(.el-button.is-circle){
       width: 32px;
       height: 32px !important;
+    }
+
+    :deep(.el-dropdown__caret-button){
+      outline: unset;
+    }
+
+    :deep(.el-dropdown__caret-button:active){
+      border-left: 1px solid #409eff;
     }
     
 

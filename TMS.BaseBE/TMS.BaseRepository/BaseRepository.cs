@@ -5,6 +5,8 @@ using System.Data;
 using Dapper;
 using TMS.Common.Attribute;
 using System.Reflection;
+using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace TMS.BaseRepository
 {
@@ -31,9 +33,13 @@ namespace TMS.BaseRepository
             return result > 0;
         }
 
-        Task<int> DeleteMultipleAsync(List<string> listId)
+        public async Task<int> DeleteMultipleAsync(List<string> listId)
         {
-            throw new NotImplementedException();
+            var tableName = (typeof(T).GetCustomAttribute<TableAttribute>()?.TableName);
+            var key = typeof(T).GetProperties().FirstOrDefault(p => p.GetCustomAttribute<KeyAttribute>() != null).Name;
+            var query = $"DELETE FROM {tableName} WHERE {key} IN @listId";
+            var deleted = await _unitOfWork.Connection.ExecuteAsync(query, new { listId }, _unitOfWork.Transaction);
+            return deleted;
         }
 
         public async Task<(IEnumerable<T> data, int total)> FilterAsync(int? skip, int? take, string keySearch, IEnumerable<string> filterColumns)
@@ -70,18 +76,24 @@ namespace TMS.BaseRepository
 
         public async Task<T?> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var tableName = (typeof(T).GetCustomAttribute<TableAttribute>()?.TableName);
+            var key = typeof(T).GetProperties().FirstOrDefault(p => p.GetCustomAttribute<KeyAttribute>() != null).Name;
+            var query = $"SELECT * FROM {tableName} WHERE {key} = @id";
+            var result = await _unitOfWork.Connection.QueryFirstOrDefaultAsync<T>(query, new { id }, _unitOfWork.Transaction);
+            return result;
         }
 
-        Task<bool> IBaseRepository<T>.UpdateAsync(T t)
+        public async Task<bool> UpdateAsync(T t)
         {
-            throw new NotImplementedException();
+            var tableName = (typeof(T).GetCustomAttribute<TableAttribute>()?.TableName);
+            var key = typeof(T).GetProperties().FirstOrDefault(p => p.GetCustomAttribute<KeyAttribute>() != null).Name;
+            var properties = typeof(T).GetProperties().Where(p => p.GetCustomAttribute<KeyAttribute>() == null);
+            var columns = string.Join(", ", properties.Select(p => $"{p.Name} = @{p.Name}"));
+            var query = $"UPDATE {tableName} SET {columns} WHERE {key} = @{key}";
+            var result = await _unitOfWork.Connection.ExecuteAsync(query, t, _unitOfWork.Transaction);
+            return result > 0;
         }
 
-        Task<int> IBaseRepository<T>.DeleteMultipleAsync(List<string> listId)
-        {
-            throw new NotImplementedException();
-        }
 
     }
 }

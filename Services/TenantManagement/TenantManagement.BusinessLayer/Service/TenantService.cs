@@ -12,6 +12,8 @@ using TMS.BaseService;
 using TMS.DataLayer.Entity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
+using Dapper;
+using Newtonsoft.Json;
 
 namespace TenantManagement.BusinessLayer.Service
 {
@@ -37,11 +39,241 @@ namespace TenantManagement.BusinessLayer.Service
             unitOfWork.SetConnectionString(connectionString);
         }
 
-        public override void BeforeCreate()
+
+        public override async Task<TenantDto> GetNew()
         {
-            base.BeforeCreate();
-            var a = 1;
-            Console.WriteLine(a);
+            var tenantDto = new TenantDto();
+            tenantDto.TenantId = Guid.NewGuid();
+            tenantDto.AutoCreateDB = true;
+            tenantDto.AutoCreateMinio = true;
+            tenantDto.DBConnection = _configuration.GetSection("DefaultConnection:ConnectionString").Value;
+            tenantDto.DBName = "tenant-" + tenantDto.TenantId;
+            tenantDto.MinioEndpoint = _configuration.GetSection("DefaultConnection:MinioEndpoint").Value;
+            tenantDto.MinioPort = int.Parse(_configuration.GetSection("DefaultConnection:MinioPort").Value);
+            tenantDto.MinioAccessKey = _configuration.GetSection("DefaultConnection:MinioAccessKey").Value;
+            tenantDto.MinioSecretKey = _configuration.GetSection("DefaultConnection:MinioSecretKey").Value;
+            tenantDto.MinioBucketName = "tenant-" + tenantDto.TenantId;
+
+            return tenantDto;
+        }
+
+        public async Task<bool> CheckDBConnection(bool autoCreateDB, string connectionString, string databaseName)
+        {
+            try
+            {
+                var connection = connectionString;
+                var query = "SHOW DATABASES";
+
+                if (!autoCreateDB)
+                {
+                    connection += "Database=" + databaseName + ";";
+                    query = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '" + databaseName + "'";
+                }
+                
+                // use mysql to check the connection to the database
+                using (var conn = new MySqlConnector.MySqlConnection(connection))
+                {
+                    await conn.OpenAsync();
+                    var result = await conn.QueryAsync(query);
+                    await conn.CloseAsync();
+                }   
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<TenantDto> ActiveTenant(Guid tenantId)
+        {
+
+            try
+            {
+                var tenant = await _tenantRepository.GetByIdAsync(tenantId);
+                var tenantDto = _mapper.Map<TenantDto>(tenant);
+                bool activeDatabaseSuccess = await ActiveTenantDatabase(tenantDto);
+                if (!activeDatabaseSuccess)
+                {
+                    throw new Exception("Cannot active tenant database");
+                }
+
+
+                bool activeMinioSuccess = await ActiveTenantMinio(tenantDto);
+
+                if (!activeMinioSuccess)
+                {
+                    throw new Exception("Cannot active tenant minio");
+                }
+
+
+                await _unitOfWork.OpenAsync();
+
+                tenantDto.Status = 2; // Đang hoạt động;
+                await UpdateAsync(tenantDto);
+
+                await _unitOfWork.CommitAsync();
+
+                return tenantDto;
+
+            } catch (Exception e)
+            {
+                throw;
+            } finally
+            {
+                await _unitOfWork.CloseAsync();
+            }
+        }   
+
+
+        private async Task<bool> GenerateDatabaseTable(MySqlConnector.MySqlTransaction transaction, TenantDto tenantDto)
+        {
+            try
+            {
+                // add use database to query
+                string useDatabaseQuery = "USE `" + tenantDto.DBName + "`;";
+                await transaction.Connection.ExecuteAsync(useDatabaseQuery, transaction: transaction); 
+
+                string createUserTableQuery = @"
+                    CREATE TABLE users (
+                      UserId char(36) NOT NULL DEFAULT '',
+                      Username varchar(100) NOT NULL DEFAULT '',
+                      Password varchar(100) NOT NULL DEFAULT '',
+                      FullName varchar(100) NOT NULL DEFAULT '',
+                      Role varchar(100) NOT NULL DEFAULT '',
+                      RefreshToken varchar(255) DEFAULT NULL,
+                      RefreshTokenExp datetime DEFAULT NULL,
+                      PRIMARY KEY (UserId)
+                    )
+                    ENGINE = INNODB,
+                    AVG_ROW_LENGTH = 16384,
+                    CHARACTER SET utf8,
+                    COLLATE utf8_general_ci;
+                ";
+
+                await transaction.Connection.ExecuteAsync(createUserTableQuery, transaction: transaction);
+
+                // Create index
+                string createUserIndexQuery = @"
+                    ALTER TABLE users
+                    ADD UNIQUE INDEX Username (Username);
+                ";
+
+                await transaction.Connection.ExecuteAsync(createUserIndexQuery, transaction: transaction);
+
+                return true;
+            } catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private async Task<bool> GenerateInitialData(MySqlConnector.MySqlTransaction transaction, TenantDto tenantDto)
+        {
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword("admin");
+
+            string insertAdminUserQuery = @"
+                INSERT INTO users (UserId, Username, Password, FullName, Role)
+                VALUES ('" + Guid.NewGuid().ToString() + "', 'admin','"+ passwordHash +"', 'ADMIN', 'ADMIN')";
+
+            await transaction.Connection.ExecuteAsync(insertAdminUserQuery, transaction: transaction); ;
+
+            return true;
+
+        }
+
+        private async Task<bool> ActiveTenantDatabase(TenantDto tenantDto)
+        {
+            try
+            {
+                if (tenantDto.AutoCreateDB)
+                {
+                    var connection = tenantDto.DBConnection;
+                    var query = "CREATE DATABASE IF NOT EXISTS `" + tenantDto.DBName + "`;";
+
+                    using (var conn = new MySqlConnector.MySqlConnection(connection))
+                    {
+                        await conn.OpenAsync();
+                        var _transaction = await conn.BeginTransactionAsync();
+                        await conn.ExecuteAsync(query, transaction: _transaction);
+                        await GenerateDatabaseTable(_transaction, tenantDto);
+                        await GenerateInitialData(_transaction, tenantDto);
+                        await _transaction.CommitAsync();
+                        await conn.CloseAsync();
+                    }
+                }
+                else
+                {
+                    var connection = tenantDto.DBConnection + "Database=" + tenantDto.DBName + ";";
+                    using (var conn = new MySqlConnector.MySqlConnection(connection))
+                    {
+                        await conn.OpenAsync();
+                        var _transaction = await conn.BeginTransactionAsync();
+                        await GenerateDatabaseTable(_transaction, tenantDto);
+                        await GenerateInitialData(_transaction, tenantDto);
+                        await _transaction.CommitAsync();
+                        await conn.CloseAsync();
+                    }
+                }
+                return true;
+            } catch (Exception)
+            {
+                return false;
+            }
+            
+        }   
+
+        private async Task<bool> ActiveTenantMinio(TenantDto tenantDto)
+        {
+           try
+            {
+                var url = _configuration.GetSection("Serviceurl:FileService").Value;
+                url += "/active-tenant";
+                bool isSuccess = false;
+                using (var httpClient = new HttpClient())
+                {
+                    var requestBody = new StringContent(JsonConvert.SerializeObject(tenantDto), Encoding.UTF8, "application/json");
+                    var response = await httpClient.PostAsync(url, requestBody);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        isSuccess = JsonConvert.DeserializeObject<bool>(content);
+                    } else
+                    {
+                        throw new Exception("Cannot connect to FileService");
+                    }
+                }
+                return isSuccess;
+                
+
+            } catch (Exception)
+            {
+                throw;
+            }
+     
+        }
+
+        public override async Task BeforeUpdate(TenantDto t)
+        {
+
+            var tenant = await _tenantRepository.GetByIdAsync(t.TenantId);
+            if (tenant.Status == 2)
+            {
+                if (
+                    t.DBConnection != tenant.DBConnection || t.DBName != tenant.DBName
+                    || t.AutoCreateDB != tenant.AutoCreateDB || t.AutoCreateMinio != tenant.AutoCreateMinio
+                    || t.Domain != tenant.Domain
+                    || t.MinioAccessKey != tenant.MinioAccessKey || t.MinioBucketName != tenant.MinioBucketName
+                    || t.MinioSecretKey != tenant.MinioSecretKey || t.MinioEndpoint != tenant.MinioEndpoint
+                    )
+                {
+                    throw new Exception("Không thể cập nhật các thông tin kết nối khi khách hàng đang hoạt động");
+                }   
+            }
+
         }
     }
 }
+
+

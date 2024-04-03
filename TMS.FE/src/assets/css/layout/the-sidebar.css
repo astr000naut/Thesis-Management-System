@@ -1,7 +1,8 @@
 .sidebar {
     /* flex-basis: 200px; */
+    width: 224px;
     flex-shrink: 0;
-    height: 100vh;
+    height: 100%;
     font-weight: 400;
     background-color: #393a3d;
     display: flex;
@@ -31,7 +32,7 @@
   }
   
   .sidebar__main {
-    max-height: calc(100vh - 56px - 44px);
+    height: 100%;
     row-gap: 4px;
     padding: 12px;
     overflow-y: scroll;
@@ -63,7 +64,6 @@
   
   .sidebar__footer {
     height: 44px;
-    width: 100%;
     color: #fff;
     display: flex;
     align-items: center;
@@ -105,9 +105,9 @@
     background-color: #616164;
   }
   
-  /* .sidebar__item--highlight {
+  a.active .sidebar__item {
     background-color: #58595d;
-  } */
+  }
 
   hr {
     margin-top: 4px;

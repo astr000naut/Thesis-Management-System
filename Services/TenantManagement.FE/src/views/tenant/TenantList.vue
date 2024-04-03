@@ -70,7 +70,7 @@
 <script setup>
     import {onMounted, ref} from 'vue';
     import { useTenantStore } from '@/stores';
-    import { useRouter } from 'vue-router';
+    import { useRouter, useRoute } from 'vue-router';
     import { storeToRefs } from 'pinia';
     import { Refresh, Search } from '@element-plus/icons-vue'
     import { ElMessage, ElMessageBox } from 'element-plus'
@@ -78,6 +78,7 @@
     import {TenantStatus} from '@/common/enum';
 
     const router = useRouter();
+    const route = useRoute();
     const tenantStore = useTenantStore();
     const {
       tenants, 

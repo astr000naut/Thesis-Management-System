@@ -7,10 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DTO\" />
-    <Folder Include="Interface\" />
-    <Folder Include="Service\" />
-    <Folder Include="Profile\" />
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="6.0.28" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.35.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\TMS.BaseBE\TMS.BaseRepository\TMS.BaseRepository.csproj" />
+    <ProjectReference Include="..\..\TMS.BaseBE\TMS.BaseService\TMS.BaseService.csproj" />
+    <ProjectReference Include="..\TMS.DataLayer\TMS.DataLayer.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TenantManagement.API.Param;
 using TenantManagement.BusinessLayer.DTO;
 using TenantManagement.BusinessLayer.Interface;
 
@@ -17,5 +18,18 @@ namespace TenantManagement.API.Controllers
             _tenantService = tenantService;
         }
 
+        [HttpPost("check-db-connection")]
+        public async Task<IActionResult> CheckDBConnection([FromBody] CheckDBConnectionParam param)
+        {
+            var response = await _tenantService.CheckDBConnection(param.AutoCreateDB, param.ConnectionString, param.DBName);
+            return Ok(response);
+        }
+
+        [HttpPost("active-tenant")]
+        public async Task<IActionResult> ActiveTenant([FromBody] ActiveTenantParam param)
+        {
+            var response = await _tenantService.ActiveTenant(param.TenantId);
+            return Ok(response);
+        }
     }
 }

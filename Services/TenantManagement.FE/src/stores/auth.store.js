@@ -18,7 +18,7 @@ export const useAuthStore = defineStore('auth', {
                 const response = await httpClient.post($api.user.authenticate, {username, password});
 
                 if (response.Error) {
-                    return response.Message;
+                    throw response.Message;
                 } else {
                     localStorage.setItem('loginInfo', JSON.stringify(response));
     

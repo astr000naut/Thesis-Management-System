@@ -17,6 +17,15 @@
     display: flex;
     column-gap: 20px;
   }
+
+  .bcr {
+    border: 1px solid red;
+  }
+
+  .bcg {
+      border: 1px solid green;
+  }
+
   
   
   .text-left {
@@ -133,7 +142,143 @@
     max-width: 400px;
   }
 
+  .fl-1 {
+    flex: 1;
+  }
   
+  .fl-2 {
+    flex: 2;
+  }
+
+  .fl-3 {
+    flex: 3;
+  }
+
+  .fl-4 {
+    flex: 4;
+  }
+
+  
+  .cg-1 {
+    column-gap: 5px;
+  }
+  
+  .cg-2 {
+    column-gap: 10px;
+  }
+  
+  .cg-3 {
+    column-gap: 15px;
+  }
+  
+  .cg-4 {
+    column-gap: 20px;
+  }
+  
+  .cg-5 {
+    column-gap: 25px;
+  }
+  
+  .cg-6 {
+    column-gap: 30px;
+  }
+  
+  .cg-7 {
+    column-gap: 35px;
+  }
+  
+  .cg-8 {
+    column-gap: 40px;
+  }
+  
+  .cg-9 {
+    column-gap: 45px;
+  }
+  
+  .cg-10 {
+    column-gap: 50px;
+  }
+  .rg-1 {
+    row-gap: 5px;
+  }
+  
+  .rg-2 {
+    row-gap: 10px;
+  }
+  
+  .rg-3 {
+    row-gap: 15px;
+  }
+  
+  .rg-4 {
+    row-gap: 20px;
+  }
+  
+  .rg-5 {
+    row-gap: 25px;
+  }
+  
+  .rg-6 {
+    row-gap: 30px;
+  }
+  
+  .rg-7 {
+    row-gap: 35px;
+  }
+  
+  .rg-8 {
+    row-gap: 40px;
+  }
+  
+  .rg-9 {
+    row-gap: 45px;
+  }
+  
+  .rg-10 {
+    row-gap: 50px;
+  }
+
+  .mt-1 {
+    margin-top: 2px;
+  }
+
+  .mt-2 {
+    margin-top: 4px;
+  }
+
+  .mt-3 {
+    margin-top: 6px;
+  }
+
+  .mt-4 {
+    margin-top: 8px;
+  }
+
+  .mt-5 {
+    margin-top: 10px;
+  }
+
+  .mt-6 {
+    margin-top: 12px;
+  }
+
+  .mt-7 {
+    margin-top: 14px;
+  }
+
+  .mt-8 {
+    margin-top: 16px;
+  }
+
+  .mt-9 {
+    margin-top: 18px;
+  }
+
+  .mt-10 {
+    margin-top: 20px;
+  }
+  
+
   .wrapper {
     position: fixed;
     top: 0;
@@ -192,11 +337,51 @@ input:disabled {
   display: flex;
 }
 
-.fl-1 {
-  flex: 1;
+.flex-row {
+  display: flex;
+  flex-direction: row;
 }
 
-.fl-2 {
-  flex: 2;
+.flex-col {
+  display: flex;
+  flex-direction: column;
 }
 
+.al-center {
+  align-items: center;
+}
+
+.jc-center {
+  justify-content: center;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+
+button {
+  height: 36px !important;
+}
+
+input {
+  height: 36px;
+  padding-left: 4px;
+}
+
+.form-group .el-input {
+  width: 100% !important;
+
+}
+
+.form-group .label {
+  margin-bottom: 4px;
+}
+
+.el-dialog__header {
+  font-weight: bold;
+}

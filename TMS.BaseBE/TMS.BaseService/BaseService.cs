@@ -29,15 +29,15 @@ namespace TMS.BaseService
                                                                      .FirstOrDefault()?.Split("://")[1];
         }
 
-        public virtual void BeforeCreate() { }
+        public async virtual Task BeforeCreate() { }
 
-        public virtual void AfterCreate() { }
+        public async virtual Task AfterCreate() { }
 
-        public virtual void BeforeUpdate() { }  
+        public async virtual Task BeforeUpdate(TEntityDto t) { }
 
-        public virtual void AfterUpdate() { }
+        public async virtual Task AfterUpdate() { }
 
-        public async Task<Guid?> CreateAsync(TEntityDto t)
+        public async Task<bool?> CreateAsync(TEntityDto t)
         {
             try
             {
@@ -46,13 +46,6 @@ namespace TMS.BaseService
                 await _unitOfWork.OpenAsync();
                 var entityInput = _mapper.Map<TEntity>(t);
 
-                Type type = typeof(TEntity);
-                var entityName = typeof(TEntity).Name;
-                var newId = Guid.NewGuid();
-
-                var idProperty = type.GetProperty($"{entityName}Id");
-                idProperty?.SetValue(entityInput, newId);
-
 
                 await _baseRepository.CreateAsync(entityInput);
 
@@ -60,7 +53,7 @@ namespace TMS.BaseService
 
                 AfterCreate();
 
-                return newId;
+                return true;
 
             } catch (Exception ex)
             {
@@ -99,17 +92,37 @@ namespace TMS.BaseService
             }
         }
 
-        public Task<TEntityDto?> GetByIdAsync(Guid id)
+        public async Task<TEntityDto?> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var entity = await _baseRepository.GetByIdAsync(id);
+            var response = _mapper.Map<TEntityDto>(entity);
+            return response;
         }
 
-        public Task<bool> UpdateAsync(TEntityDto t)
+        public async Task<bool> UpdateAsync(TEntityDto t)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _unitOfWork.OpenAsync();
+                await BeforeUpdate(t);
+                var entity = _mapper.Map<TEntity>(t);
+                var result = await _baseRepository.UpdateAsync(entity);
+                await _unitOfWork.CommitAsync();
+                return result;
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                await _unitOfWork.CloseAsync();
+            }
+
+            
         }
 
-        public TEntityDto GetNew()
+        public virtual async Task<TEntityDto> GetNew()
         {
             var entity = Activator.CreateInstance<TEntity>();
             var entityDto = _mapper.Map<TEntityDto>(entity);

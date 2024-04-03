@@ -21,7 +21,7 @@ export function useForm(entityName) {
             form.value.title = `Xem ${entityName}`;
             form.value.mode = 'view';
         } else {
-            form.value.title = `Chinh sửa ${entityName}`;
+            form.value.title = `Sửa ${entityName}`;
             form.value.mode = 'edit';
         }
     }

@@ -1,11 +1,14 @@
 
 import { createPinia } from 'pinia'
 import { createApp } from "vue";
+import ElementPlus from 'element-plus'
+import vi from 'element-plus/dist/locale/vi.mjs'
+import 'element-plus/dist/index.css'
 import App from "@/App.vue";
-import router from "@/router";
+import { router } from './router';
 import commonVal from "@/common/value";
-import axios from "axios";
 import "@/assets/css/main.css";
+import { Icon } from '@iconify/vue';
 import BaseButton from "./components/base/BaseButton.vue";
 import BaseTextfield from "./components/base/BaseTextfield.vue";
 import BaseCheckbox from "./components/base/BaseCheckbox.vue";
@@ -41,11 +44,13 @@ app.component("BaseNotibox", BaseNotibox);
 app.component("BaseRadiogroup", BaseRadiogroup);
 app.component("BaseSelectbox", BaseSelectbox);
 app.component("BaseToastbox", BaseToastbox);
+app.component("Icon", Icon);
+
 
 app.provide("$common", commonVal);
-app.provide("$axios", axios);
 
 app.use(router);
 app.use(createPinia())
+app.use(ElementPlus, { locale: vi})
 app.mount("#app");
 

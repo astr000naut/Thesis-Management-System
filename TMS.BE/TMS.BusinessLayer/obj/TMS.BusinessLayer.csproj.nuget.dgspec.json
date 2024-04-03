@@ -4,14 +4,162 @@
     "D:\\Development\\TMS\\TMS.BE\\TMS.BusinessLayer\\TMS.BusinessLayer.csproj": {}
   },
   "projects": {
-    "D:\\Development\\TMS\\TMS.BE\\TMS.BusinessLayer\\TMS.BusinessLayer.csproj": {
+    "D:\\Development\\TMS\\TMS.BaseBE\\TMS.BaseRepository\\TMS.BaseRepository.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Development\\TMS\\TMS.BE\\TMS.BusinessLayer\\TMS.BusinessLayer.csproj",
-        "projectName": "TMS.BusinessLayer",
-        "projectPath": "D:\\Development\\TMS\\TMS.BE\\TMS.BusinessLayer\\TMS.BusinessLayer.csproj",
+        "projectUniqueName": "D:\\Development\\TMS\\TMS.BaseBE\\TMS.BaseRepository\\TMS.BaseRepository.csproj",
+        "projectName": "TMS.BaseRepository",
+        "projectPath": "D:\\Development\\TMS\\TMS.BaseBE\\TMS.BaseRepository\\TMS.BaseRepository.csproj",
         "packagesPath": "C:\\Users\\k69ti\\.nuget\\packages\\",
-        "outputPath": "D:\\Development\\TMS\\TMS.BE\\TMS.BusinessLayer\\obj\\",
+        "outputPath": "D:\\Development\\TMS\\TMS.BaseBE\\TMS.BaseRepository\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\k69ti\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "D:\\Development\\TMS\\TMS.BaseBE\\TMS.Common\\TMS.Common.csproj": {
+                "projectPath": "D:\\Development\\TMS\\TMS.BaseBE\\TMS.Common\\TMS.Common.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.1.35, )"
+            },
+            "MySqlConnector": {
+              "target": "Package",
+              "version": "[2.3.5, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Development\\TMS\\TMS.BaseBE\\TMS.BaseService\\TMS.BaseService.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Development\\TMS\\TMS.BaseBE\\TMS.BaseService\\TMS.BaseService.csproj",
+        "projectName": "TMS.BaseService",
+        "projectPath": "D:\\Development\\TMS\\TMS.BaseBE\\TMS.BaseService\\TMS.BaseService.csproj",
+        "packagesPath": "C:\\Users\\k69ti\\.nuget\\packages\\",
+        "outputPath": "D:\\Development\\TMS\\TMS.BaseBE\\TMS.BaseService\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\k69ti\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "D:\\Development\\TMS\\TMS.BaseBE\\TMS.BaseRepository\\TMS.BaseRepository.csproj": {
+                "projectPath": "D:\\Development\\TMS\\TMS.BaseBE\\TMS.BaseRepository\\TMS.BaseRepository.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
+            "Microsoft.AspNetCore.Http.Abstractions": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Development\\TMS\\TMS.BaseBE\\TMS.Common\\TMS.Common.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Development\\TMS\\TMS.BaseBE\\TMS.Common\\TMS.Common.csproj",
+        "projectName": "TMS.Common",
+        "projectPath": "D:\\Development\\TMS\\TMS.BaseBE\\TMS.Common\\TMS.Common.csproj",
+        "packagesPath": "C:\\Users\\k69ti\\.nuget\\packages\\",
+        "outputPath": "D:\\Development\\TMS\\TMS.BaseBE\\TMS.Common\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\k69ti\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -44,6 +192,176 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Development\\TMS\\TMS.BE\\TMS.BusinessLayer\\TMS.BusinessLayer.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Development\\TMS\\TMS.BE\\TMS.BusinessLayer\\TMS.BusinessLayer.csproj",
+        "projectName": "TMS.BusinessLayer",
+        "projectPath": "D:\\Development\\TMS\\TMS.BE\\TMS.BusinessLayer\\TMS.BusinessLayer.csproj",
+        "packagesPath": "C:\\Users\\k69ti\\.nuget\\packages\\",
+        "outputPath": "D:\\Development\\TMS\\TMS.BE\\TMS.BusinessLayer\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\k69ti\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "D:\\Development\\TMS\\TMS.BaseBE\\TMS.BaseRepository\\TMS.BaseRepository.csproj": {
+                "projectPath": "D:\\Development\\TMS\\TMS.BaseBE\\TMS.BaseRepository\\TMS.BaseRepository.csproj"
+              },
+              "D:\\Development\\TMS\\TMS.BaseBE\\TMS.BaseService\\TMS.BaseService.csproj": {
+                "projectPath": "D:\\Development\\TMS\\TMS.BaseBE\\TMS.BaseService\\TMS.BaseService.csproj"
+              },
+              "D:\\Development\\TMS\\TMS.BE\\TMS.DataLayer\\TMS.DataLayer.csproj": {
+                "projectPath": "D:\\Development\\TMS\\TMS.BE\\TMS.DataLayer\\TMS.DataLayer.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
+            "BCrypt.Net-Core": {
+              "target": "Package",
+              "version": "[1.6.0, )"
+            },
+            "Microsoft.AspNetCore.Authorization": {
+              "target": "Package",
+              "version": "[6.0.28, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[6.35.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Development\\TMS\\TMS.BE\\TMS.DataLayer\\TMS.DataLayer.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Development\\TMS\\TMS.BE\\TMS.DataLayer\\TMS.DataLayer.csproj",
+        "projectName": "TMS.DataLayer",
+        "projectPath": "D:\\Development\\TMS\\TMS.BE\\TMS.DataLayer\\TMS.DataLayer.csproj",
+        "packagesPath": "C:\\Users\\k69ti\\.nuget\\packages\\",
+        "outputPath": "D:\\Development\\TMS\\TMS.BE\\TMS.DataLayer\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\k69ti\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "D:\\Development\\TMS\\TMS.BaseBE\\TMS.BaseRepository\\TMS.BaseRepository.csproj": {
+                "projectPath": "D:\\Development\\TMS\\TMS.BaseBE\\TMS.BaseRepository\\TMS.BaseRepository.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.Data.SqlClient": {
+              "target": "Package",
+              "version": "[5.2.0, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

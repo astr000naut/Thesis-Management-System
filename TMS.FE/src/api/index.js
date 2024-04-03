@@ -1,5 +1,8 @@
+import { tenantApi } from "./tenant";
+import { userApi } from "./user";
 
-const baseUrl = "https://localhost:44381/api/v1";
 const $api = {
+    user: new userApi(),
+    tenant: new tenantApi(),
 };
 export default $api;

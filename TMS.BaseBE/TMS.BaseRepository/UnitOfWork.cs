@@ -63,6 +63,7 @@ namespace TMS.BaseRepository
 
                 await _connection.CloseAsync();
                 _manipulationKey = 0;
+                await _connection.DisposeAsync();
 
             } else
             {

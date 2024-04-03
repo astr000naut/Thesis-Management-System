@@ -1,6 +1,4 @@
 import { ref } from 'vue';
-import {httpClient} from '@/helpers/httpClient';
-import {useAlertStore} from '@/stores';
 
 export function useList(api) {
     const listItem = ref([]);

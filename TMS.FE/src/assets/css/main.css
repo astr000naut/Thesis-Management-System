@@ -5,8 +5,8 @@
 
 
 
-* {
-    font-family: "Noto sans", sans-serif;
+body {
+    font-family: "Roboto", sans-serif;
     font-size: var(--fs-default);
     margin: 0px;
     padding: 0px;
@@ -72,6 +72,7 @@ a {
 
     /*radius*/
     --border-radius: 4px; 
+    --el-disabled-text-color: #000000;
 }
 
 

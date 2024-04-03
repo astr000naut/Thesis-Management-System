@@ -3,22 +3,17 @@
     class="sidebar"
     :style="{ 'flex-basis': isSidebarBig ? '200px' : '78px' }"
   >
-    <div class="sidebar__top">
-      <div class="sidebar__navicon mi mi-24 mi-header-nav"></div>
-      <div class="sidebar__applogo" v-show="isSidebarBig"></div>
-    </div>
     <div class="sidebar__main">
       <router-link
         v-for="(item, index) in sidebarItems"
         :key="item.name"
         :to="item.link"
+        active-class="active"
       >
         <div
           class="sidebar__item"
-          :class="item.name == itemSelected ? 'sidebar__item--highlight' : ''"
           @mouseover="sideBarItemOnMouseOver($event, item)"
           @mouseleave="item.displayLabel = !isSidebarBig & false"
-          @click="sidebarItemOnClick(item.name)"
         >
           <div class="item__icon mi mi-24" :class="item.icon"></div>
           <div v-show="isSidebarBig" class="item__text">
@@ -72,7 +67,6 @@ const $common = inject("$common");
 // #region init
 const sidebarItems = ref($common.sidebarItems);
 const isSidebarBig = ref(true);
-const itemSelected = ref("");
 sidebarItems.value.forEach((item) => {
   item.displayLabel = false;
   item.labelPos = 0;
@@ -93,14 +87,6 @@ function resizeSidebar() {
 
 // #region handle event
 
-/**
- * Sự kiện click vào sidebar item
- *
- * Author: Dũng (27/05/2023)
- */
-function sidebarItemOnClick(itemName) {
-  itemSelected.value = itemName;
-}
 
 /**
  * Sự kiện mouseover qua sidebar item
@@ -108,7 +94,7 @@ function sidebarItemOnClick(itemName) {
  * Author: Dũng (27/05/2023)
  */
 function sideBarItemOnMouseOver($event, item) {
-  item.labelPos = $event.currentTarget.getBoundingClientRect().y;
+  item.labelPos = $event.currentTarget.getBoundingClientRect().y - 56;
   item.displayLabel = !isSidebarBig.value & true;
 }
 

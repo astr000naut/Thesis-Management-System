@@ -20,7 +20,7 @@
   max-height: 0px;
   transform: translateY(-10px);
 }
-.toast {
+.alert {
   min-width: 450px;
   max-width: 650px;
   height: 56px;
@@ -49,26 +49,26 @@
   margin-left: 16px;
 }
 
-.toast--success .minc {
+.alert--success .minc {
   background-position: -1600px -256px;
 }
 
-.toast--alert .minc {
+.alert--alert .minc {
   background-position: -593px -145px;
 }
 
-.toast--fail .minc {
+.alert--error .minc {
   background-position: -538px -146px;
 }
 
-.toast--success .toast__title {
+.alert--success .alert__title {
   color: var(--clr-lg500);
 }
 
-.toast--alert .toast__title {
+.alert--alert .alert__title {
   color: #ff8a1c;
 }
 
-.toast--fail .toast__title {
+.alert--error .alert__title {
   color: #fd4040;
 }

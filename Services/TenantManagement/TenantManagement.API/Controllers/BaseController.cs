@@ -26,7 +26,7 @@ namespace TenantManagement.API.Controllers
         public async Task<IActionResult> PostAsync([FromBody] TEntityDto tEntityInputDto)
         {
             var result =  await _baseService.CreateAsync(tEntityInputDto);
-            return Created("", result);
+            return Ok(result);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace TenantManagement.API.Controllers
         [HttpGet("new")]
         public async Task<IActionResult> GetNew()
         {
-            var entity = _baseService.GetNew();
+            var entity = await _baseService.GetNew();
             return Ok(entity);
         }
 

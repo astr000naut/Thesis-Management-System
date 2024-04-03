@@ -1,12 +1,44 @@
 
 import { createRouter, createWebHistory } from "vue-router";
+import { useAuthStore } from '@/stores';
+import accountRoutes from './account.routes';
+import tenantRoutes from "./tenant.routes";
+import settingRoutes from "./setting.routes";
 
-const routes = [
-]
-
-const router = createRouter({
+export const router = createRouter({
   history: createWebHistory(),
-  routes,
+  linkActiveClass: 'active',
+  routes: [
+      { 
+        path: '/', 
+        redirect: '/tenant' 
+      },
+      { ...accountRoutes },
+      { ...tenantRoutes },
+      { ...settingRoutes },
+
+
+      // catch all redirect to home page
+      { path: '/:pathMatch(.*)*', redirect: '/' }
+  ]
 });
 
-export default router;
+router.beforeEach(async (to) => {
+
+  // redirect to login page if not logged in and trying to access a restricted page 
+  const publicPages = ['/account/login', '/account/register'];
+  const authRequired = !publicPages.includes(to.path);
+
+  const authStore = useAuthStore();
+
+  // check current tenant info
+  if (!authStore.tenantBaseInfo) {
+      await authStore.getTenantBaseInfo();  
+  }
+
+
+  if (authRequired && !authStore.loginInfo) {
+      authStore.returnUrl = to.fullPath;
+      return '/account/login';
+  }
+});

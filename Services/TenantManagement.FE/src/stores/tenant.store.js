@@ -88,7 +88,7 @@ export const useTenantStore = defineStore('tenant', {
                 
                 const index = this.tenants.findIndex(x => x.tenantId === entity.tenantId);
                 this.tenants[index] = entity;
-                ElMessage.success('Cập nhật khách hàng thành công');
+                ElMessage.success('Cập nhật thông tin khách hàng thành công');
                 router.push('/tenant');
             } catch (error) {
                 const alertStore = useAlertStore();
@@ -153,6 +153,96 @@ export const useTenantStore = defineStore('tenant', {
                 }
 
                 return response;
+            } catch (error) {
+                const alertStore = useAlertStore();
+                alertStore.alert('error', error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async getById(id) {
+            this.loading = true;
+            try {
+                const response = await httpClient.get($api.tenant.getById(id));
+                
+                if (response.Error) {
+                    throw response.Message;
+                }
+                
+                return response;
+            } catch (error) {
+                const alertStore = useAlertStore();
+                alertStore.alert('error', error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async checkConnection(entity) {
+            let body = {
+                AutoCreateDB: entity.autoCreateDB,
+                ConnectionString: entity.dbConnection,
+                DBName: entity.dbName
+            }
+            try {
+                const connectDBResponse = await httpClient.post($api.tenant.checkDBConnection(), body);
+            
+                if (connectDBResponse.Error) {
+                    throw connectDBResponse.Message;
+                }
+
+                if (connectDBResponse === false) {
+                    return "Không thể kết nối đến cơ sở dữ liệu.";
+                }
+            } catch {
+                return "Không thể kết nối đến cơ sở dữ liệu.";
+            }
+            
+            
+            body = {
+                AutoCreateMinio: entity.autoCreateMinio,
+                Endpoint: entity.minioEndpoint,
+                Port: entity.minioPort,
+                AccessKey: entity.minioAccessKey,
+                SecretKey: entity.minioSecretKey,
+                BucketName: entity.minioBucketName
+            }
+            try {
+                const connectMinioReseponse = await httpClient.post($api.fileService.checkMinioConnection(), body);
+            
+                if (connectMinioReseponse.Error) {
+                    throw connectMinioReseponse.Message;
+                }
+    
+                if (connectMinioReseponse === false) {
+                    
+                    return "Không thể kết nối đến Minio.";
+                }
+                
+            } catch {
+                return "Không thể kết nối đến Minio.";
+            }   
+
+            
+            return "";
+        },
+
+        async activeTenant(entity) {
+            this.loading = true;
+            try {
+                const response = await httpClient.post($api.tenant.activeTenant(), {
+                    TenantId: entity.tenantId
+                });
+
+                if (response.Error) {
+                    throw response.Message;
+                }
+                
+                const index = this.tenants.findIndex(x => x.tenantId === entity.tenantId);
+                this.tenants[index] = response;
+                ElMessage.success('Kích hoạt khách hàng thành công');
+
             } catch (error) {
                 const alertStore = useAlertStore();
                 alertStore.alert('error', error);

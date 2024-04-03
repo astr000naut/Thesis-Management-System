@@ -10,5 +10,8 @@ namespace TenantManagement.BusinessLayer.Interface
 {
     public interface ITenantService: IBaseService<TenantDto>
     {
+        Task<bool> CheckDBConnection(bool autoCreateDB, string connectionString, string databaseName);
+
+        Task<TenantDto> ActiveTenant(Guid tenantId); 
     }
 }

@@ -1,7 +1,7 @@
 .sidebar {
     /* flex-basis: 200px; */
-    width: 224px;
     flex-shrink: 0;
+    max-height: 100%;
     height: 100%;
     font-weight: 400;
     background-color: #393a3d;
@@ -13,16 +13,6 @@
     z-index: 21;
   }
 
-  .sidebar__top {
-    height: 56px;
-    display: flex;
-    background-color: #393a3d;
-    align-items: center;
-    justify-content: center;
-    column-gap: 16px;
-    /* padding-left: 16px; */
-  }
-
   .sidebar__applogo {
     width: 120px;
     height: 36px;
@@ -32,10 +22,20 @@
   }
   
   .sidebar__main {
-    height: 100%;
+    flex: 1;
     row-gap: 4px;
     padding: 12px;
     overflow-y: scroll;
+  }
+
+  .sidebar__item.parent__node {
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 4px;
+  }
+
+  .sidebar__item.parent__node.expand .arrow {
+    transform: rotate(180deg);
   }
   
   .sidebar__main::-webkit-scrollbar {
@@ -53,7 +53,6 @@
     display: flex;
     align-items: center;
     padding-left: 12px;
-    column-gap: 12px;
     color: #fff;
   }
   
@@ -74,6 +73,7 @@
   
   .item__hoverbox {
     background-color: #393a3d;
+    color: white;
     border-radius: 4px;
     padding: 12px;
     position: absolute;
@@ -81,6 +81,11 @@
     left: 85px;
   }
   
+  .item__icon {
+    width: 20px;
+    height: 20px;
+  }
+
   .item__hoverbox .hover__arrow {
     width: 10px;
     height: 10px;
@@ -104,6 +109,10 @@
   .router-link-active > div {
     background-color: #616164;
   }
+
+  .parent__node.active {
+    background-color: #616164;
+  }
   
   a.active .sidebar__item {
     background-color: #58595d;
@@ -112,4 +121,8 @@
   hr {
     margin-top: 4px;
     margin-bottom: 4px;
+  }
+
+  .child__text {
+    color: rgb(167, 198, 255);
   }

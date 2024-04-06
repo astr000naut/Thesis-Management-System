@@ -4,22 +4,15 @@ import { useAuthStore } from '@/stores';
 import accountRoutes from './account.routes';
 import tenantRoutes from "./tenant.routes";
 import settingRoutes from "./setting.routes";
+import managerRoutes from "./manager.routes";
+
 
 export const router = createRouter({
   history: createWebHistory(),
   linkActiveClass: 'active',
   routes: [
-      { 
-        path: '/', 
-        redirect: '/tenant' 
-      },
       { ...accountRoutes },
-      { ...tenantRoutes },
-      { ...settingRoutes },
-
-
-      // catch all redirect to home page
-      { path: '/:pathMatch(.*)*', redirect: '/' }
+      { ...managerRoutes},
   ]
 });
 

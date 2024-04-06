@@ -5,18 +5,6 @@ const commonVal = {
       ymd: ["YYYY/MM/DD", "YYYY/MM/D", "YYYY/M/DD", "YYYY/M/D"],
     },
     defaultDateFormat: "dmy",
-    sidebarItems: [
-      {
-        name: "Quản lý Tenant",
-        link: "/tenant",
-        icon: "mi-sidebar-dashboard",
-      },
-      {
-        name: "Thiết lập chung",
-        link: "/setting",
-        icon: "mi-sidebar-news",
-      },
-    ],
   };
   export default commonVal;
   

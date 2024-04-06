@@ -1,7 +1,7 @@
 <template>
     <el-container>
         <el-header><TheHeader></TheHeader></el-header>
-        <el-container>
+        <el-container class="el_container">
             <TheSidebar></TheSidebar>
             <el-main>
                 <router-view></router-view>
@@ -35,8 +35,9 @@
         padding: 0px;
     }
     
-    .el-container {
+    .el_container {
         flex: 1;
+        max-height: calc(100vh - 60px);
     }
 
     .el-main {

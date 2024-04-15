@@ -24,7 +24,7 @@ namespace TenantManagement.BusinessLayer.Service
         private readonly IConfiguration _configuration;
 
 
-        public TenantService(IConfiguration configuration, ITenantRepository tenantRepository, IMapper mapper, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(tenantRepository, mapper, unitOfWork, httpContextAccessor)
+        public TenantService(IConfiguration configuration, ITenantRepository tenantRepository, IMapper mapper, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(tenantRepository, mapper, unitOfWork)
         {
             _tenantRepository = tenantRepository;
             _unitOfWork = unitOfWork;
@@ -161,6 +161,43 @@ namespace TenantManagement.BusinessLayer.Service
                 ";
 
                 await transaction.Connection.ExecuteAsync(createUserIndexQuery, transaction: transaction);
+
+                // create students table
+
+                string createStudentTableQuery = @"
+                    CREATE TABLE students (
+                      UserId char(36) NOT NULL DEFAULT '',
+                      StudentCode varchar(100) NOT NULL DEFAULT '',
+                      StudentName varchar(100) NOT NULL DEFAULT '',
+                      Class varchar(100) NOT NULL DEFAULT '',
+                      Major varchar(100) NOT NULL DEFAULT '',
+                      FacultyCode varchar(100) NOT NULL DEFAULT '',
+                      FacultyName varchar(100) NOT NULL DEFAULT '',
+                      GPA varchar(100) DEFAULT '',
+                      Email varchar(100) DEFAULT '',
+                      PhoneNumber varchar(100) DEFAULT '',
+                      PRIMARY KEY (UserId)
+                    )
+                    ENGINE = INNODB,
+                    AVG_ROW_LENGTH = 16384,
+                    CHARACTER SET utf8,
+                    COLLATE utf8_general_ci;";
+                await transaction.Connection.ExecuteAsync(createStudentTableQuery, transaction: transaction);
+
+                // create index for students table and foreign key to users table
+                string createStudentIndexQuery = @"
+                    ALTER TABLE students
+                    ADD UNIQUE INDEX StudentCode (StudentCode);";
+
+                await transaction.Connection.ExecuteAsync(createStudentIndexQuery, transaction: transaction);
+
+                string createStudentUserForeignKeyQuery = @"
+                    ALTER TABLE students
+                    ADD CONSTRAINT FK_Student_User FOREIGN KEY (UserId) REFERENCES users(UserId);
+                ";
+
+                await transaction.Connection.ExecuteAsync(createStudentUserForeignKeyQuery, transaction: transaction);
+
 
                 return true;
             } catch (Exception)

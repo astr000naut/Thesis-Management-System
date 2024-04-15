@@ -40,10 +40,12 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITenantRepository, TenantRepository>();
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITenantService, TenantService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
 
 builder.Services.AddSingleton<TenantManagementContext>();
 

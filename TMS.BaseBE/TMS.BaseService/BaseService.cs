@@ -14,19 +14,14 @@ namespace TMS.BaseService
     {
 
         protected readonly IBaseRepository<TEntity> _baseRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private IUnitOfWork _unitOfWork;
         protected readonly IMapper _mapper;
-        private readonly string _requestDomain;
 
-        public BaseService(IBaseRepository<TEntity> repository, IMapper mapper, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
+        public BaseService(IBaseRepository<TEntity> repository, IMapper mapper, IUnitOfWork unitOfWork)
         {
             _baseRepository = repository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
-            _httpContextAccessor = httpContextAccessor;
-            _requestDomain = _httpContextAccessor.HttpContext.Request.Headers["Origin"]
-                                                                     .FirstOrDefault()?.Split("://")[1];
         }
 
         public async virtual Task BeforeCreate() { }

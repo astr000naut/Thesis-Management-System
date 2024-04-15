@@ -20,7 +20,7 @@ namespace TMS.API.Middleware
                 {
                     var tenantId = context.Request.Cookies["x-tenantid"];
                     if (tenantId != null)
-                    {
+                    {       
                         var connectionString = await tenantService.GetTenantConnectionString(tenantId);
                         if (string.IsNullOrEmpty(connectionString))
                         {

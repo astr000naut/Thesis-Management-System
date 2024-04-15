@@ -6,5 +6,6 @@ namespace TMS.DataLayer.Interface
     {
         Task<User?> GetUserByUsername(string username);
         Task<bool> Update(User user);
+        Task<bool> CreateAsync(User user);
     }
 }

@@ -45,6 +45,9 @@ namespace TMS.BaseRepository
                 await _connection.OpenAsync();
                 _transaction = await _connection.BeginTransactionAsync();
                 _manipulationKey = 1;
+            } else
+            {
+                _manipulationKey += 1;
             }
         }
 

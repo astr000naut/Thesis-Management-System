@@ -43,5 +43,23 @@ namespace TMS.DataLayer.Repository
             var result = await _unitOfWork.Connection.ExecuteAsync(sql: query, param: parameters, transaction: _unitOfWork.Transaction);
             return result > 0;
         }
+
+        public async Task<bool> CreateAsync(User user)
+        {
+            var query = "INSERT INTO users (UserId, Username, Password, FullName, Role) " +
+                "VALUES (@UserId, @Username, @Password, @FullName, @Role);";
+            var parameters = new
+            {
+                UserId = user.UserId,
+                Username = user.Username,
+                Password = user.Password,
+                FullName = user.FullName,
+                Role = user.Role
+            };
+            var result = await _unitOfWork.Connection.ExecuteAsync(sql: query, param: parameters, transaction: _unitOfWork.Transaction);
+            return result > 0;
+        }
+
+        
     }
 }

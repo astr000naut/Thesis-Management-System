@@ -348,6 +348,10 @@
               "target": "Package",
               "version": "[1.6.0, )"
             },
+            "EPPlus": {
+              "target": "Package",
+              "version": "[7.1.1, )"
+            },
             "Microsoft.AspNetCore.Authorization": {
               "target": "Package",
               "version": "[6.0.28, )"

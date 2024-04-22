@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,10 +16,12 @@ namespace TMS.DataLayer.Repository
         public StudentRepository(IUnitOfWork unitOfWork): base(unitOfWork)
         {}
 
-
-        public async Task<Student> GetStudentByStudentCodeAsync(string studentCode)
+        public async Task<List<Student>> GetStudentByListStudentCode(List<string> listCode)
         {
-            throw new NotImplementedException();
+            var query = "SELECT * FROM students WHERE StudentCode IN @ListCode";
+            var parameters = new { ListCode = listCode };
+            var result = await _unitOfWork.Connection.QueryAsync<Student>(sql: query, param: parameters, transaction: _unitOfWork.Transaction);
+            return result.ToList();
         }
     }
 }

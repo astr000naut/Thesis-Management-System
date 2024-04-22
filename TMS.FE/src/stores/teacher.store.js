@@ -6,10 +6,10 @@ import { ref } from 'vue';
 import $api from '@/api';
 import { ElMessage } from 'element-plus'
 
-const API = $api.student;
+const API = $api.teacher;
 
 
-export const useStudentStore = defineStore('student', {
+export const useTeacherStore = defineStore('teacher', {
     state: () => ({
         entities: [],
         total: 0,
@@ -17,7 +17,7 @@ export const useStudentStore = defineStore('student', {
         keySearch: '',
         pageNumber: 1,
         pageSize: 20,
-        filterColumns: ["StudentName", "StudentCode"]
+        filterColumns: ["teacherName", "teacherCode"]
     }),
     actions:{
         async fetchList() {

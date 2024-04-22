@@ -2,7 +2,9 @@
 using Dapper;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using TMS.BaseRepository;
@@ -60,6 +62,13 @@ namespace TMS.DataLayer.Repository
             return result > 0;
         }
 
-        
+        public async Task<int> DeleteMultipleAsync(List<string> listId)
+        {
+            var query = $"DELETE FROM users WHERE userId IN @listId";
+            var deleted = await _unitOfWork.Connection.ExecuteAsync(query, new { listId }, _unitOfWork.Transaction);
+            return deleted;
+        }
+
+
     }
 }

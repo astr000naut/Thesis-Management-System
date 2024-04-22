@@ -144,7 +144,6 @@ function resetForm() {
 
 
 function dialogOnClose() {
-    debugger;
     emit('close', form.value.rowsSuccess > 0);
     resetForm();
 }

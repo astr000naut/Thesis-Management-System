@@ -16,17 +16,17 @@ using TMS.DataLayer.Interface;
 
 namespace TMS.BusinessLayer.Service
 {
-    public class StudentService : BaseService<Student, StudentDto>, IStudentService
+    public class TeacherService : BaseService<Teacher, TeacherDto>, ITeacherService
     {
-        private readonly IStudentRepository _studentRepository;
+        private readonly ITeacherRepository _TeacherRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUnitOfWork _unitOfWork;
 
-        public StudentService(IStudentRepository studentRepository, IUserRepository userRepository, IMapper mapper, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(studentRepository, mapper, unitOfWork)
+        public TeacherService(ITeacherRepository TeacherRepository, IUserRepository userRepository, IMapper mapper, IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) : base(TeacherRepository, mapper, unitOfWork)
         {
-            _studentRepository = studentRepository;
+            _TeacherRepository = TeacherRepository;
             _userRepository = userRepository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
@@ -46,15 +46,15 @@ namespace TMS.BusinessLayer.Service
 
 
 
-        public async Task<ValidateUploadResult<Student>> ValidateFileUploadAsync(IFormFile file)
+        public async Task<ValidateUploadResult<Teacher>> ValidateFileUploadAsync(IFormFile file)
         {
-            var result = new ValidateUploadResult<Student>()
+            var result = new ValidateUploadResult<Teacher>()
             {
-                ValidData = new List<Student>(),
+                ValidData = new List<Teacher>(),
                 RowsError = new List<RowErrorDetail>(),
             };
 
-            List<(int, Student)> rowValid = new List<(int, Student)> ();
+            List<(int, Teacher)> rowValid = new List<(int, Teacher)> ();
 
             try
             {
@@ -74,16 +74,13 @@ namespace TMS.BusinessLayer.Service
                             rowEnd = worksheet.Dimension.End.Row,
                             colIndex = 1,
                             colStart = 2,
-                            colEnd = 10;
+                            colEnd = 7;
 
                         List<(string, string)> dataFormat = new List<(string, string)>() {
-                            ("StudentCode", "require"),
-                            ("StudentName", "require"),
+                            ("TeacherCode", "require"),
+                            ("TeacherName", "require"),
                             ("FacultyCode", "require"),
                             ("FacultyName", "require"),
-                            ("Major", "require"),
-                            ("Class", "require"),
-                            ("GPA", ""),
                             ("Email", ""),
                             ("PhoneNumber", "")
                         };
@@ -97,8 +94,8 @@ namespace TMS.BusinessLayer.Service
                                 break;
                             }
 
-                            var student = new Student();
-                            student.UserId = Guid.NewGuid();
+                            var teacher = new Teacher();
+                            teacher.UserId = Guid.NewGuid();
 
                             filledData = true;
 
@@ -117,7 +114,7 @@ namespace TMS.BusinessLayer.Service
                                     filledData = false;
                                     break;
                                 }
-                                student.GetType().GetProperty(property.Item1).SetValue(student, cellValue);
+                                teacher.GetType().GetProperty(property.Item1).SetValue(teacher, cellValue);
                             }
 
                             // Nếu xuất hiện lỗi thì bỏ qua dòng này
@@ -126,25 +123,25 @@ namespace TMS.BusinessLayer.Service
                                 continue;
                             }
 
-                            rowValid.Add((row, student));
+                            rowValid.Add((row, teacher));
                         }
 
-                        // Kiểm tra xem sinh viên đã tồn tại chưa
-                        var listStudentCode = rowValid.Select(x => x.Item2.StudentCode).ToList();
-                        var existedStudent = await _studentRepository.GetStudentByListStudentCode(listStudentCode);
-                        if (existedStudent.Count > 0)
+                        // Kiểm tra xem giảng viên đã tồn tại chưa
+                        var listTeacherCode = rowValid.Select(x => x.Item2.TeacherCode).ToList();
+                        var existedTeacher = await _TeacherRepository.GetTeacherByListTeacherCode(listTeacherCode);
+                        if (existedTeacher.Count > 0)
                         {
-                            foreach (var student in existedStudent)
+                            foreach (var teacher in existedTeacher)
                             {
-                                var row = rowValid.Find(x => x.Item2.StudentCode == student.StudentCode).Item1;
+                                var row = rowValid.Find(x => x.Item2.TeacherCode == teacher.TeacherCode).Item1;
                                 result.RowsError.Add(new RowErrorDetail()
                                 {
                                     RowIndex = row,
-                                    ErrorMessage = $"Sinh viên [{student.StudentCode}] đã tồn tại"
+                                    ErrorMessage = $"Giảng viên [{teacher.TeacherCode}] đã tồn tại"
                                 });
 
                                 // Xóa khỏi rowValid
-                                rowValid.RemoveAll(x => x.Item2.StudentCode == student.StudentCode);
+                                rowValid.RemoveAll(x => x.Item2.TeacherCode == teacher.TeacherCode);
                             }
                         }
                         result.ValidData = rowValid.Select(x => x.Item2).ToList();
@@ -194,18 +191,18 @@ namespace TMS.BusinessLayer.Service
                 // If there are no errors, save the data to the database
                 if (validateResult != null)
                 {                   
-                    foreach (var student in validateResult.ValidData)
+                    foreach (var teacher in validateResult.ValidData)
                     {
                         var user = new User()
                         {
-                            UserId = student.UserId,
-                            FullName = student.StudentName,
-                            Username = student.StudentCode,
-                            Password = BCrypt.Net.BCrypt.HashPassword(student.StudentCode),
-                            Role = "Student"
+                            UserId = teacher.UserId,
+                            FullName = teacher.TeacherName,
+                            Username = teacher.TeacherCode,
+                            Password = BCrypt.Net.BCrypt.HashPassword(teacher.TeacherCode),
+                            Role = "Teacher"
                         };
                         await _userRepository.CreateAsync(user);
-                        await _studentRepository.CreateAsync(student);
+                        await _TeacherRepository.CreateAsync(teacher);
                         uploadResult.RowsSuccess++;
                     }          
                 }
@@ -241,15 +238,15 @@ namespace TMS.BusinessLayer.Service
             try
             {
                 await _unitOfWork.OpenAsync();
-                int studentDeleted = await _studentRepository.DeleteMultipleAsync(idList);
+                int teacherDeleted = await _TeacherRepository.DeleteMultipleAsync(idList);
                 int userDeleted = await _userRepository.DeleteMultipleAsync(idList);
-                if (studentDeleted == userDeleted)
+                if (teacherDeleted == userDeleted)
                 {
                     await _unitOfWork.CommitAsync();
-                    return studentDeleted;
+                    return teacherDeleted;
                 } else
                 {
-                    throw new Exception("Error while deleting student");
+                    throw new Exception("Error while deleting teacher");
                 }
             } catch
             {

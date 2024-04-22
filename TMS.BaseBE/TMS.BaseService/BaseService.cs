@@ -60,7 +60,7 @@ namespace TMS.BaseService
             }    
         }
 
-        public async Task<int> DeleteMultipleAsync(List<string> entityIdList)
+        public virtual async Task<int> DeleteMultipleAsync(List<string> entityIdList)
         {
             var result = await _baseRepository.DeleteMultipleAsync(entityIdList);
             return result;

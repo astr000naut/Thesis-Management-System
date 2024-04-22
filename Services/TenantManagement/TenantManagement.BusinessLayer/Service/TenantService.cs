@@ -198,6 +198,113 @@ namespace TenantManagement.BusinessLayer.Service
 
                 await transaction.Connection.ExecuteAsync(createStudentUserForeignKeyQuery, transaction: transaction);
 
+                // create teacher table
+
+                string createTeacherTableQuery = @"
+                    CREATE TABLE teachers (
+                      UserId char(36) NOT NULL DEFAULT '',
+                      TeacherCode varchar(100) NOT NULL DEFAULT '',
+                      TeacherName varchar(100) NOT NULL DEFAULT '',
+                      FacultyCode varchar(100) NOT NULL DEFAULT '',
+                      FacultyName varchar(100) NOT NULL DEFAULT '',
+                      Email varchar(100) DEFAULT '',
+                      PhoneNumber varchar(100) DEFAULT '',
+                      Description text DEFAULT '',
+                      BeInstructor tinyint(1) DEFAULT 0,
+                      PRIMARY KEY (UserId)
+                    )
+                    ENGINE = INNODB,
+                    AVG_ROW_LENGTH = 16384,
+                    CHARACTER SET utf8,
+                    COLLATE utf8_general_ci;";
+                await transaction.Connection.ExecuteAsync(createTeacherTableQuery, transaction: transaction);
+
+                // create index for teachers table and foreign key to users table
+                string createTeacherIndexQuery = @"
+                    ALTER TABLE teachers
+                    ADD UNIQUE INDEX TeacherCode (TeacherCode);";
+
+                await transaction.Connection.ExecuteAsync(createTeacherIndexQuery, transaction: transaction);
+
+                string createTeacherUserForeignKeyQuery = @"
+                    ALTER TABLE teachers
+                    ADD CONSTRAINT FK_Teacher_User FOREIGN KEY (UserId) REFERENCES users(UserId);
+                ";
+
+                await transaction.Connection.ExecuteAsync(createTeacherUserForeignKeyQuery, transaction: transaction);
+
+                // create faculties table
+
+                string createFacultyTableQuery = @"
+                    CREATE TABLE faculties (
+                      FacultyId char(36) NOT NULL DEFAULT '',
+                      FacultyName varchar(100) NOT NULL DEFAULT '',
+                      FacultyCode varchar(100) NOT NULL DEFAULT '',
+                      Description text DEFAULT '',
+                      PRIMARY KEY (FacultyId)
+                    )
+                    ENGINE = INNODB,
+                    AVG_ROW_LENGTH = 16384,
+                    CHARACTER SET utf8,
+                    COLLATE utf8_general_ci;";
+                await transaction.Connection.ExecuteAsync(createFacultyTableQuery, transaction: transaction);
+
+                // create index for faculties table
+                string createFacultyIndexQuery = @"
+                    ALTER TABLE faculties
+                    ADD UNIQUE INDEX FacultyCode (FacultyCode);";
+
+                await transaction.Connection.ExecuteAsync(createFacultyIndexQuery, transaction: transaction);
+
+                // create theses table
+                string createThesesTableQuery = @"
+                    CREATE TABLE theses (
+                      ThesisId char(36) NOT NULL DEFAULT '',
+
+                      ThesisCode varchar(100) NOT NULL DEFAULT '',
+                      ThesisName varchar(100) NOT NULL DEFAULT '',
+                      Description text DEFAULT '',
+
+                      StudentId char(36) NOT NULL DEFAULT '',
+                      StudentName varchar(100) NOT NULL DEFAULT '',
+
+                      TeacherId char(36) NOT NULL DEFAULT '',
+                      TeacherName varchar(100) NOT NULL DEFAULT '',
+
+                      FacultyId char(36) NOT NULL DEFAULT '',     
+                      FacultyName varchar(100) NOT NULL DEFAULT '',
+
+                      Year int(11) NOT NULL DEFAULT 0,
+                      Semester int(11) NOT NULL DEFAULT 0,
+
+                      ThesisFileUrl varchar(255) DEFAULT '',
+                      ThesisFileName varchar(255) DEFAULT '',
+
+                      Status int(11) NOT NULL DEFAULT 0,
+                      PRIMARY KEY (ThesisId)
+                    )
+                    ENGINE = INNODB,
+                    AVG_ROW_LENGTH = 16384,
+                    CHARACTER SET utf8,
+                    COLLATE utf8_general_ci;";
+                await transaction.Connection.ExecuteAsync(createThesesTableQuery, transaction: transaction);
+
+                // create index for theses table 
+                string createThesisIndexQuery = @"
+                    ALTER TABLE theses
+                    ADD UNIQUE INDEX ThesisCode (ThesisCode);";
+
+                await transaction.Connection.ExecuteAsync(createThesisIndexQuery, transaction: transaction);
+
+                string createForeignKeyQuery = @"
+                    ALTER TABLE theses
+                    ADD CONSTRAINT FK_Thesis_Student FOREIGN KEY (StudentId) REFERENCES students(UserId);
+                    ALTER TABLE theses
+                    ADD CONSTRAINT FK_Thesis_Teacher FOREIGN KEY (TeacherId) REFERENCES teachers(UserId);
+                ";
+
+                await transaction.Connection.ExecuteAsync(createForeignKeyQuery, transaction: transaction);
+
 
                 return true;
             } catch (Exception)
@@ -227,7 +334,9 @@ namespace TenantManagement.BusinessLayer.Service
                 if (tenantDto.AutoCreateDB)
                 {
                     var connection = tenantDto.DBConnection;
-                    var query = "CREATE DATABASE IF NOT EXISTS `" + tenantDto.DBName + "`;";
+                    // drop database if exists then create new database
+                    var query = "DROP DATABASE IF EXISTS `" + tenantDto.DBName + "`;";
+                    query += "CREATE DATABASE IF NOT EXISTS `" + tenantDto.DBName + "`;";
 
                     using (var conn = new MySqlConnector.MySqlConnection(connection))
                     {

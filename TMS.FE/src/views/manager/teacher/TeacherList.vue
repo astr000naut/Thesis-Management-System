@@ -3,12 +3,12 @@
     <div class="page__container flex-col rg-2">
         <PopupUpload
             v-model:visible="popupUpload.visible"
-            pUrlUpload="/api/students/upload"
+            pUrlUpload="/api/teachers/upload"
             @close="popupUploadOnClose"
         ></PopupUpload>
         <div class="page__header flex-row">
             <h1 class="page__title" style="font-size: 24px">
-                Danh sách Sinh viên
+                Danh sách Giảng viên
             </h1>
             <el-button type="primary" @click="btnImportOnClick"
                 >Nhập khẩu</el-button
@@ -38,19 +38,12 @@
             >
                 <el-table-column
                     fixed
-                    prop="studentCode"
-                    label="Mã sinh viên"
+                    prop="teacherCode"
+                    label="Mã giảng viên"
                     width="150"
                 />
-                <el-table-column prop="studentName" label="Tên sinh viên" width="400" />
+                <el-table-column prop="teacherName" label="Tên giảng viên" width="400" />
                 <el-table-column prop="falcutyName" label="Khoa" width="300" />
-                <el-table-column
-                    prop="major"
-                    label="Chuyên ngành"
-                    width="300"
-                />
-                <el-table-column prop="class" label="Lớp" width="120" />
-                <el-table-column prop="gpa" label="GPA" width="120" />
                 <el-table-column prop="email" label="Email" width="200" />
                 <el-table-column
                     prop="phoneNumber"
@@ -75,8 +68,8 @@
                 :background="false"
                 layout="total, sizes, prev, pager, next"
                 :total="total"
-                @size-change="studentStore.setPageSize"
-                @current-change="studentStore.setPageNumber"
+                @size-change="teacherStore.setPageSize"
+                @current-change="teacherStore.setPageNumber"
             />
         </div>
     </div>
@@ -85,7 +78,7 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { useStudentStore } from "@/stores";
+import { useTeacherStore } from "@/stores";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { Refresh, Search } from "@element-plus/icons-vue";
@@ -94,9 +87,9 @@ import { debounce } from "lodash";
 import PopupUpload from '@/components/common/PopupUpload.vue';
 
 const router = useRouter();
-const studentStore = useStudentStore();
+const teacherStore = useTeacherStore();
 const { entities, total, loading, keySearch, pageNumber, pageSize } =
-    storeToRefs(studentStore);
+    storeToRefs(teacherStore);
 let debouncedFunction = null;
 
 const searchText = ref("");
@@ -110,12 +103,12 @@ onMounted(() => {
 });
 
 async function initData() {
-    await studentStore.fetchList();
+    await teacherStore.fetchList();
 }
 
 async function popupUploadOnClose(isUploadSuccess) {
     if (isUploadSuccess) {
-        await studentStore.fetchList();
+        await teacherStore.fetchList();
     }
 }
 
@@ -125,7 +118,7 @@ const btnImportOnClick = () => {
 
 const btnDeleteItemOnClick = (row) => {
     ElMessageBox.confirm(
-        `Bạn có chắc chắn muốn xóa ${row.studentCode}-${row.studentName} ?`,
+        `Bạn có chắc chắn muốn xóa ${row.teacherCode}-${row.teacherName} ?`,
         "Xác nhận",
         {
             confirmButtonText: "Đồng ý",
@@ -133,7 +126,7 @@ const btnDeleteItemOnClick = (row) => {
             type: "warning",
         }
     ).then(async () => {
-        const isDeleted = await studentStore.delete(row.userId);
+        const isDeleted = await teacherStore.delete(row.userId);
         console.log(isDeleted);
         if (isDeleted) {
             ElMessage.success("Xóa thành công");
@@ -146,7 +139,7 @@ const btnDeleteItemOnClick = (row) => {
 async function searchTextOnInput() {
     if (!debouncedFunction) {
         debouncedFunction = debounce(() => {
-            studentStore.setKeySearch(searchText.value);
+            teacherStore.setKeySearch(searchText.value);
         }, 800);
     }
     debouncedFunction();
@@ -161,7 +154,7 @@ const btnEditItemOnClick = (row) => {
 };
 
 async function btnRefreshOnClick() {
-    await studentStore.fetchList();
+    await teacherStore.fetchList();
 }
 
 </script>

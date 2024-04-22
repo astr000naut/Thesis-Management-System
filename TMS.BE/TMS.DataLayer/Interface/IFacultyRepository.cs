@@ -8,8 +8,7 @@ using TMS.DataLayer.Entity;
 
 namespace TMS.DataLayer.Interface
 {
-    public interface IStudentRepository: IBaseRepository<Student>
+    public interface IFacultyRepository : IBaseRepository<Faculty>
     {
-        Task<List<Student>> GetStudentByListStudentCode(List<string> listCode);
     }
 }

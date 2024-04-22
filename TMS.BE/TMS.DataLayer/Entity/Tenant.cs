@@ -8,7 +8,7 @@ using TMS.Common.Attribute;
 
 namespace TMS.DataLayer.Entity
 {
-    [Table("tenants")]
+    [Table("tenants", "")]
     public class Tenant
     {
         [Key]

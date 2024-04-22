@@ -9,10 +9,12 @@ namespace TMS.Common.Attribute
     public class TableAttribute : System.Attribute
     {
         public string TableName;
+        public string ViewName;
 
-        public TableAttribute(string tableName)
+        public TableAttribute(string tableName, string viewName)
         {
             TableName = tableName;
+            ViewName = viewName;
         }
     }
 }

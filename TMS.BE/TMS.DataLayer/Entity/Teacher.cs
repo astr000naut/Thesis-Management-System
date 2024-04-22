@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TMS.Common.Attribute;
 
+
 namespace TMS.DataLayer.Entity
 {
-    [Table("teachers")]
+    [Common.Attribute.Table("teachers", "view_teachers")]
     public class Teacher
     {
         [Key]
@@ -16,6 +18,7 @@ namespace TMS.DataLayer.Entity
         public string TeacherCode { get; set; }
         public string TeacherName { get; set; }
         public string FacultyCode { get; set; }
+        [NotMapped]
         public string FacultyName { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }

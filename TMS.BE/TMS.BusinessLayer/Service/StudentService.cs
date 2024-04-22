@@ -80,7 +80,7 @@ namespace TMS.BusinessLayer.Service
                             ("StudentCode", "require"),
                             ("StudentName", "require"),
                             ("FacultyCode", "require"),
-                            ("FacultyName", "require"),
+                            ("FacultyName", ""),
                             ("Major", "require"),
                             ("Class", "require"),
                             ("GPA", ""),

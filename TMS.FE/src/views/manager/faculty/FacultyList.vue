@@ -1,6 +1,10 @@
 <template>
     <div class="page__container flex-col rg-2">
-      <router-view></router-view>
+      <FacultyDetail
+        v-model:visible="popupDetail.visible"
+        :pEntityId="popupDetail.entityId"
+        :pMode="popupDetail.mode"
+      />
       <div class="page__header flex-row">
         <h1 class="page__title" style="font-size: 24px;">Danh sách Khoa</h1>
         <el-button type="primary" @click="btnAddOnClick">Thêm mới</el-button>
@@ -22,7 +26,7 @@
         </div>
       </div>
       <div class="table__container fl-1">
-        <el-table :data="tenants" style="width: 100%" row-key="facultyId" v-loading="loading">
+        <el-table :data="entities" style="width: 100%" :row-key="entityInfo.keyName" v-loading="loading">
           <el-table-column fixed prop="facultyCode" label="Mã khoa" width="150" />
           <el-table-column prop="facultyName" label="Tên khoa"/>
           <el-table-column prop="description" label="Mô tả" width="300" />
@@ -57,8 +61,8 @@
           :background="false"
           layout="total, sizes, prev, pager, next"
           :total="total"
-          @size-change="tenantStore.setPageSize"
-          @current-change="tenantStore.setPageNumber"
+          @size-change="entityStore.setPageSize"
+          @current-change="entityStore.setPageNumber"
         />
       </div>
     </div>
@@ -67,24 +71,36 @@
   
   <script setup>
       import {onMounted, ref} from 'vue';
-      import { useTenantStore } from '@/stores';
+      import { useFacultyStore } from '@/stores';
       import { useRouter } from 'vue-router';
       import { storeToRefs } from 'pinia';
       import { Refresh, Search } from '@element-plus/icons-vue'
       import { ElMessage, ElMessageBox } from 'element-plus'
       import { debounce } from "lodash"
-      import {TenantStatus} from '@/common/enum';
+      import FacultyDetail from "./FacultyDetail.vue"
+
   
       const router = useRouter();
-      const tenantStore = useTenantStore();
+      const entityStore = useFacultyStore();
       const {
-        tenants, 
+        entities, 
         total, 
         loading, 
         keySearch, 
         pageNumber, 
         pageSize, 
-      } = storeToRefs(tenantStore);
+      } = storeToRefs(entityStore);
+
+      const popupDetail = ref({
+        visible: false,
+        entityId: null,
+        mode: 'add',
+      });
+
+      const entityInfo = {
+        keyName: 'facultyId',
+      }
+
       let debouncedFunction = null;
   
       const searchText = ref('');
@@ -96,20 +112,24 @@
       });
   
       async function initData() {
-        await tenantStore.fetchList();
+        await entityStore.fetchList();
       }
-  
+ 
       const btnAddOnClick = () => {
-        router.push('/tenant/new');
+        popupDetail.value = {
+          visible: true,
+          entityId: null,
+          mode: 'add',
+        }
       }
   
       const btnDeleteItemOnClick = (row) => {
-        ElMessageBox.confirm(`Bạn có chắc chắn muốn xóa KH ${row.tenantName} ?`, 'Xác nhận', {
+        ElMessageBox.confirm(`Bạn có chắc chắn muốn xóa khoa ${row.facultyName} ?`, 'Xác nhận', {
           confirmButtonText: 'Đồng ý',
           cancelButtonText: 'Hủy',
           type: 'warning',
         }).then(async () => {
-          const isDeleted = await tenantStore.delete(row.tenantId);
+          const isDeleted = await entityStore.delete(row[entityInfo.keyName]);
           console.log(isDeleted)
           if (isDeleted) {
             ElMessage.success('Xóa thành công');
@@ -123,7 +143,7 @@
       async function searchTextOnInput() {
         if (!debouncedFunction) {
           debouncedFunction = debounce(() => {
-            tenantStore.setKeySearch(searchText.value);
+            entityStore.setKeySearch(searchText.value);
           }, 800);
         }
         debouncedFunction();
@@ -131,20 +151,25 @@
       }
   
       const btnViewItemOnClick = (row) => {
-        router.push(`/tenant/view/${row.tenantId}`);
+        popupDetail.value = {
+          visible: true,
+          entityId: row[entityInfo.keyName],
+          mode: 'view',
+        }
       }
   
       const btnEditItemOnClick = (row) => {
-        router.push(`/tenant/edit/${row.tenantId}`);
+        popupDetail.value = {
+          visible: true,
+          entityId: row[entityInfo.keyName],
+          mode: 'edit',
+        }
       }
   
       async function btnRefreshOnClick() {
-        await tenantStore.fetchList();
+        await entityStore.fetchList();
       }
-  
-      function tenantStatusFormatter(row, column, cellValue) {
-        return TenantStatus[cellValue];
-      }
+
   
   </script>
   

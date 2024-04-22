@@ -80,7 +80,7 @@ namespace TMS.BusinessLayer.Service
                             ("TeacherCode", "require"),
                             ("TeacherName", "require"),
                             ("FacultyCode", "require"),
-                            ("FacultyName", "require"),
+                            ("FacultyName", ""),
                             ("Email", ""),
                             ("PhoneNumber", "")
                         };

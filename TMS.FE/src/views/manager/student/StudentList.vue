@@ -42,12 +42,12 @@
                     label="Mã sinh viên"
                     width="150"
                 />
-                <el-table-column prop="studentName" label="Tên sinh viên" width="400" />
-                <el-table-column prop="falcutyName" label="Khoa" width="300" />
+                <el-table-column prop="studentName" label="Tên sinh viên" width="300" />
+                <el-table-column prop="facultyName" label="Khoa" width="300" />
                 <el-table-column
                     prop="major"
                     label="Chuyên ngành"
-                    width="300"
+                    width="200"
                 />
                 <el-table-column prop="class" label="Lớp" width="120" />
                 <el-table-column prop="gpa" label="GPA" width="120" />
@@ -57,7 +57,7 @@
                     label="Số điện thoại"
                     width="120"
                 />
-                <el-table-column fixed="right" label="Thao tác" width="100">
+                <el-table-column fixed="right" label="Thao tác">
                     <template #default="scope">
                         <el-button @click="btnDeleteItemOnClick(scope.row)"
                             >Xóa</el-button>

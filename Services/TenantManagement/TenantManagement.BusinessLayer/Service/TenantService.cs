@@ -14,6 +14,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
 using Dapper;
 using Newtonsoft.Json;
+using System.Security.Claims;
+using TenantManagement.DataLayer.Entity;
 
 namespace TenantManagement.BusinessLayer.Service
 {
@@ -172,7 +174,6 @@ namespace TenantManagement.BusinessLayer.Service
                       Class varchar(100) NOT NULL DEFAULT '',
                       Major varchar(100) NOT NULL DEFAULT '',
                       FacultyCode varchar(100) NOT NULL DEFAULT '',
-                      FacultyName varchar(100) NOT NULL DEFAULT '',
                       GPA varchar(100) DEFAULT '',
                       Email varchar(100) DEFAULT '',
                       PhoneNumber varchar(100) DEFAULT '',
@@ -206,7 +207,6 @@ namespace TenantManagement.BusinessLayer.Service
                       TeacherCode varchar(100) NOT NULL DEFAULT '',
                       TeacherName varchar(100) NOT NULL DEFAULT '',
                       FacultyCode varchar(100) NOT NULL DEFAULT '',
-                      FacultyName varchar(100) NOT NULL DEFAULT '',
                       Email varchar(100) DEFAULT '',
                       PhoneNumber varchar(100) DEFAULT '',
                       Description text DEFAULT '',
@@ -266,13 +266,10 @@ namespace TenantManagement.BusinessLayer.Service
                       Description text DEFAULT '',
 
                       StudentId char(36) NOT NULL DEFAULT '',
-                      StudentName varchar(100) NOT NULL DEFAULT '',
 
                       TeacherId char(36) NOT NULL DEFAULT '',
-                      TeacherName varchar(100) NOT NULL DEFAULT '',
 
-                      FacultyId char(36) NOT NULL DEFAULT '',     
-                      FacultyName varchar(100) NOT NULL DEFAULT '',
+                      FacultyId char(36) NOT NULL DEFAULT '',
 
                       Year int(11) NOT NULL DEFAULT 0,
                       Semester int(11) NOT NULL DEFAULT 0,
@@ -305,6 +302,67 @@ namespace TenantManagement.BusinessLayer.Service
 
                 await transaction.Connection.ExecuteAsync(createForeignKeyQuery, transaction: transaction);
 
+                // create view view_students
+                string createViewStudentsQuery = @"
+                    CREATE VIEW view_students AS
+                    SELECT 
+                        students.UserId,
+                        students.StudentCode,
+                        students.StudentName,
+                        students.Class,
+                        students.Major,
+                        students.FacultyCode,
+                        students.GPA,
+                        students.Email,
+                        students.PhoneNumber,
+                        faculties.FacultyName
+                    FROM students
+                    LEFT JOIN faculties ON students.FacultyCode = faculties.FacultyCode;";
+                await transaction.Connection.ExecuteAsync(createViewStudentsQuery, transaction: transaction);
+                
+                // create view view_teachers
+                string createViewTeachersQuery = @"
+                    CREATE VIEW view_teachers AS
+                    SELECT 
+                        teachers.UserId,
+                        teachers.TeacherCode,
+                        teachers.TeacherName,
+                        teachers.FacultyCode,
+                        teachers.Email,
+                        teachers.PhoneNumber,
+                        teachers.Description,
+                        faculties.FacultyName
+                    FROM teachers
+                    LEFT JOIN faculties ON teachers.FacultyCode = faculties.FacultyCode;";
+
+                await transaction.Connection.ExecuteAsync(createViewTeachersQuery, transaction: transaction);
+
+                // create view view_theses
+                string createViewThesesQuery = @"
+                    CREATE VIEW view_theses AS
+                    SELECT 
+                        theses.ThesisId,
+                        theses.ThesisCode,
+                        theses.ThesisName,
+                        theses.Description,
+                        theses.StudentId,
+                        theses.TeacherId,
+                        theses.FacultyId,
+                        theses.Year,
+                        theses.Semester,
+                        theses.ThesisFileUrl,
+                        theses.ThesisFileName,
+                        theses.Status,
+                        students.StudentCode,
+                        students.StudentName,
+                        teachers.TeacherCode,
+                        teachers.TeacherName,
+                        faculties.FacultyName
+                    FROM theses
+                    LEFT JOIN students ON theses.StudentId = students.UserId
+                    LEFT JOIN teachers ON theses.TeacherId = teachers.UserId
+                    LEFT JOIN faculties ON theses.FacultyId = faculties.FacultyId;";
+                await transaction.Connection.ExecuteAsync(createViewThesesQuery, transaction: transaction);
 
                 return true;
             } catch (Exception)

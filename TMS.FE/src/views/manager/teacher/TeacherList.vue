@@ -40,17 +40,17 @@
                     fixed
                     prop="teacherCode"
                     label="Mã giảng viên"
-                    width="150"
+                    width="250"
                 />
                 <el-table-column prop="teacherName" label="Tên giảng viên" width="400" />
-                <el-table-column prop="falcutyName" label="Khoa" width="300" />
-                <el-table-column prop="email" label="Email" width="200" />
+                <el-table-column prop="facultyName" label="Khoa" width="300" />
+                <el-table-column prop="email" label="Email" width="300" />
                 <el-table-column
                     prop="phoneNumber"
                     label="Số điện thoại"
-                    width="120"
+                    width="300"
                 />
-                <el-table-column fixed="right" label="Thao tác" width="100">
+                <el-table-column fixed="right" label="Thao tác">
                     <template #default="scope">
                         <el-button @click="btnDeleteItemOnClick(scope.row)"
                             >Xóa</el-button>

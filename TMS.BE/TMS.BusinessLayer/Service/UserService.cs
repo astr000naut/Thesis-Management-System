@@ -62,7 +62,9 @@ namespace TMS.BusinessLayer.Service
                     var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, user.Username),
-                        new Claim(ClaimTypes.Role, user.Role)
+                        new Claim(ClaimTypes.Role, user.Role),
+                        new Claim("FullName", user.FullName),
+                        new Claim("UserId", user.UserId.ToString())
                     };
 
                     var accessToken = GenerateToken(claims);
@@ -106,7 +108,7 @@ namespace TMS.BusinessLayer.Service
                 issuer: _configuration["JWT:ValidIssuer"],
                 audience: _configuration["JWT:ValidAudience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(double.Parse(_configuration["JWT:TokenExpiryInMinutes"] ?? "15")),
+                expires: DateTime.Now.AddHours(double.Parse(_configuration["JWT:TokenExpiryInMinutes"] ?? "15")),
                 signingCredentials: signinCredentials
             );
             var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);

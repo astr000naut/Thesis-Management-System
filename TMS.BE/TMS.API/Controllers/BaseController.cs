@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TMS.API.Param;
 using TMS.BaseService;
 
@@ -43,6 +44,7 @@ namespace TMS.API.Controllers
         }
 
         [HttpGet("new")]
+        [Authorize]
         public async Task<IActionResult> GetNew()
         {
             var entity = await _baseService.GetNew();

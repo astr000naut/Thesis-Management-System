@@ -13,6 +13,7 @@ using TMS.BusinessLayer.DTO;
 using TMS.BusinessLayer.Interface;
 using TMS.DataLayer.Entity;
 using TMS.DataLayer.Interface;
+using TMS.DataLayer.Repository;
 
 namespace TMS.BusinessLayer.Service
 {
@@ -44,8 +45,6 @@ namespace TMS.BusinessLayer.Service
             _unitOfWork.SetConnectionString(connectionString);
         }
 
-
-
         public async Task<ValidateUploadResult<Student>> ValidateFileUploadAsync(IFormFile file)
         {
             var result = new ValidateUploadResult<Student>()
@@ -54,7 +53,7 @@ namespace TMS.BusinessLayer.Service
                 RowsError = new List<RowErrorDetail>(),
             };
 
-            List<(int, Student)> rowValid = new List<(int, Student)> ();
+            List<(int, Student)> rowValid = new List<(int, Student)>();
 
             try
             {
@@ -74,7 +73,7 @@ namespace TMS.BusinessLayer.Service
                             rowEnd = worksheet.Dimension.End.Row,
                             colIndex = 1,
                             colStart = 2,
-                            colEnd = 10;
+                            colEnd = 7;
 
                         List<(string, string)> dataFormat = new List<(string, string)>() {
                             ("StudentCode", "require"),
@@ -146,6 +145,8 @@ namespace TMS.BusinessLayer.Service
                                 // Xóa khỏi rowValid
                                 rowValid.RemoveAll(x => x.Item2.StudentCode == student.StudentCode);
                             }
+
+                            result.RowsError = result.RowsError.OrderBy(x => x.RowIndex).ToList();
                         }
                         result.ValidData = rowValid.Select(x => x.Item2).ToList();
                     }
@@ -173,7 +174,7 @@ namespace TMS.BusinessLayer.Service
                 RowsError = new List<RowErrorDetail>()
             };
 
-            
+
             try
             {
                 await _unitOfWork.OpenAsync();
@@ -190,10 +191,10 @@ namespace TMS.BusinessLayer.Service
                     response.Message = "Error processing Excel file";
                     response.Data = uploadResult;
                     return response;
-                }   
+                }
                 // If there are no errors, save the data to the database
                 if (validateResult != null)
-                {                   
+                {
                     foreach (var student in validateResult.ValidData)
                     {
                         var user = new User()
@@ -207,7 +208,7 @@ namespace TMS.BusinessLayer.Service
                         await _userRepository.CreateAsync(user);
                         await _studentRepository.CreateAsync(student);
                         uploadResult.RowsSuccess++;
-                    }          
+                    }
                 }
                 await _unitOfWork.CommitAsync();
 
@@ -219,7 +220,8 @@ namespace TMS.BusinessLayer.Service
             {
                 response.Success = false;
                 response.Message = "Error processing Excel file: " + ex.Message;
-            } finally
+            }
+            finally
             {
                 await _unitOfWork.CloseAsync();
             }
@@ -227,14 +229,7 @@ namespace TMS.BusinessLayer.Service
             return response;
         }
 
-        public async Task<ServiceResponse<UploadResult>> ValidateUploadAsync(IFormFile file)
-        {
-            var validateResult = await ValidateFileUploadAsync(file);
-            var response = new ServiceResponse<UploadResult>();
-            response.Data.RowsSuccess = validateResult.ValidData.Count;
-            response.Data.RowsError = validateResult.RowsError;
-            return response;
-        }
+
 
         public override async Task<int> DeleteMultipleAsync(List<string> idList)
         {

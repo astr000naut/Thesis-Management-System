@@ -131,6 +131,7 @@ namespace TMS.BusinessLayer.Service
                         var existedTeacher = await _TeacherRepository.GetTeacherByListTeacherCode(listTeacherCode);
                         if (existedTeacher.Count > 0)
                         {
+
                             foreach (var teacher in existedTeacher)
                             {
                                 var row = rowValid.Find(x => x.Item2.TeacherCode == teacher.TeacherCode).Item1;
@@ -143,6 +144,8 @@ namespace TMS.BusinessLayer.Service
                                 // Xóa khỏi rowValid
                                 rowValid.RemoveAll(x => x.Item2.TeacherCode == teacher.TeacherCode);
                             }
+
+                            result.RowsError = result.RowsError.OrderBy(x => x.RowIndex).ToList();
                         }
                         result.ValidData = rowValid.Select(x => x.Item2).ToList();
                     }
@@ -221,15 +224,6 @@ namespace TMS.BusinessLayer.Service
                 await _unitOfWork.CloseAsync();
             }
 
-            return response;
-        }
-
-        public async Task<ServiceResponse<UploadResult>> ValidateUploadAsync(IFormFile file)
-        {
-            var validateResult = await ValidateFileUploadAsync(file);
-            var response = new ServiceResponse<UploadResult>();
-            response.Data.RowsSuccess = validateResult.ValidData.Count;
-            response.Data.RowsError = validateResult.RowsError;
             return response;
         }
 

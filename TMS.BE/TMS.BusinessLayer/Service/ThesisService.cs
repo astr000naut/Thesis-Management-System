@@ -12,6 +12,7 @@ using TMS.BaseService;
 using TMS.BusinessLayer.DTO;
 using TMS.BusinessLayer.Interface;
 using TMS.DataLayer.Entity;
+using TMS.DataLayer.Enum;
 using TMS.DataLayer.Interface;
 
 namespace TMS.BusinessLayer.Service
@@ -40,6 +41,25 @@ namespace TMS.BusinessLayer.Service
             }
 
             _unitOfWork.SetConnectionString(connectionString);
+        }
+
+        public override async Task<ThesisDto> GetNew()
+        {
+            var newThesisCode = await _thesisRepository.GetNewThesisCode();
+            var studentId = new Guid(_httpContextAccessor.HttpContext.User.FindFirst("UserId").Value);
+            var studentName = _httpContextAccessor.HttpContext.User.FindFirst("FullName").Value;
+            return new ThesisDto()
+            {
+                ThesisId = Guid.NewGuid(),
+                ThesisCode = newThesisCode,
+                StudentId = studentId,
+                StudentName = studentName,
+                TeacherId = null,
+                Year = DateTime.Now.Year,
+                Semester = DateTime.Now.Month >= 6 ? 1 : 2,
+                Status = ThesisStatus.WaitingForApproval
+            };
+
         }
 
     }

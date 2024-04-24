@@ -53,7 +53,7 @@ import { router } from '@/router';
 // redirect home if already logged in
 const authStore = useAuthStore();
 if (authStore.loginInfo) {
-    router.push('/');
+    goToHome();
 }
 
 
@@ -71,6 +71,25 @@ async function onSubmit(values) {
     const errorMessage = await authStore.login(username, password);
     if (errorMessage) {
         loginMessage.value = errorMessage;
+    } else {
+        goToHome();
+    }
+}
+
+function goToHome() {
+    const role = authStore.loginInfo.user.role ?? "";
+    switch (role) {
+        case "ADMIN":
+            router.push('/m/faculty');
+            break;
+        case "Teacher":
+            
+            break;
+        case "Student":
+            router.push('/s/my-thesis')
+            break;
+        default:
+            break;
     }
 }
 

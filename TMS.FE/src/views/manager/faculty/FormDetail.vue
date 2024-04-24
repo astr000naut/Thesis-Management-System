@@ -21,39 +21,50 @@
             "
         >
             <div class="dialog-body">
-                <div class="flex-row cg-4">
+                <el-form
+                    :model="entity"
+                    label-width="auto"
+                    label-position="top"
+                    size="default"
+                    :disabled="form.mode === 'view'"
+                >
+                    <div class="flex-row cg-4">
+                        <div class="form-group fl-1">
+                            <el-form-item label="Mã khoa">
+                                <el-input v-model="entity.facultyCode" :dis/>
+                            </el-form-item>
+                        </div>
+
+                        <div class="form-group fl-3">
+                            <el-form-item label="Tên khoa">
+                                <el-input v-model="entity.facultyName" />
+                            </el-form-item>
+                        </div>
+                    </div>
+
                     <div class="form-group fl-1">
-                        <el-form-item label="Mã khoa">
-                            <el-input v-model="entity.facultyCode" />
+                        <el-form-item label="Mô tả">
+                            <el-input 
+                                v-model="entity.description" 
+                                type="textarea"
+                                :rows="4"
+                            />
                         </el-form-item>
                     </div>
-
-                    <div class="form-group fl-3">
-                        <el-form-item label="Tên khoa">
-                            <el-input v-model="entity.facultyName" />
-                        </el-form-item>
-                    </div>
-                </div>
-
-                <div class="form-group fl-1">
-                    <el-form-item label="Mô tả">
-                        <el-input 
-                            v-model="entity.description" 
-                            type="textarea"
-                            :rows="4"
-                        />
-                    </el-form-item>
-                </div>
+                </el-form>
             </div>
         </div>
 
         <template #footer>
             <div class="dialog-footer">
-                <el-button @click="btnCancelOnClick">Hủy</el-button>
+                <el-button @click="btnCancelOnClick">
+                    {{ form.mode === 'view' ? 'Đóng' : 'Hủy' }}
+                </el-button>
                 <el-button
                     type="primary"
                     @click="btnConfirmOnClick"
                     :loading="loading"
+                    v-if="form.mode !== 'view'"
                 >
                     Xác nhận
                 </el-button>
@@ -93,8 +104,8 @@ async function initData() {
 
     if (form.value.mode === 'edit' || form.value.mode === 'view') {
         form.value.title = (form.value.mode === 'edit' ? 'Chỉnh sửa ' : 'Xem ') + form.value.entityName;
-        const entity = await entityStore.getById(props.pEntityId);
-        entity.value = {...entity};
+        const e = await entityStore.getById(props.pEntityId);
+        entity.value = {...e};
 
     } else if (form.value.mode === 'add') {
         form.value.title = 'Thêm mới ' + form.value.entityName;

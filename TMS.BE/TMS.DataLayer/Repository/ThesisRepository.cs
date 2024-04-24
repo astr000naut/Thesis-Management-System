@@ -15,5 +15,21 @@ namespace TMS.DataLayer.Repository
 
         public ThesisRepository(IUnitOfWork unitOfWork): base(unitOfWork)
         {}
+
+        public async Task<string> GetNewThesisCode()
+        {
+            var year = DateTime.Now.Year;
+            var random = new Random();
+            var newCode = $"KLTN_{year}_{random.Next(1, 10000):D4}";
+            var query = "SELECT COUNT(*) FROM theses WHERE ThesisCode = @NewCode";
+            var parameters = new { NewCode = newCode };
+            var count = await _unitOfWork.Connection.ExecuteScalarAsync<int>(sql: query, param: parameters, transaction: _unitOfWork.Transaction);
+            if (count > 0)
+            {
+                return await GetNewThesisCode();
+            }
+            return newCode;
+  
+        }
     }
 }

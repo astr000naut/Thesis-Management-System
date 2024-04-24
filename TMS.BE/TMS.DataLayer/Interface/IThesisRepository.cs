@@ -10,5 +10,6 @@ namespace TMS.DataLayer.Interface
 {
     public interface IThesisRepository : IBaseRepository<Thesis>
     {
+        Task<string> GetNewThesisCode();
     }
 }

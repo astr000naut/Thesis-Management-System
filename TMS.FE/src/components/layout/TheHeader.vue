@@ -2,15 +2,17 @@
   <div class="header">
     <div class="header__mainarea">
       <div class="header__leftarea">
-        <Icon icon="eos-icons:admin-outlined" style="width: 32px; height: 32px; color: #409EFF;"/>
+        <Icon icon="mingcute:book-5-line" style="width: 32px; height: 32px; color: #409EFF;"/>
         <div class="header__title">
           <div class="header__brandname" style="font-weight: bold;">
-            HỆ THỐNG QUẢN LÝ KHÓA LUẬN TỐT NGHIỆP - ADMIN
+            HỆ THỐNG QUẢN LÝ KHÓA LUẬN TỐT NGHIỆP - {{ authStore.tenantBaseInfo.tenantName }}
           </div>
         </div>
       </div>
       <div class="header__rightarea">
         <div class="header__user">
+          <b>{{ authStore.loginInfo.user.fullName }}</b>
+          <b>,&nbsp;&nbsp;</b>
           <a href="" style="color: blue; text-decoration: underline;" @click="authStore.logout()">Đăng xuất</a>
         </div>
       </div>

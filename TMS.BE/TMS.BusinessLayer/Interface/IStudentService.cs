@@ -12,7 +12,5 @@ namespace TMS.BusinessLayer.Interface
     public interface IStudentService: IBaseService<StudentDto>
     {
         Task<ServiceResponse<UploadResult>> HanleUploadFileAsync(IFormFile file);
-        Task<ServiceResponse<UploadResult>> ValidateUploadAsync(IFormFile file);
-
     }
 }

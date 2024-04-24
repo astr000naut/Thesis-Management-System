@@ -126,9 +126,9 @@ function initSidebarItems() {
 
   if (authStore.loginInfo?.user.role === "ADMIN") {
     sidebarItems.value = manager_item;
-  } else if (authStore.loginInfo?.user.role === "STUDENT") {
+  } else if (authStore.loginInfo?.user.role === "Student") {
     sidebarItems.value = student_item;
-  } else if (authStore.loginInfo?.user.role === "TEACHER") {
+  } else if (authStore.loginInfo?.user.role === "Teacher") {
     sidebarItems.value = teacher_item;
   }
 

@@ -62,12 +62,14 @@ namespace TMS.BaseRepository
             {
                 filterWhere = "1 = 1";
             }
+
+            string skipTakeQuery = take > 0 ? "LIMIT @skip, @take" : "" ;
             
             string sql = $@"
                     SELECT SQL_CALC_FOUND_ROWS *
                     FROM {source}
                     WHERE {filterWhere}
-                    LIMIT @skip, @take;
+                    {skipTakeQuery};
                     SELECT FOUND_ROWS() AS Total;";
 
             

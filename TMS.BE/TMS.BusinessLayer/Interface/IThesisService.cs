@@ -11,6 +11,5 @@ namespace TMS.BusinessLayer.Interface
 {
     public interface IThesisService: IBaseService<ThesisDto>
     {
-
     }
 }

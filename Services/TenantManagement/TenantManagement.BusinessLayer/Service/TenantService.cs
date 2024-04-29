@@ -177,6 +177,7 @@ namespace TenantManagement.BusinessLayer.Service
                       GPA varchar(100) DEFAULT '',
                       Email varchar(100) DEFAULT '',
                       PhoneNumber varchar(100) DEFAULT '',
+                      Description text DEFAULT '',
                       PRIMARY KEY (UserId)
                     )
                     ENGINE = INNODB,

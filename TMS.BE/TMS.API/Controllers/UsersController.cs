@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TMS.API.Param;
+using TMS.BaseService;
 using TMS.BusinessLayer.DTO;
 using TMS.BusinessLayer.Interface;
 
@@ -22,10 +23,17 @@ namespace TMS.API.Controllers
         // how to get body from request
 
         [HttpPost("authenticate")]
-        public async Task<ActionResult> Authenticate([FromBody] LoginParam param)
+        public async Task<ServiceResponse<LoginResponseDto>> Authenticate([FromBody] LoginParam param)
         {
-            LoginResponseDto response = await _userService.Login(param.Username, param.Password);
-            return Ok(response);
+            var response = await _userService.Login(param.Username, param.Password);
+            return response;
+        }
+
+        [HttpPost("change-password")]
+        public async Task<ServiceResponse<bool>> ChangePassword([FromBody] ChangePasswordParam param)
+        {
+            var response = await _userService.ChangePasswordAsync(param.OldPass, param.NewPass, param.ConfirmPass);
+            return response;
         }
 
         [HttpGet]

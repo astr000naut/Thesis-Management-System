@@ -83,7 +83,7 @@ function goToHome() {
             router.push('/m/faculty');
             break;
         case "Teacher":
-            
+            router.push('/t/thesis-guiding')
             break;
         case "Student":
             router.push('/s/my-thesis')

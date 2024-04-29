@@ -269,7 +269,7 @@ namespace TenantManagement.BusinessLayer.Service
 
                       TeacherId char(36) NOT NULL DEFAULT '',
 
-                      FacultyId char(36) NOT NULL DEFAULT '',
+                      FacultyCode varchar(100) NOT NULL DEFAULT '',
 
                       Year int(11) NOT NULL DEFAULT 0,
                       Semester int(11) NOT NULL DEFAULT 0,
@@ -347,7 +347,7 @@ namespace TenantManagement.BusinessLayer.Service
                         theses.Description,
                         theses.StudentId,
                         theses.TeacherId,
-                        theses.FacultyId,
+                        theses.FacultyCode,
                         theses.Year,
                         theses.Semester,
                         theses.ThesisFileUrl,
@@ -361,7 +361,7 @@ namespace TenantManagement.BusinessLayer.Service
                     FROM theses
                     LEFT JOIN students ON theses.StudentId = students.UserId
                     LEFT JOIN teachers ON theses.TeacherId = teachers.UserId
-                    LEFT JOIN faculties ON theses.FacultyId = faculties.FacultyId;";
+                    LEFT JOIN faculties ON theses.FacultyCode = faculties.FacultyCode;";
                 await transaction.Connection.ExecuteAsync(createViewThesesQuery, transaction: transaction);
 
                 return true;

@@ -9,9 +9,9 @@ namespace TMS.DataLayer.Enum
     public enum ThesisStatus
     {
         WaitingForApproval = 0,
-        NotApproved = 1,
-        Approved = 2,
-        Rejected = 3,
+        Approved = 1,
+        Rejected = 2,
+        ApprovedTitle = 3,
         Finished = 4
     }
 }

@@ -3,6 +3,7 @@ import { httpClient } from '@/helpers';
 import {router} from '@/router';
 import { useAlertStore } from './alert.store';
 import { ref } from 'vue';
+import { ElMessage } from "element-plus";
 
 import $api from '@/api';
 
@@ -31,16 +32,18 @@ export const useAuthStore = defineStore('auth', {
     
                 const response = await httpClient.post($api.user.authenticate, {username, password});
 
-                if (response.Error) {
-                    throw response.Message;
-                } else {
-                    localStorage.setItem('loginInfo', JSON.stringify(response));
+                if (response && response.errorCode) {
+                    return response.message;
+                } else if (response && response.success && response.data != null) {
+                    localStorage.setItem('loginInfo', JSON.stringify(response.data));
     
-                    this.loginInfo = response;
+                    this.loginInfo = response.data;
         
                     this.returnUrl = null;
         
                     router.push(this.returnUrl || '/');
+                } else {
+                    ElMessage.error('Có lỗi xảy ra');
                 }
                 
             } catch (error) {

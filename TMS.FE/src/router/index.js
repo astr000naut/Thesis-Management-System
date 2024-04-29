@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from '@/stores';
 import accountRoutes from './account.routes';
 import studentRoutes from './student.routes';
+import teacherRoutes from './teacher.routes';
 import managerRoutes from "./manager.routes";
 
 
@@ -12,7 +13,8 @@ export const router = createRouter({
   routes: [
       { ...accountRoutes },
       { ...managerRoutes},
-      { ...studentRoutes}
+      { ...studentRoutes},
+      { ...teacherRoutes},
   ]
 });
 

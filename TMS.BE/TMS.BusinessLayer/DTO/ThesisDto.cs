@@ -22,6 +22,8 @@ namespace TMS.BusinessLayer.DTO
         public Guid? TeacherId { get; set; }
         public string? TeacherName { get; set; }
         public string? TeacherCode { get; set; }
+        public string? FacultyCode { get; set; }
+        public string? FacultyName { get; set; }
         public int Year { get; set; }
         public int Semester { get; set; }
         public string? ThesisFileUrl { get; set; }

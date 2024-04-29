@@ -69,6 +69,14 @@ namespace TMS.DataLayer.Repository
             return deleted;
         }
 
+        public async Task<User?> GetByIdAsync(Guid id)
+        {
+            var query = "SELECT * FROM users WHERE UserId = @UserId";
+            var parameters = new { UserId = id };
+            var result = await _unitOfWork.Connection.QueryAsync<User>(sql: query, param: parameters, transaction: _unitOfWork.Transaction);
+            return result.FirstOrDefault();
+        }
+
 
     }
 }

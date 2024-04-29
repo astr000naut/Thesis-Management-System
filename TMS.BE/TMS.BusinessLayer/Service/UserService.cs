@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using TMS.BaseRepository;
+using TMS.BaseService;
 using TMS.BusinessLayer.DTO;
 using TMS.BusinessLayer.Interface;
 using TMS.DataLayer.Interface;
@@ -47,17 +48,56 @@ namespace TMS.BusinessLayer.Service
 
             unitOfWork.SetConnectionString(connectionString);
         }
-        public async Task<LoginResponseDto> Login(string username, string password)
+
+        public async Task<ServiceResponse<bool>> ChangePasswordAsync(string oldPass, string newPass, string confirmPass)
+        {
+            var result = new ServiceResponse<bool>();   
+            var userId = _httpContextAccessor.HttpContext.User.FindFirst("UserId").Value;
+            var user = await _userRepository.GetByIdAsync(Guid.Parse(userId));
+            if (user == null)
+            {
+                result.ErrorCode = "USER_NOT_FOUND";
+                result.Message = "Có lỗi xảy ra. Vui lòng thử lại.";
+                result.Data = false;
+            } else
+            {
+                // check old password equal to current password
+                if (!BCrypt.Net.BCrypt.Verify(oldPass, user.Password))
+                {
+                    result.ErrorCode = "INVALID_PASSWORD";
+                    result.Message = "Mật khẩu cũ không đúng";
+                    result.Data = false;
+                }
+                else
+                {
+                    if (newPass != confirmPass)
+                    {
+                        result.ErrorCode = "INVALID_INFO";
+                        result.Message = "Mật khẩu mới không trùng khớp";
+                        result.Data = false;
+                    }
+                    else
+                    {
+                        user.Password = BCrypt.Net.BCrypt.HashPassword(newPass);
+                        await _unitOfWork.OpenAsync();
+                        await _userRepository.Update(user);
+                        await _unitOfWork.CommitAsync();
+                        result.Data = true;
+                    }
+                }   
+            }
+
+            return result;
+        }
+
+        public async Task<ServiceResponse<LoginResponseDto>> Login(string username, string password)
         {
             try
             {
+                var response = new ServiceResponse<LoginResponseDto>();
                 var user = await _userRepository.GetUserByUsername(username);
-                if (user == null)
-                {
-                    throw new Exception("Sai tên đăng nhập hoặc mật khẩu");
-                }
 
-                if (BCrypt.Net.BCrypt.Verify(password, user.Password))
+                if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))
                 {
                     var claims = new List<Claim>
                     {
@@ -77,7 +117,7 @@ namespace TMS.BusinessLayer.Service
                     await _userRepository.Update(user);
                     await _unitOfWork.CommitAsync();
 
-                    return new LoginResponseDto
+                    response.Data = new LoginResponseDto
                     {
                         AccessToken = accessToken,
                         RefreshToken = refreshToken,
@@ -86,8 +126,11 @@ namespace TMS.BusinessLayer.Service
                 }
                 else
                 {
-                    throw new Exception("Sai tên đăng nhập hoặc mật khẩu");
+                    response.ErrorCode = "INVALID_INFO";
+                    response.Message = "Sai tên đăng nhập hoặc mật khẩu";
                 }
+
+                return response;
             }
                 catch
             {

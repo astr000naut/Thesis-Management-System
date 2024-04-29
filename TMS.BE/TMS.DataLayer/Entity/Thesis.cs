@@ -27,6 +27,9 @@ namespace TMS.DataLayer.Entity
         public string? TeacherName { get; set; }
         [NotMapped]
         public string? TeacherCode { get; set; }
+        public string? FacultyCode { get; set; }
+        [NotMapped]
+        public string? FacultyName { get; set; }
         public int Year { get; set; }
         public int Semester { get; set; }
         public string? ThesisFileUrl { get; set; }

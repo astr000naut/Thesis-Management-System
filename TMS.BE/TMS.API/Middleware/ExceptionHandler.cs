@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using TMS.BaseService;
 
 namespace TMS.API.Middleware
 {
@@ -38,11 +39,13 @@ namespace TMS.API.Middleware
         private async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
         {
             httpContext.Response.ContentType = "application/json";
-            var exceptionResponse = new
+            var exceptionResponse = new ServiceResponse<object>
             {
-                Error = true,
-                Message = exception.Message,
+                Success = false,
+                ErrorCode = "ERROR",
+                Message = exception.Message
             };
+            
 
             await httpContext.Response.WriteAsync(JsonSerializer.Serialize(exceptionResponse));
         }

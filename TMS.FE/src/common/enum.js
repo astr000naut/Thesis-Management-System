@@ -6,7 +6,8 @@ export const TenantStatus = [
 
 export const ThesisStatus = [
     "Chờ phê duyệt",
-    "Đã xác nhận",
-    "Đã từ chối",
+    "Chấp nhận hướng dẫn",
+    "Từ chối",
+    "Đã xác nhận đề tài",
     "Đã hoàn thành"
 ]

@@ -1,17 +1,14 @@
 <template>
     <div class="page__container flex-col rg-2">
-        <MyThesisDetail
+        <ThesisGuidingDetail
             v-model:visible="popupDetail.visible"
             :pEntityId="popupDetail.entityId"
             :pMode="popupDetail.mode"
         />
         <div class="page__header flex-row">
             <h1 class="page__title" style="font-size: 24px">
-                Khóa luận của tôi
+                Khóa luận đang hướng dẫn
             </h1>
-            <el-button type="primary" @click="btnAddOnClick"
-                >Đăng ký</el-button
-            >
         </div>
         <div class="search-container flex-row al-center cg-2">
             <div class="reload-btn">
@@ -112,7 +109,7 @@ import { storeToRefs } from "pinia";
 import { Refresh, Search } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { debounce } from "lodash";
-import MyThesisDetail from "./MyThesisDetail.vue";
+import ThesisGuidingDetail from "./ThesisGuidingDetail.vue";
 import {ThesisStatus} from "@/common/enum";
 
 const router = useRouter();
@@ -148,13 +145,6 @@ async function initData() {
     await entityStore.fetchList();
 }
 
-const btnAddOnClick = () => {
-    popupDetail.value = {
-        visible: true,
-        entityId: null,
-        mode: "add",
-    };
-};
 
 const btnDeleteItemOnClick = (row) => {
     ElMessageBox.confirm(

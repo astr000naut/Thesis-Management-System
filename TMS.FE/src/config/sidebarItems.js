@@ -64,6 +64,11 @@ const manager_item = [
 
 const student_item = [
     {
+        name: "Danh sách giảng viên",
+        icon: "ph:book-light",
+        link: "/s/teacher-list",
+    },
+    {
         name: "Khóa luận của tôi",
         icon: "ph:book-light",
         link: "/s/my-thesis",
@@ -74,40 +79,43 @@ const student_item = [
 		icon: "lucide:scan-search"
     },
 	{
-        name: "Thiết lập",
-        link: "/s/setting",
+        name: "Thông tin cá nhân",
+        link: "/s/personal-info",
         icon: "tdesign:file-setting",
     },
 ];
 
 const teacher_item = [
     {
-        name: "Quản lý khóa luận",
-        icon: "mi-sidebar-dashboard",
+        name: "Danh sách khóa luận",
+        icon: "pepicons-pop:grab-handle-circle",
         expand: false,
         children: [
             {
-                name: "Yêu cầu hương dẫn",
+                name: "Xử lý yêu cầu",
                 link: "/t/thesis-request",
-                icon: "mi-sidebar-dashboard",
+                icon: "material-symbols:order-approve-sharp",
             },
             {
-                name: "Khóa luận đang hướng dẫn",
+                name: "Đang hướng dẫn",
                 link: "/t/thesis-guiding",
-                icon: "mi-sidebar-dashboard",
+                icon: "fluent-mdl2:learning-tools",
             },
             {
-                name: "Khóa luận đang phản biện",
+                name: "Đang phản biện",
                 link: "/t/thesis-reviewing",
+                icon: "material-symbols:fact-check-outline"
             },
             {
-                name: "Khóa luận đã hoàn thành",
+                name: "Đã hoàn thành",
                 link: "/t/thesis-completed",
+                icon: "ant-design:file-done-outlined"
             },
         ],
     },
     {
         name: "Tra cứu",
         link: "/t/search",
+        icon: "lucide:scan-search"
     },
 ];

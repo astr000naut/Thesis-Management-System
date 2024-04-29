@@ -1,17 +1,14 @@
 <template>
     <div class="page__container flex-col rg-2">
-        <MyThesisDetail
+        <ThesisRequestDetail
             v-model:visible="popupDetail.visible"
             :pEntityId="popupDetail.entityId"
             :pMode="popupDetail.mode"
         />
         <div class="page__header flex-row">
             <h1 class="page__title" style="font-size: 24px">
-                Khóa luận của tôi
+                Yêu cầu hướng dẫn khóa luận
             </h1>
-            <el-button type="primary" @click="btnAddOnClick"
-                >Đăng ký</el-button
-            >
         </div>
         <div class="search-container flex-row al-center cg-2">
             <div class="reload-btn">
@@ -61,28 +58,24 @@
                     width="160"
                     :formatter="thesisStatusFormatter"
                 />
-                <el-table-column fixed="right" label="Thao tác" width="120">
+                <el-table-column fixed="right" align="center" label="Thao tác" width="200">
                     <template #default="scope">
-                        <el-dropdown
-                            size="small"
-                            split-button
-                            type="default"
-                            @click="btnViewItemOnClick(scope.row)"
-                        >
-                            Xem
-                            <template #dropdown>
-                                <el-dropdown-menu>
-                                    <el-dropdown-item
-                                        @click="btnEditItemOnClick(scope.row)"
-                                        >Sửa</el-dropdown-item
-                                    >
-                                    <el-dropdown-item
-                                        @click="btnDeleteItemOnClick(scope.row)"
-                                        >Xóa</el-dropdown-item
-                                    >
-                                </el-dropdown-menu>
-                            </template>
-                        </el-dropdown>
+                        <div class="row-action-container">
+                            <el-tooltip content="Xem" placement="bottom" effect="light">
+                                <el-button :icon="View" circle 
+                                    @click="btnViewItemOnClick(scope.row)"
+                                />
+                            </el-tooltip>
+                            <el-tooltip content="Đồng ý" placement="bottom" effect="light">
+                                <el-button :icon="Check" circle />
+                            </el-tooltip>
+                            <el-tooltip content="Từ chối" placement="bottom" effect="light">
+                                <el-button :icon="Close" circle />
+                            </el-tooltip>
+                            
+                            
+                            
+                        </div>
                     </template>
                 </el-table-column>
             </el-table>
@@ -112,8 +105,13 @@ import { storeToRefs } from "pinia";
 import { Refresh, Search } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { debounce } from "lodash";
-import MyThesisDetail from "./MyThesisDetail.vue";
+import ThesisRequestDetail from "./ThesisRequestDetail.vue";
 import {ThesisStatus} from "@/common/enum";
+import {
+  View,
+  Check,
+  Close,
+} from '@element-plus/icons-vue'
 
 const router = useRouter();
 const entityStore = useThesisStore();
@@ -148,13 +146,6 @@ async function initData() {
     await entityStore.fetchList();
 }
 
-const btnAddOnClick = () => {
-    popupDetail.value = {
-        visible: true,
-        entityId: null,
-        mode: "add",
-    };
-};
 
 const btnDeleteItemOnClick = (row) => {
     ElMessageBox.confirm(

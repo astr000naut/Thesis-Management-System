@@ -1,5 +1,6 @@
 import Main from '@/views/Main.vue';
 import MyThesisList from '@/views/student/mythesis/MyThesisList.vue';
+const StudentInfo = () => import('@/views/student/personal-info/StudentInfo.vue');
 export default {
     path: '/s',
     component: Main,
@@ -13,8 +14,8 @@ export default {
             component: MyThesisList,
         },
         {
-            path: 'setting',
-            component: MyThesisList,
+            path: 'personal-info',
+            component: StudentInfo,
         },
     ]
 };

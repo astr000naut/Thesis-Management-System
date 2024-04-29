@@ -9,5 +9,7 @@ export class userApi extends BaseApi {
     refreshToken = this.baseUrl + '/refresh-token'
 
     test = this.baseUrl + '/test';
+
+    changePassword = this.baseUrl + '/change-password';
      
 }

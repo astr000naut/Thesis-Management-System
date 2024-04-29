@@ -11,12 +11,28 @@
       </div>
       <div class="header__rightarea">
         <div class="header__user">
-          <b>{{ authStore.loginInfo.user.fullName }}</b>
-          <b>,&nbsp;&nbsp;</b>
-          <a href="" style="color: blue; text-decoration: underline;" @click="authStore.logout()">Đăng xuất</a>
+          <el-dropdown>
+            <div class="el-dropdown-link" style="outline: unset;font-weight: bold;display: flex;column-gap: 4px;">
+              <div class="name">{{ authStore.loginInfo.user.fullName }}</div>
+              <div class="icon"><Icon class="item__icon" icon="ri:arrow-down-s-fill"/></div>
+            </div>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item
+                  @click="showChangePassword = true"
+                >Đổi mật khẩu</el-dropdown-item>
+                <el-dropdown-item divided
+                  @click="authStore.logout"
+                >Đăng xuất</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </div>
       </div>
     </div>
+    <ChangePasswordPopup
+      v-model:visible="showChangePassword"
+    />
   </div>
 </template>
 
@@ -24,7 +40,10 @@
 // #region import
 import { ref, inject, onBeforeUnmount } from "vue";
 import { useAuthStore } from "@/stores";
+import ChangePasswordPopup from "./ChangePasswordPopup.vue";
 const authStore = useAuthStore();
+const showChangePassword = ref();
+
 // #endregion
 
 // #region init
@@ -43,4 +62,5 @@ onBeforeUnmount(() => {
   scoped
   lang="css"
   src="@/assets/css/layout/the-header.css"
-></style>
+>
+</style>

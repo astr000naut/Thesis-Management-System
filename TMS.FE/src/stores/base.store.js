@@ -27,7 +27,7 @@ export function useBaseStore(props) {
                 skip: (pageNumber.value - 1) * pageSize.value,
                 take: pageSize.value,
                 keySearch: keySearch.value,
-                filterColumns: filterColumns.value
+                filterColumns: filterColumns
             });
 
             entities.value = response.data ?? [];

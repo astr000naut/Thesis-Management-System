@@ -212,6 +212,7 @@ const form = ref({
 });
 const entity = ref({});
 const listTeacher = ref([]);
+const allTeacher = [];
 const loadingGetTeacher = ref(false);
 
 const props = defineProps({
@@ -262,18 +263,31 @@ async function btnConfirmOnClick() {
 }
 
 async function getListTeacher(query) {
-    loadingGetTeacher.value = true;
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const res = await httpClient.post($api.teacher.filter(), {
-        skip: 0,
-        take: 0,
-        keySearch: query ?? '',
-        filterColumns: ["teacherName", "phoneNumber", "email"],
-    });
-    if (res.data) {
-        listTeacher.value = res.data;
+    if (allTeacher.length === 0) {
+        loadingGetTeacher.value = true;
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const res = await httpClient.post($api.teacher.filter(), {
+            skip: 0,
+            take: 0,
+            keySearch: '',
+            filterColumns: [],
+        });
+        if (res.data) {
+            allTeacher.push(...res.data);
+        }
+        loadingGetTeacher.value = false;
+    };
+
+    if (!query) {
+        listTeacher.value = allTeacher;
+    } else {
+        listTeacher.value = allTeacher.filter((item) => 
+            item.teacherName.toLowerCase().includes(query.toLowerCase()) ||
+            item.teacherCode.toLowerCase().includes(query.toLowerCase())
+        );
     }
-    loadingGetTeacher.value = false;
+    
+    
 };
 
 async function dialogOnOpen() {

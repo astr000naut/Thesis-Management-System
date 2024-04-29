@@ -4,6 +4,7 @@ import ThesisGuidingList from '@/views/teacher/thesis-guiding/ThesisGuidingList.
 import ThesisReviewingList from '@/views/teacher/thesis-reviewing/ThesisReviewingList.vue';
 import ThesisRequestList from '@/views/teacher/thesis-request/ThesisRequestList.vue';
 import ThesisCompletedList from '@/views/teacher/thesis-completed/ThesisCompletedList.vue';
+const TeacherInfo = () => import('@/views/teacher/personal-info/TeacherInfo.vue');
 export default {
     path: '/t',
     component: Main,
@@ -28,6 +29,10 @@ export default {
             path: 'search',
             component: MyThesisList,
         },
+        {
+            path: 'personal-info',
+            component: TeacherInfo
+        }
         
     ]
 };

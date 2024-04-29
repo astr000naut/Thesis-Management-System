@@ -118,4 +118,9 @@ const teacher_item = [
         link: "/t/search",
         icon: "lucide:scan-search"
     },
+    {
+        name: "Thông tin cá nhân",
+        link: "/t/personal-info",
+        icon: "tdesign:file-setting",
+    },
 ];

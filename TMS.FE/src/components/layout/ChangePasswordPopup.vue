@@ -27,7 +27,7 @@
     
     <template #footer>
       <div class="dialog-footer">
-        <el-button >Hủy</el-button>
+        <el-button @click="btnCancelOnClick" >Hủy</el-button>
         <el-button type="primary"
             @click="btnConfirmOnClick"
         >
@@ -81,6 +81,11 @@ async function resetForm() {
 
 async function dialogOnOpen() {
     await resetForm();
+}
+
+function btnCancelOnClick() {
+    visible.value = false;
+    resetForm();
 }
 
 async function btnConfirmOnClick() {

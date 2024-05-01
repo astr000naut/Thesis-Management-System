@@ -1,4 +1,10 @@
-﻿namespace TMS.API.Param
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TMS.BaseRepository.Param
 {
     public class FilterParam
     {

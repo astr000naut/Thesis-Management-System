@@ -137,7 +137,6 @@ function initSidebarItems() {
     item.labelPos = 0;
   });
 
-  console.log(route.path);
   // check current route match with sidebar children url
   sidebarItems.value.forEach((item) => {
     if (item.children) {

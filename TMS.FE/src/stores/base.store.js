@@ -19,7 +19,7 @@ export function useBaseStore(props) {
     const keyName = props.keyName;
     const API = props.API;
 
-    const fetchList = async () => {
+    const fetchList = async (customWhere) => {
         loading.value = true;
         try {
             await new Promise(resolve => setTimeout(resolve, 500));
@@ -27,7 +27,8 @@ export function useBaseStore(props) {
                 skip: (pageNumber.value - 1) * pageSize.value,
                 take: pageSize.value,
                 keySearch: keySearch.value,
-                filterColumns: filterColumns
+                filterColumns: filterColumns,
+                customWhere: customWhere
             });
 
             entities.value = response.data ?? [];
@@ -39,6 +40,11 @@ export function useBaseStore(props) {
             loading.value = false;
         }
     };
+
+    const removeOneEntity = (id) => {
+        entities.value = entities.value.filter(x => x[keyName] !== id);
+        -- total.value;
+    }
 
     const getById = async (id) => {
         loading.value = true;
@@ -170,6 +176,7 @@ export function useBaseStore(props) {
         pageNumber,
         pageSize,
         filterColumns,
+        removeOneEntity,
         fetchList,
         getById,
         insert,

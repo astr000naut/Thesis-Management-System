@@ -303,6 +303,22 @@ namespace TenantManagement.BusinessLayer.Service
 
                 await transaction.Connection.ExecuteAsync(createForeignKeyQuery, transaction: transaction);
 
+                // create settings table
+                string createSettingsTableQuery = @"
+                    CREATE TABLE settings (
+                      Id char(36) NOT NULL DEFAULT '',
+                      ThesisRegistrationFromDate datetime DEFAULT NULL,
+                      ThesisRegistrationToDate datetime DEFAULT NULL,
+                      ThesisEditTitleFromDate datetime DEFAULT NULL,
+                      ThesisEditTitleToDate datetime DEFAULT NULL,
+                      PRIMARY KEY (Id)
+                    )
+                    ENGINE = INNODB,
+                    AVG_ROW_LENGTH = 16384,
+                    CHARACTER SET utf8,
+                    COLLATE utf8_general_ci;";
+                await transaction.Connection.ExecuteAsync(createSettingsTableQuery, transaction: transaction);
+
                 // create view view_students
                 string createViewStudentsQuery = @"
                     CREATE VIEW view_students AS
@@ -316,6 +332,7 @@ namespace TenantManagement.BusinessLayer.Service
                         students.GPA,
                         students.Email,
                         students.PhoneNumber,
+                        students.Description,
                         faculties.FacultyName
                     FROM students
                     LEFT JOIN faculties ON students.FacultyCode = faculties.FacultyCode;";

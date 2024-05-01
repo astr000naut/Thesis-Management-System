@@ -37,7 +37,9 @@
 
                         <div class="form-group fl-4">
                             <el-form-item label="Tên đề tài">
-                                <el-input v-model="entity.thesisName" />
+                                <el-input v-model="entity.thesisName" 
+                                :disabled="entity.status === ThesisStatusEnum.ApprovedTitle"
+                                />
                             </el-form-item>
                         </div>
                     </div>
@@ -63,6 +65,7 @@
                                     :loading="loadingGetTeacher"
                                     remote-show-suffix
                                     :name="entity.teacherName"
+                                    disabled
                                 >
                                     <el-option
                                         v-for="teacher in listTeacher"
@@ -199,7 +202,7 @@ import { storeToRefs } from "pinia";
 import { ElMessage } from "element-plus";
 import $api from "@/api/index.js";
 import { httpClient } from "@/helpers";
-import {ThesisStatus} from "@/common/enum";
+import {ThesisStatus, ThesisStatusEnum} from "@/common/enum";
 
 
 

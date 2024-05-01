@@ -7,6 +7,7 @@ using TMS.Common.Attribute;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
+using TMS.BaseRepository.Param;
 
 
 namespace TMS.BaseRepository
@@ -46,7 +47,7 @@ namespace TMS.BaseRepository
             return deleted;
         }
 
-        public async Task<(IEnumerable<T> data, int total)> FilterAsync(int? skip, int? take, string keySearch, IEnumerable<string> filterColumns)
+        public async Task<(IEnumerable<T> data, int total)> FilterAsync(FilterParam fp)
         {
             var tableName = (typeof(T).GetCustomAttribute<TableAttribute>()?.TableName);
             var viewName = (typeof(T).GetCustomAttribute<TableAttribute>()?.ViewName);
@@ -55,31 +56,92 @@ namespace TMS.BaseRepository
 
             string filterWhere = string.Empty;
 
-            if (!string.IsNullOrEmpty(keySearch))
+            if (!string.IsNullOrEmpty(fp.KeySearch) && fp.FilterColumns != null)
             {
-                filterWhere = string.Join(" OR ", filterColumns.Select(column => $"{column} LIKE @keySearch"));
+                filterWhere = string.Join(" OR ", fp.FilterColumns.Select(column => $"{column} LIKE @keySearch"));
             } else
             {
                 filterWhere = "1 = 1";
             }
+            string customWhere = string.Empty;
+            Dictionary<string, string> dicParam = null;
 
-            string skipTakeQuery = take > 0 ? "LIMIT @skip, @take" : "" ;
+            if (fp.CustomWhere != null && fp.CustomWhere.Count > 0)
+            {
+                (customWhere, dicParam) = GenerateCustomWhere(fp.CustomWhere);
+            }
+
+            string skipTakeQuery = fp.Take > 0 ? "LIMIT @skip, @take" : "" ;
             
             string sql = $@"
                     SELECT SQL_CALC_FOUND_ROWS *
                     FROM {source}
                     WHERE {filterWhere}
+                    {customWhere}
                     {skipTakeQuery};
                     SELECT FOUND_ROWS() AS Total;";
 
-            
-            var multi = await _unitOfWork.Connection.QueryMultipleAsync(sql, new { skip, take, keySearch = $"%{keySearch}%" }, _unitOfWork.Transaction);
+            var param = new DynamicParameters();
+            param.Add("@skip", fp.Skip);
+            param.Add("@take", fp.Take);
+            param.Add("@keySearch", $"%{fp.KeySearch}%");
+
+            if (dicParam != null)
+            {
+                foreach (var item in dicParam)
+                {
+                    param.Add(item.Key, item.Value);
+                }
+            }   
+
+            var multi = await _unitOfWork.Connection.QueryMultipleAsync(sql, param, _unitOfWork.Transaction);
             
             var entities = await multi.ReadAsync<T>();
 
             int total = await multi.ReadFirstOrDefaultAsync<int>();
 
             return (entities, total);
+
+        }
+
+        public (string, Dictionary<string, string>) GenerateCustomWhere(List<CustomWhere> customWhere)
+        {
+            string res = string.Empty;
+            // handle sql injection here
+
+            var dicParam = new Dictionary<string, string>();
+
+            foreach (var cw in customWhere)
+            {
+                // check cw.Command is valid
+                if (cw.Command != "AND" && cw.Command != "OR")
+                {
+                    continue;
+                }
+
+                //check cw.Operator is valid
+                if (cw.Operator != "=" && cw.Operator != "!=" && cw.Operator != ">" && cw.Operator != "<" && cw.Operator != ">=" && cw.Operator != "<=")
+                {
+                    continue;
+                }
+
+                // check cw.ColumnName is valid
+                var properties = typeof(T).GetProperties().Select(p => p.Name.ToLower());
+                if (!properties.Contains(cw.ColumnName.ToLower()))
+                {
+                    continue;
+                }
+
+                var key = $"@p{Guid.NewGuid().ToString().Substring(0, 4)}";
+                while (dicParam.ContainsKey(key))
+                {
+                    key = $"@p{Guid.NewGuid().ToString().Substring(0, 4)}";
+                }
+
+                res += $" {cw.Command} {cw.ColumnName} {cw.Operator} {key}";
+                dicParam.Add(key, cw.Value);
+            }
+            return (res, dicParam);
 
         }
 

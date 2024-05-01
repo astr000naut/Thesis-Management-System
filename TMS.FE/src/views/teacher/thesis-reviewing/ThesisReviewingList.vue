@@ -114,8 +114,9 @@ import {ThesisStatus} from "@/common/enum";
 
 const router = useRouter();
 const entityStore = useThesisStore();
-const { entities, total, loading, keySearch, pageNumber, pageSize } =
-    storeToRefs(entityStore);
+// const { entities, total, loading, keySearch, pageNumber, pageSize } =
+//     storeToRefs(entityStore);
+const entities = ref([]);
 
 const popupDetail = ref({
     visible: false,
@@ -167,12 +168,12 @@ const btnDeleteItemOnClick = (row) => {
 };
 
 async function searchTextOnInput() {
-    if (!debouncedFunction) {
-        debouncedFunction = debounce(() => {
-            entityStore.setKeySearch(searchText.value);
-        }, 800);
-    }
-    debouncedFunction();
+    // if (!debouncedFunction) {
+    //     debouncedFunction = debounce(() => {
+    //         entityStore.setKeySearch(searchText.value);
+    //     }, 800);
+    // }
+    // debouncedFunction();
 }
 
 const btnViewItemOnClick = (row) => {
@@ -192,7 +193,7 @@ const btnEditItemOnClick = (row) => {
 };
 
 async function btnRefreshOnClick() {
-    await entityStore.fetchList();
+    //await entityStore.fetchList();
 }
 </script>
 

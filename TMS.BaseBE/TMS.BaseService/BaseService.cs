@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TMS.BaseRepository;
+using TMS.BaseRepository.Param;
 
 namespace TMS.BaseService
 {
@@ -66,13 +67,12 @@ namespace TMS.BaseService
             return result;
         }
 
-        public async Task<(IEnumerable<TEntityDto>, int total)> FilterAsync(int skip, int take, string keySearch, IEnumerable<string> filterColumns)
+        public async Task<(IEnumerable<TEntityDto>, int total)> FilterAsync(FilterParam filterParam)
         {
             try
             {
                 await _unitOfWork.OpenAsync();
-
-                var result = await _baseRepository.FilterAsync(skip, take, keySearch, filterColumns);
+                var result = await _baseRepository.FilterAsync(filterParam);
                 var (data, total) = result;
                 var dataDto = _mapper.Map<IEnumerable<TEntityDto>>(data);
                 await _unitOfWork.CommitAsync();

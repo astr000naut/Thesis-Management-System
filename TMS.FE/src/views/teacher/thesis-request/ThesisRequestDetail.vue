@@ -4,7 +4,7 @@
         :title="form.title"
         width="800"
         draggable
-        top="20vh"
+        top="15vh"
         :close-on-click-modal="false"
         @open="dialogOnOpen"
     >
@@ -68,6 +68,13 @@
                                 />
                             </el-form-item>
                         </div>
+                        <div class="form-group fl-1">
+                            <el-form-item label="GPA">
+                                <el-input
+                                    v-model="student.gpa"
+                                />
+                            </el-form-item>
+                        </div>
                     </div>
 
                     <div class="flex-row cg-4">
@@ -85,6 +92,28 @@
                         <div class="form-group fl-1">
                             <el-form-item label="Trạng thái">
                                 <el-input v-model="entity.status" disabled :formatter="() => ThesisStatus[entity.status]"/>
+                            </el-form-item>
+                        </div>
+                    </div>
+                    <div class="flex-row cg-4">
+                        <div class="form-group fl-1">
+                            <el-form-item label="Ghi chú">
+                                <el-input
+                                    v-model="entity.description"
+                                    type="textarea"
+                                    :rows="5"
+                                />
+                            </el-form-item>
+                        </div>
+                    </div>
+                    <div class="flex-row cg-4">
+                        <div class="form-group fl-1">
+                            <el-form-item label="Giới thiệu sinh viên">
+                                <el-input
+                                    v-model="student.description"
+                                    type="textarea"
+                                    :rows="5"
+                                />
                             </el-form-item>
                         </div>
                     </div>
@@ -120,16 +149,15 @@
 
 <script setup>
 import { ref } from "vue";
-import { useThesisStore, useAuthStore } from "@/stores";
+import { useThesisStore, useStudentStore } from "@/stores";
 import { storeToRefs } from "pinia";
-import $api from "@/api/index.js";
-import { httpClient } from "@/helpers";
 import {ThesisStatus} from "@/common/enum";
-import { ElMessage, ElMessageBox } from 'element-plus'
-
+import { ElMessage, ElMessageBox } from 'element-plus';
+import {ThesisStatusEnum} from '@/common/enum';
 
 
 const entityStore = useThesisStore();
+const studentStore = useStudentStore();
 
 const form = ref({
     title: "",
@@ -137,6 +165,7 @@ const form = ref({
     entityName: "Khoá luận",
 });
 const entity = ref({});
+const student = ref({});
 const listTeacher = ref([]);
 const loadingGetTeacher = ref(false);
 
@@ -144,7 +173,7 @@ const props = defineProps({
     pEntityId: String,
     pMode: String,
 });
-const emit = defineEmits(["close"]);
+const emit = defineEmits(["removeItem"]);
 
 const { loading } = storeToRefs(entityStore);
 
@@ -154,9 +183,17 @@ async function initData() {
     
     form.value.mode = props.pMode;
     form.value.title = "Thông tin khóa luận";
+
+    // Get thesis info
     const e = await entityStore.getById(props.pEntityId);
     entity.value = { ...e };
     listTeacher.value = [{ userId: e.teacherId, teacherName: e.teacherName }];
+
+    // Get student info
+    const s = await studentStore.getById(e.studentId);
+    if (s) {
+        student.value = { ...s };
+    }
 }
 
 async function btnConfirmOnClick() {
@@ -169,29 +206,18 @@ async function btnConfirmOnClick() {
         cancelButtonText: 'Hủy',
         }
     )
-    .then(() => {
-    
+    .then(async () => {
+        entity.value.status = ThesisStatusEnum.ApprovedGuiding;
+        let result = await entityStore.update({ ...entity.value });
+        if (result) {
+            closeFormAndEmitRemove();
+        } else {
+            ElMessage.error("Có lỗi xảy ra");
+        }
     })
     .catch(() => {
-    
     })
     
-
-
-    // let result = false;
-    // if (form.value.mode === "add") {
-    //     result = await entityStore.insert({ ...entity.value });
-    // } else {
-    //     result = await entityStore.update({ ...entity.value });
-    // }
-    // if (result) {
-    //     let message =
-    //         form.value.mode === "add"
-    //             ? "Thêm mới thành công"
-    //             : "Cập nhật thành công";
-    //     ElMessage.success(message);
-    //     gotoPageList();
-    // }
 }
 
 async function btnRefuseOnClick() {
@@ -203,8 +229,14 @@ async function btnRefuseOnClick() {
         cancelButtonText: 'Hủy',
         }
     )
-    .then(() => {
-    
+    .then(async () => {
+        entity.value.status = ThesisStatusEnum.RejectGuiding;
+        let result = await entityStore.update({ ...entity.value });
+        if (result) {
+            closeFormAndEmitRemove();
+        } else {
+            ElMessage.error("Có lỗi xảy ra");
+        }
     })
     .catch(() => {
     
@@ -216,8 +248,9 @@ async function dialogOnOpen() {
     await initData();
 }
 
-function gotoPageList() {
+function closeFormAndEmitRemove() {
     visible.value = false;
+    emit("removeItem", props.pEntityId);
 }
 
 function btnCancelOnClick() {

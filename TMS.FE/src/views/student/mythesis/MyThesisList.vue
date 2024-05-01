@@ -77,6 +77,7 @@
                                         >Sửa</el-dropdown-item
                                     >
                                     <el-dropdown-item
+                                        v-if="scope.row.status === ThesisStatusEnum.WaitingForApproval"
                                         @click="btnDeleteItemOnClick(scope.row)"
                                         >Xóa</el-dropdown-item
                                     >
@@ -106,17 +107,18 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { useThesisStore } from "@/stores";
+import { useThesisStore, useAuthStore } from "@/stores";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { Refresh, Search } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { debounce } from "lodash";
 import MyThesisDetail from "./MyThesisDetail.vue";
-import {ThesisStatus} from "@/common/enum";
+import {ThesisStatus, ThesisStatusEnum} from "@/common/enum";
 
 const router = useRouter();
 const entityStore = useThesisStore();
+const authStore = useAuthStore();
 const { entities, total, loading, keySearch, pageNumber, pageSize } =
     storeToRefs(entityStore);
 
@@ -140,12 +142,24 @@ const searchText = ref("");
 
 initData();
 
-onMounted(() => {
-    console.log("onMounted");
-});
+onMounted(() => {});
+
+async function getMyThesisList() {
+    const studentId = authStore.loginInfo.user.userId;
+    const customWhere = [
+        {
+            command: 'AND',
+            columnName: 'studentId',
+            operator: '=',
+            value: studentId
+        }
+    ];
+
+    await entityStore.fetchList(customWhere);
+}
 
 async function initData() {
-    await entityStore.fetchList();
+    await getMyThesisList();
 }
 
 const btnAddOnClick = () => {
@@ -202,7 +216,7 @@ const btnEditItemOnClick = (row) => {
 };
 
 async function btnRefreshOnClick() {
-    await entityStore.fetchList();
+    await getMyThesisList();
 }
 </script>
 

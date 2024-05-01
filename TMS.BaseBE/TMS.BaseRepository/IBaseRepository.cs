@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TMS.BaseRepository.Param;
 
 namespace TMS.BaseRepository
 {
@@ -46,6 +47,6 @@ namespace TMS.BaseRepository
         /// </summary>
         /// <param name="entityFilter"></param>
         /// Author: DNT(29/05/2023)
-        Task<(IEnumerable<T> data, int total)> FilterAsync(int? skip, int? take, string keySearch, IEnumerable<string> filterColumns);
+        Task<(IEnumerable<T> data, int total)> FilterAsync(FilterParam filterParam);
     }
 }

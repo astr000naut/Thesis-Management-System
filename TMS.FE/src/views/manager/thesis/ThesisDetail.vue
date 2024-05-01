@@ -37,9 +37,7 @@
 
                         <div class="form-group fl-4">
                             <el-form-item label="Tên đề tài">
-                                <el-input v-model="entity.thesisName" 
-                                :disabled="entity.status !== ThesisStatusEnum.WaitingForApproval && entity.status !== ThesisStatusEnum.ApprovedGuiding"
-                                />
+                                <el-input v-model="entity.thesisName" />
                             </el-form-item>
                         </div>
                     </div>
@@ -65,7 +63,6 @@
                                     :loading="loadingGetTeacher"
                                     remote-show-suffix
                                     :name="entity.teacherName"
-                                    :disabled="entity.status !== ThesisStatusEnum.WaitingForApproval"
                                 >
                                     <el-option
                                         v-for="teacher in listTeacher"
@@ -202,7 +199,7 @@ import { storeToRefs } from "pinia";
 import { ElMessage } from "element-plus";
 import $api from "@/api/index.js";
 import { httpClient } from "@/helpers";
-import {ThesisStatus, ThesisStatusEnum} from "@/common/enum";
+import {ThesisStatus} from "@/common/enum";
 
 
 
@@ -215,7 +212,6 @@ const form = ref({
 });
 const entity = ref({});
 const listTeacher = ref([]);
-const allTeacher = [];
 const loadingGetTeacher = ref(false);
 
 const props = defineProps({
@@ -266,31 +262,18 @@ async function btnConfirmOnClick() {
 }
 
 async function getListTeacher(query) {
-    if (allTeacher.length === 0) {
-        loadingGetTeacher.value = true;
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        const res = await httpClient.post($api.teacher.filter(), {
-            skip: 0,
-            take: 0,
-            keySearch: '',
-            filterColumns: [],
-        });
-        if (res.data) {
-            allTeacher.push(...res.data);
-        }
-        loadingGetTeacher.value = false;
-    };
-
-    if (!query) {
-        listTeacher.value = allTeacher;
-    } else {
-        listTeacher.value = allTeacher.filter((item) => 
-            item.teacherName.toLowerCase().includes(query.toLowerCase()) ||
-            item.teacherCode.toLowerCase().includes(query.toLowerCase())
-        );
+    loadingGetTeacher.value = true;
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const res = await httpClient.post($api.teacher.filter(), {
+        skip: 0,
+        take: 0,
+        keySearch: query ?? '',
+        filterColumns: ["teacherName", "phoneNumber", "email"],
+    });
+    if (res.data) {
+        listTeacher.value = res.data;
     }
-    
-    
+    loadingGetTeacher.value = false;
 };
 
 async function dialogOnOpen() {

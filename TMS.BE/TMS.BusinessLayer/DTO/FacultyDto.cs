@@ -14,6 +14,6 @@ namespace TMS.BusinessLayer.DTO
         public Guid FacultyId { get; set; }
         public string FacultyCode { get; set; }
         public string FacultyName { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
     }
 }

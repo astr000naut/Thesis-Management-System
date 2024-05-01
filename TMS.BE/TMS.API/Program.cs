@@ -17,15 +17,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy =>
                       {
-                          policy.WithOrigins(
-                            "http://localhost:8081",
-                            "http://localhost:8088",
-                            "http://uet.kltn.com",
-                            "http://ueb.kltn.com",
-                            "http://hust.kltn.com");
-                          policy.AllowAnyHeader();
+                          policy.SetIsOriginAllowedToAllowWildcardSubdomains();
+                          policy.WithOrigins("https://*.kltn.com");
                           policy.AllowAnyMethod();
                           policy.AllowCredentials();
+                          policy.AllowAnyHeader();
                       });
 });
 

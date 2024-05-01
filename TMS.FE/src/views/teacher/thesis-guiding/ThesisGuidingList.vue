@@ -4,6 +4,7 @@
             v-model:visible="popupDetail.visible"
             :pEntityId="popupDetail.entityId"
             :pMode="popupDetail.mode"
+            @removeItem="onRemoveItem"
         />
         <div class="page__header flex-row">
             <h1 class="page__title" style="font-size: 24px">
@@ -71,11 +72,15 @@
                                 <el-dropdown-menu>
                                     <el-dropdown-item
                                         @click="btnEditItemOnClick(scope.row)"
-                                        >Sửa</el-dropdown-item
+                                        >Chỉnh sửa</el-dropdown-item
                                     >
-                                    <el-dropdown-item
-                                        @click="btnDeleteItemOnClick(scope.row)"
-                                        >Xóa</el-dropdown-item
+                                    <el-dropdown-item v-if="scope.row.status === ThesisStatusEnum.ApprovedGuiding"
+                                        @click="btnApproveTitleOnClick(scope.row)"
+                                        >Xác nhận đề tài</el-dropdown-item
+                                    >
+                                    <el-dropdown-item v-if="scope.row.status === ThesisStatusEnum.ApprovedTitle"
+                                        @click="btnCancelApproveTitleOnClick(scope.row)"
+                                        >Hủy xác nhận đề tài</el-dropdown-item
                                     >
                                 </el-dropdown-menu>
                             </template>
@@ -103,17 +108,19 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { useThesisStore } from "@/stores";
+import { useThesisStore, useAuthStore } from "@/stores";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { Refresh, Search } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { debounce } from "lodash";
 import ThesisGuidingDetail from "./ThesisGuidingDetail.vue";
-import {ThesisStatus} from "@/common/enum";
+import {ThesisStatus, ThesisStatusEnum} from "@/common/enum";
 
 const router = useRouter();
 const entityStore = useThesisStore();
+const authStore = useAuthStore();
+
 const { entities, total, loading, keySearch, pageNumber, pageSize } =
     storeToRefs(entityStore);
 
@@ -142,29 +149,54 @@ onMounted(() => {
 });
 
 async function initData() {
-    await entityStore.fetchList();
+    await getThesisRequestList();
+}
+
+function onRemoveItem(id) {
+    entityStore.removeOneEntity(id);
 }
 
 
-const btnDeleteItemOnClick = (row) => {
+const btnApproveTitleOnClick = (entity) => {
     ElMessageBox.confirm(
-        `Bạn có chắc chắn muốn xóa khoa ${row.thesisName} ?`,
+        `Xác nhận đề tài ?`,
+        "Xác nhận",
+        {
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy",
+            type: "info",
+        }
+    ).then(async () => {     
+        entity.status = ThesisStatusEnum.ApprovedTitle;
+        const result = await entityStore.update(entity);
+        if (result) {
+            ElMessage.success("Đã xác nhận đề tài!");
+        } else {
+            // ElMessage.error('Xóa thất bại');
+        }
+    });
+};
+
+const btnCancelApproveTitleOnClick = (entity) => {
+    ElMessageBox.confirm(
+        `Hủy xác nhận đề tài ?`,
         "Xác nhận",
         {
             confirmButtonText: "Đồng ý",
             cancelButtonText: "Hủy",
             type: "warning",
         }
-    ).then(async () => {
-        const isDeleted = await entityStore.delete(row[entityInfo.keyName]);
-        console.log(isDeleted);
-        if (isDeleted) {
-            ElMessage.success("Xóa thành công");
+    ).then(async () => {     
+        entity.status = ThesisStatusEnum.ApprovedGuiding;
+        const result = await entityStore.update(entity);
+        if (result) {
+            ElMessage.success("Đã hủy xác nhận đề tài!");
         } else {
             // ElMessage.error('Xóa thất bại');
         }
     });
 };
+
 
 async function searchTextOnInput() {
     if (!debouncedFunction) {
@@ -191,8 +223,40 @@ const btnEditItemOnClick = (row) => {
     };
 };
 
+async function getThesisRequestList() {
+    const teacherId = authStore.loginInfo.user.userId;
+    const customWhere = [
+        {
+            command: 'AND',
+            columnName: 'status',
+            operator: '!=',
+            value: '0'
+        },
+        {
+            command: 'AND',
+            columnName: 'status',
+            operator: '!=',
+            value: '2'
+        },
+        {
+            command: 'AND',
+            columnName: 'status',
+            operator: '!=',
+            value: '4'
+        },
+        {
+            command: 'AND',
+            columnName: 'teacherId',
+            operator: '=',
+            value: teacherId
+        }
+    ];
+
+    await entityStore.fetchList(customWhere);
+}
+
 async function btnRefreshOnClick() {
-    await entityStore.fetchList();
+    await getThesisRequestList();
 }
 </script>
 

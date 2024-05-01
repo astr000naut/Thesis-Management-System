@@ -142,7 +142,7 @@ onMounted(() => {
 });
 
 async function initData() {
-    await entityStore.fetchList();
+    await getThesisCompletedList();
 }
 
 
@@ -165,6 +165,26 @@ const btnDeleteItemOnClick = (row) => {
         }
     });
 };
+
+async function getThesisCompletedList() {
+    const teacherId = authStore.loginInfo.user.userId;
+    const customWhere = [
+        {
+            command: 'AND',
+            columnName: 'status',
+            operator: '=',
+            value: '4'
+        },
+        {
+            command: 'AND',
+            columnName: 'teacherId',
+            operator: '=',
+            value: teacherId
+        }
+    ];
+
+    await entityStore.fetchList(customWhere);
+}
 
 async function searchTextOnInput() {
     if (!debouncedFunction) {
@@ -192,7 +212,7 @@ const btnEditItemOnClick = (row) => {
 };
 
 async function btnRefreshOnClick() {
-    await entityStore.fetchList();
+    await getThesisCompletedList();
 }
 </script>
 

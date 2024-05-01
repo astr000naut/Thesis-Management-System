@@ -1361,6 +1361,9 @@
       "TMS.Common/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "AutoMapper": "13.0.1"
+        },
         "compile": {
           "bin/placeholder/TMS.Common.dll": {}
         },

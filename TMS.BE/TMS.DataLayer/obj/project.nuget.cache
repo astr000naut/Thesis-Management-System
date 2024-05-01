@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "HN9dFWLVPUpveaZ1dtwBy6DlpjMkkjVF7wOATQA59JDi7lxU5w++erpxNxZT1kHEKxjtzTPJhx0xiKa6C3LJxw==",
+  "dgSpecHash": "dfbo4ufkxhM/T1tJIIVdKO6UP/IQu5kuperiRBszQEkCx2eea4THuFo017hK93jk0XM5ugBxZveOvXv+JPAY9g==",
   "success": true,
   "projectFilePath": "D:\\Development\\TMS\\TMS.BE\\TMS.DataLayer\\TMS.DataLayer.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\k69ti\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\k69ti\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\k69ti\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
     "C:\\Users\\k69ti\\.nuget\\packages\\dapper\\2.1.35\\dapper.2.1.35.nupkg.sha512",
@@ -12,7 +13,9 @@
     "C:\\Users\\k69ti\\.nuget\\packages\\microsoft.data.sqlclient\\5.2.0\\microsoft.data.sqlclient.5.2.0.nupkg.sha512",
     "C:\\Users\\k69ti\\.nuget\\packages\\microsoft.data.sqlclient.sni.runtime\\5.2.0\\microsoft.data.sqlclient.sni.runtime.5.2.0.nupkg.sha512",
     "C:\\Users\\k69ti\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\8.0.0\\microsoft.extensions.configuration.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\k69ti\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\6.0.0\\microsoft.extensions.dependencyinjection.abstractions.6.0.0.nupkg.sha512",
     "C:\\Users\\k69ti\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\7.0.1\\microsoft.extensions.logging.abstractions.7.0.1.nupkg.sha512",
+    "C:\\Users\\k69ti\\.nuget\\packages\\microsoft.extensions.options\\6.0.0\\microsoft.extensions.options.6.0.0.nupkg.sha512",
     "C:\\Users\\k69ti\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512",
     "C:\\Users\\k69ti\\.nuget\\packages\\microsoft.identity.client\\4.56.0\\microsoft.identity.client.4.56.0.nupkg.sha512",
     "C:\\Users\\k69ti\\.nuget\\packages\\microsoft.identity.client.extensions.msal\\4.56.0\\microsoft.identity.client.extensions.msal.4.56.0.nupkg.sha512",

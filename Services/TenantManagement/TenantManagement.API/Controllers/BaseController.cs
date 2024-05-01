@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TenantManagement.API.Param;
+using TMS.BaseRepository.Param;
 using TMS.BaseService;
 
 
@@ -59,7 +60,7 @@ namespace TenantManagement.API.Controllers
         [HttpPost]
         public async Task<IActionResult> FilterAsync([FromBody] FilterParam filterParam)
         {
-            var (data, total) = await _baseService.FilterAsync(filterParam.Skip, filterParam.Take, filterParam.KeySearch, filterParam.FilterColumns);
+            var (data, total) = await _baseService.FilterAsync(filterParam);
             var response = new
             {
                 data = data,

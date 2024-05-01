@@ -4,6 +4,7 @@
             v-model:visible="popupDetail.visible"
             :pEntityId="popupDetail.entityId"
             :pMode="popupDetail.mode"
+            @removeItem="onRemoveItem"
         />
         <div class="page__header flex-row">
             <h1 class="page__title" style="font-size: 24px">
@@ -66,12 +67,12 @@
                                     @click="btnViewItemOnClick(scope.row)"
                                 />
                             </el-tooltip>
-                            <el-tooltip content="Đồng ý" placement="bottom" effect="light">
+                            <!-- <el-tooltip content="Đồng ý" placement="bottom" effect="light">
                                 <el-button :icon="Check" circle />
                             </el-tooltip>
                             <el-tooltip content="Từ chối" placement="bottom" effect="light">
                                 <el-button :icon="Close" circle />
-                            </el-tooltip>
+                            </el-tooltip> -->
                             
                             
                             
@@ -99,7 +100,7 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { useThesisStore } from "@/stores";
+import { useThesisStore, useAuthStore } from "@/stores";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { Refresh, Search } from "@element-plus/icons-vue";
@@ -115,6 +116,8 @@ import {
 
 const router = useRouter();
 const entityStore = useThesisStore();
+const authStore = useAuthStore();
+
 const { entities, total, loading, keySearch, pageNumber, pageSize } =
     storeToRefs(entityStore);
 
@@ -143,7 +146,11 @@ onMounted(() => {
 });
 
 async function initData() {
-    await entityStore.fetchList();
+    await getThesisRequestList();
+}
+
+function onRemoveItem(id) {
+    entityStore.removeOneEntity(id);
 }
 
 
@@ -192,8 +199,28 @@ const btnEditItemOnClick = (row) => {
     };
 };
 
+async function getThesisRequestList() {
+    const teacherId = authStore.loginInfo.user.userId;
+    const customWhere = [
+        {
+            command: 'AND',
+            columnName: 'status',
+            operator: '=',
+            value: '0'
+        },
+        {
+            command: 'AND',
+            columnName: 'teacherId',
+            operator: '=',
+            value: teacherId
+        }
+    ];
+
+    await entityStore.fetchList(customWhere);
+}
+
 async function btnRefreshOnClick() {
-    await entityStore.fetchList();
+    await getThesisRequestList();
 }
 </script>
 

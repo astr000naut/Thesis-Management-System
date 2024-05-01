@@ -46,17 +46,17 @@
                 <el-table-column
                     prop="studentName"
                     label="Sinh viên"
-                    width="200"
+                    width="180"
                 />
                 <el-table-column
                     prop="teacherName"
                     label="Cán bộ hướng dẫn"
-                    width="200"
+                    width="180"
                 />
                 <el-table-column
                     prop="status"
                     label="Trạng thái"
-                    width="160"
+                    width="150"
                     :formatter="thesisStatusFormatter"
                 />
                 <el-table-column fixed="right" align="center" label="Thao tác" width="200">

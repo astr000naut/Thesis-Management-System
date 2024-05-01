@@ -82,6 +82,10 @@
                                         @click="btnCancelApproveTitleOnClick(scope.row)"
                                         >Hủy xác nhận đề tài</el-dropdown-item
                                     >
+                                    <el-dropdown-item v-if="scope.row.status === ThesisStatusEnum.ApprovedGuiding"
+                                        @click="btnCancelGuidingOnClick(scope.row)"
+                                        >Dừng hướng dẫn khóa luận</el-dropdown-item
+                                    >
                                 </el-dropdown-menu>
                             </template>
                         </el-dropdown>
@@ -171,6 +175,27 @@ const btnApproveTitleOnClick = (entity) => {
         const result = await entityStore.update(entity);
         if (result) {
             ElMessage.success("Đã xác nhận đề tài!");
+        } else {
+            // ElMessage.error('Xóa thất bại');
+        }
+    });
+};
+
+const btnCancelGuidingOnClick = (entity) => {
+    ElMessageBox.confirm(
+        `Dừng hướng dẫn khóa luận ?`,
+        "Xác nhận",
+        {
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy",
+            type: "warning",
+        }
+    ).then(async () => {     
+        entity.status = ThesisStatusEnum.RejectGuiding;
+        const result = await entityStore.update(entity);
+        if (result) {
+            ElMessage.success("Đã dừng hướng dẫn khóa luận!");
+            entityStore.removeOneEntity(entity.thesisId);
         } else {
             // ElMessage.error('Xóa thất bại');
         }

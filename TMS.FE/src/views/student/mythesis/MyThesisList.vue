@@ -77,7 +77,9 @@
                                         >Sửa</el-dropdown-item
                                     >
                                     <el-dropdown-item
-                                        v-if="scope.row.status === ThesisStatusEnum.WaitingForApproval"
+                                        v-if="scope.row.status === ThesisStatusEnum.WaitingForApproval
+                                            || scope.row.status === ThesisStatusEnum.RejectGuiding"
+                                        
                                         @click="btnDeleteItemOnClick(scope.row)"
                                         >Xóa</el-dropdown-item
                                     >

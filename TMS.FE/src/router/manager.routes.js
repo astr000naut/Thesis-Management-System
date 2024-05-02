@@ -5,6 +5,7 @@ import TeacherList from '@/views/manager/teacher/TeacherList.vue';
 import ThesisList from '@/views/manager/thesis/ThesisList.vue';
 const Setting = () => import('@/views/manager/setting/Setting.vue');
 const ThesisSearchList = () => import('@/views/search/ThesisSearchList.vue');
+const UnderContruction = () => import('@/components/common/UnderContruction.vue');
 
 export default {
     path: '/m',
@@ -33,6 +34,18 @@ export default {
         {
             path: 'search',
             component: ThesisSearchList
+        },
+        {
+            path: 'evaluation-council',
+            component: UnderContruction
+        },
+        {
+            path: 'evaluation-assign',
+            component: UnderContruction
+        },
+        {
+            path: 'evaluation-result',
+            component: UnderContruction
         }
     ]
 };

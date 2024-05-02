@@ -35,17 +35,17 @@ const manager_item = [
         children: [
             {
                 name: "Hội đồng đánh giá",
-                link: "/m/evaluation/council",
+                link: "/m/evaluation-council",
                 icon: "fluent-mdl2:group",
             },
             {
                 name: "Phân công giảng viên",
-                link: "/m/evaluation/assign-teacher",
+                link: "/m/evaluation-assign",
                 icon: "clarity:assign-user-solid",
             },
             {
                 name: "Kết quả đánh giá",
-                link: "/m/evaluation/result",
+                link: "/m/evaluation-result",
                 icon: "carbon:result",
             },
         ],

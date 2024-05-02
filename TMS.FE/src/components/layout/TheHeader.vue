@@ -5,7 +5,7 @@
         <Icon icon="mingcute:book-5-line" style="width: 32px; height: 32px; color: #409EFF;"/>
         <div class="header__title">
           <div class="header__brandname" style="font-weight: bold;">
-            HỆ THỐNG QUẢN LÝ KHÓA LUẬN TỐT NGHIỆP - {{ authStore.tenantBaseInfo.tenantName }}
+            HỆ THỐNG QUẢN LÝ KHÓA LUẬN TỐT NGHIỆP - {{ headerData.tenantName }}
           </div>
         </div>
       </div>
@@ -13,7 +13,7 @@
         <div class="header__user">
           <el-dropdown>
             <div class="el-dropdown-link" style="outline: unset;font-weight: bold;display: flex;column-gap: 4px;">
-              <div class="name">{{ authStore.loginInfo.user.fullName }}</div>
+              <div class="name">{{ headerData.userName }}</div>
               <div class="icon"><Icon class="item__icon" icon="ri:arrow-down-s-fill"/></div>
             </div>
             <template #dropdown>
@@ -43,6 +43,13 @@ import { useAuthStore } from "@/stores";
 import ChangePasswordPopup from "./ChangePasswordPopup.vue";
 const authStore = useAuthStore();
 const showChangePassword = ref();
+
+const headerData = ref({});
+headerData.value = {
+  tenantName: authStore.tenantBaseInfo.tenantName ?? "",
+  userName: authStore.loginInfo.user.fullName ?? "",
+};
+
 
 // #endregion
 

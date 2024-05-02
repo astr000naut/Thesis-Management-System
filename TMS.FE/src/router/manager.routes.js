@@ -10,6 +10,9 @@ const UnderContruction = () => import('@/components/common/UnderContruction.vue'
 export default {
     path: '/m',
     component: Main,
+    meta: {
+        roles: ['ADMIN']
+    },
     children: [ 
         { 
             path: 'faculty',

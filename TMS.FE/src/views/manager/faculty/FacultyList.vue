@@ -108,7 +108,6 @@
       initData();
   
       onMounted(() => {
-        console.log('onMounted');
       });
   
       async function initData() {

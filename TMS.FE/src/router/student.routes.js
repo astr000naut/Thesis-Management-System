@@ -6,6 +6,9 @@ const ThesisSearchList = () => import('@/views/search/ThesisSearchList.vue');
 export default {
     path: '/s',
     component: Main,
+    meta: {
+        roles: ['Student']
+    },
     children: [ 
         { 
             path: 'teacher-list',

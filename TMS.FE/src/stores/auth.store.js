@@ -40,8 +40,8 @@ export const useAuthStore = defineStore('auth', {
                     this.loginInfo = response.data;
         
                     this.returnUrl = null;
-        
-                    router.push(this.returnUrl || '/');
+                    
+                    return null;
                 } else {
                     ElMessage.error('Có lỗi xảy ra');
                 }
@@ -57,7 +57,7 @@ export const useAuthStore = defineStore('auth', {
     
             this.loginInfo = null;
     
-            router.push('account/login');
+            router.push('/account/login');
         },
         async refreshToken() {
             try {

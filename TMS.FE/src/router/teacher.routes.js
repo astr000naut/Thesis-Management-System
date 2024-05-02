@@ -6,6 +6,7 @@ import ThesisRequestList from '@/views/teacher/thesis-request/ThesisRequestList.
 import ThesisCompletedList from '@/views/teacher/thesis-completed/ThesisCompletedList.vue';
 const TeacherInfo = () => import('@/views/teacher/personal-info/TeacherInfo.vue');
 const ThesisSearchList = () => import('@/views/search/ThesisSearchList.vue');
+const UnderContruction = () => import('@/components/common/UnderContruction.vue');
 export default {
     path: '/t',
     component: Main,
@@ -20,7 +21,7 @@ export default {
         },
         {
             path: 'thesis-reviewing',
-            component: ThesisReviewingList,
+            component: UnderContruction,
         },
         {
             path: 'thesis-completed',

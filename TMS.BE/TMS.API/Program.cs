@@ -40,6 +40,7 @@ builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
 builder.Services.AddScoped<IFacultyRepository, FacultyRepository>();
 builder.Services.AddScoped<IThesisRepository, ThesisRepository>();
+builder.Services.AddScoped<ISettingRepository, SettingRepository>();
 
 
 builder.Services.AddScoped<IUserService, UserService>();
@@ -48,6 +49,7 @@ builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<ITeacherService, TeacherService>();
 builder.Services.AddScoped<IFacultyService, FacultyService>();
 builder.Services.AddScoped<IThesisService, ThesisService>();
+builder.Services.AddScoped<ISettingService, SettingService>();
 
 builder.Services.AddSingleton<TenantManagementContext>();
 

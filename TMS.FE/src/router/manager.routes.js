@@ -4,6 +4,7 @@ import StudentList from '@/views/manager/student/StudentList.vue';
 import TeacherList from '@/views/manager/teacher/TeacherList.vue';
 import ThesisList from '@/views/manager/thesis/ThesisList.vue';
 const Setting = () => import('@/views/manager/setting/Setting.vue');
+const ThesisSearchList = () => import('@/views/search/ThesisSearchList.vue');
 
 export default {
     path: '/m',
@@ -28,6 +29,10 @@ export default {
         {
             path: 'setting',
             component: Setting,
+        },
+        {
+            path: 'search',
+            component: ThesisSearchList
         }
     ]
 };

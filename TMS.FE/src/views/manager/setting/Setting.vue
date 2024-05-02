@@ -3,23 +3,29 @@
         <el-tabs type="border-card" class="tab_container">
             <div class="personal_info_form tab_pane">
                     <div class="title">Thiết lập</div>
-                    <div class="action flex-row">
-                        <div class="subtitle">Thiết lập thời gian đăng ký khóa luận tốt nghiệp</div>
-                        <div v-if="form.mode === 'view'">
-                            <el-button type="primary" @click="form.mode = 'edit'">
-                                Cập nhật
-                            </el-button>
+                    <div class="action flex-row cg-4">
+                        <div class="subtitle fl-2">
+                            <div class="text">Thiết lập thời gian đăng ký khóa luận tốt nghiệp</div>
+                            <div class="btn">
+                            <div v-if="form.mode === 'view'">
+                                <el-button type="primary" @click="form.mode = 'edit'">
+                                    Sửa
+                                </el-button>
+                            </div>
+                            <div v-if="form.mode === 'edit'">
+                                <el-button @click="btnCancelEditOnClick">
+                                    Hủy
+                                </el-button>
+                                <el-button type="primary" @click="btnConfirmOnClick">
+                                    Đồng ý
+                                </el-button>
+                            </div>
                         </div>
-                        <div v-if="form.mode === 'edit'">
-                            <el-button type="primary" @click="btnConfirmOnClick">
-                                Đồng ý
-                            </el-button>
-                            <el-button @click="btnCancelEditOnClick">
-                                Hủy
-                            </el-button>
+                       
                         </div>
+                        <div class="fl-1"></div>
+                        
                     </div>
-                    {{ value1 }}
                     <div class="form-body">
                         <el-form
                             :model="entity"
@@ -32,7 +38,7 @@
                                 <div class="form-group fl-2">
                                     <el-form-item label="Thời gian mở đăng ký khóa luận">
                                         <el-date-picker
-                                            v-model="value1"
+                                            v-model="entity.thesisRegistrationRange"
                                             type="datetimerange"
                                             range-separator="Đến"
                                             start-placeholder="Ngày bắt đầu"
@@ -47,7 +53,7 @@
                                 <div class="form-group fl-2">
                                     <el-form-item label="Thời gian chỉnh sửa tên đề tài">
                                         <el-date-picker
-                                            v-model="value2"
+                                            v-model="entity.thesisEditTitleRange"
                                             type="datetimerange"
                                             range-separator="Đến"
                                             start-placeholder="Ngày bắt đầu"
@@ -67,15 +73,18 @@
 </template>
 <script setup>
 import { ref } from "vue";
-import { useTeacherStore, useAuthStore } from "@/stores";
+import { useSettingStore, useAuthStore } from "@/stores";
 import { httpClient } from "@/helpers";
 import { storeToRefs } from "pinia";
 import { ElMessage } from "element-plus";
-const entityStore = useTeacherStore();
+const settingStore = useSettingStore();
 const authStore = useAuthStore();
-const {loading} = storeToRefs(entityStore);
+const {appSetting, loading} = storeToRefs(settingStore);
 
-const entity = ref({});
+const entity = ref({
+    thesisRegistrationRange: [],
+    thesisEditTitleRange: [],
+});
 const oldEntity = ref({});
 const form = ref({
     mode: 'view',
@@ -89,10 +98,11 @@ initData();
 
 
 async function initData() {
-    const userId = authStore.loginInfo?.user.userId;
-    const e = await entityStore.getById(userId);
-    entity.value = e;
-    oldEntity.value = {...e};
+    await settingStore.fetchListSetting();
+    entity.value.thesisRegistrationRange[0] = appSetting.value.thesisRegistrationFromDate;
+    entity.value.thesisRegistrationRange[1] = appSetting.value.thesisRegistrationToDate;
+    entity.value.thesisEditTitleRange[0] = appSetting.value.thesisEditTitleFromDate;
+    entity.value.thesisEditTitleRange[1] = appSetting.value.thesisEditTitleToDate;
 }
 
 function btnCancelEditOnClick() {
@@ -102,9 +112,17 @@ function btnCancelEditOnClick() {
 
 async function btnConfirmOnClick() {
     try {
-        const result = await entityStore.update(entity.value);
+
+        const result = await settingStore.updateSetting({
+            id: appSetting.value.id,
+            thesisRegistrationFromDate: entity.value.thesisRegistrationRange[0],
+            thesisRegistrationToDate: entity.value.thesisRegistrationRange[1],
+            thesisEditTitleFromDate: entity.value.thesisEditTitleRange[0],
+            thesisEditTitleToDate: entity.value.thesisEditTitleRange[1],
+        });
+
         if (result) {
-            ElMessage.success('Cập nhật thông tin thành công');
+            ElMessage.success('Cập nhật thiết lập thành công');
             form.value.mode = 'view';
             oldEntity.value = {...entity.value};
         } else {
@@ -149,11 +167,14 @@ async function btnConfirmOnClick() {
     flex-direction: row-reverse;
 }
 
-.action {
-    margin-top: 40px;
+.subtitle {
     justify-content: space-between;
+    display: flex;
 }
 
+.action {
+    margin-top: 40px;
+}
 .subtitle {
     line-height: 36px;
 }

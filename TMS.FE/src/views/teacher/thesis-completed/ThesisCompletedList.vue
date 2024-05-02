@@ -103,7 +103,7 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { useThesisStore } from "@/stores";
+import { useThesisStore, useAuthStore } from "@/stores";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { Refresh, Search } from "@element-plus/icons-vue";
@@ -114,6 +114,7 @@ import {ThesisStatus} from "@/common/enum";
 
 const router = useRouter();
 const entityStore = useThesisStore();
+const authStore = useAuthStore();
 const { entities, total, loading, keySearch, pageNumber, pageSize } =
     storeToRefs(entityStore);
 

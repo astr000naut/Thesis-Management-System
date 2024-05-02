@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TMS.API.Param;
+using TMS.BaseService;
 using TMS.BusinessLayer.DTO;
 using TMS.BusinessLayer.Interface;
 
@@ -13,9 +15,16 @@ namespace TMS.API.Controllers
     {
         private readonly ISettingService _settingService;
 
-        public SettingsController(ISettingService settingService): base(settingService)
+        public SettingsController(ISettingService settingService) : base(settingService)
         {
             _settingService = settingService;
+        }
+
+        [HttpGet]
+        public async Task<ServiceResponse<SettingDto>> GetSetting()
+        {
+            var result = await _settingService.GetSettingAsync();
+            return result;
         }
 
     }

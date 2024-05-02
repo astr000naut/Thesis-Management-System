@@ -15,5 +15,13 @@ namespace TMS.DataLayer.Repository
 
         public SettingRepository(IUnitOfWork unitOfWork): base(unitOfWork)
         {}
+
+        public async Task<Setting?> GetSettingAsync()
+        {
+            // select setting from settings table order by id desc limit 1
+            var query = "SELECT * FROM settings ORDER BY Id DESC LIMIT 1;";
+            var result = await _unitOfWork.Connection.QueryAsync<Setting>(sql: query, transaction: _unitOfWork.Transaction);            
+            return result.FirstOrDefault();
+        }
     }
 }

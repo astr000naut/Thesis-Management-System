@@ -10,5 +10,6 @@ namespace TMS.DataLayer.Interface
 {
     public interface ISettingRepository : IBaseRepository<Setting>
     {
+        Task<Setting?> GetSettingAsync();
     }
 }

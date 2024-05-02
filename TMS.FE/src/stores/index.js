@@ -6,3 +6,4 @@ export * from './student.store';
 export * from './teacher.store';
 export * from './faculty.store';
 export * from './thesis.store';
+export * from './setting.store';

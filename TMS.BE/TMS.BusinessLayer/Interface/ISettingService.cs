@@ -11,6 +11,7 @@ namespace TMS.BusinessLayer.Interface
 {
     public interface ISettingService : IBaseService<SettingDto>
     {
+        Task<ServiceResponse<SettingDto>> GetSettingAsync();
 
     }
 }

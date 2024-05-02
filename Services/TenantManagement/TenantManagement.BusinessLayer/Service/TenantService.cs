@@ -319,6 +319,14 @@ namespace TenantManagement.BusinessLayer.Service
                     COLLATE utf8_general_ci;";
                 await transaction.Connection.ExecuteAsync(createSettingsTableQuery, transaction: transaction);
 
+                // insert setting datastring
+                var insertSettingsQuery = @"
+                    INSERT INTO settings (Id, ThesisRegistrationFromDate, ThesisRegistrationToDate, ThesisEditTitleFromDate, ThesisEditTitleToDate)
+                    VALUES ('" + Guid.NewGuid().ToString() + "', '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00', '2021-01-01 00:00:00');";
+               
+                await transaction.Connection.ExecuteAsync(insertSettingsQuery, transaction: transaction);
+
+
                 // create view view_students
                 string createViewStudentsQuery = @"
                     CREATE VIEW view_students AS

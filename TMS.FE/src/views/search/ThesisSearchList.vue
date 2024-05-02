@@ -1,17 +1,14 @@
 <template>
     <div class="page__container flex-col rg-2">
-        <MyThesisDetail
+        <ThesisSearchDetail
             v-model:visible="popupDetail.visible"
             :pEntityId="popupDetail.entityId"
             :pMode="popupDetail.mode"
         />
         <div class="page__header flex-row">
             <h1 class="page__title" style="font-size: 24px">
-                Khóa luận của tôi
+                Tra cứu khóa luận tốt nghiệp
             </h1>
-            <el-button type="primary" @click="btnAddOnClick"
-                >Đăng ký</el-button
-            >
         </div>
         <div class="search-container flex-row al-center cg-2">
             <div class="reload-btn">
@@ -77,9 +74,6 @@
                                         >Sửa</el-dropdown-item
                                     >
                                     <el-dropdown-item
-                                        v-if="scope.row.status === ThesisStatusEnum.WaitingForApproval
-                                            || scope.row.status === ThesisStatusEnum.RejectGuiding"
-                                        
                                         @click="btnDeleteItemOnClick(scope.row)"
                                         >Xóa</el-dropdown-item
                                     >
@@ -109,18 +103,17 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { useThesisStore, useAuthStore } from "@/stores";
+import { useThesisStore } from "@/stores";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { Refresh, Search } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { debounce } from "lodash";
-import MyThesisDetail from "./MyThesisDetail.vue";
-import {ThesisStatus, ThesisStatusEnum} from "@/common/enum";
+import ThesisSearchDetail from "./ThesisSearchDetail.vue";
+import {ThesisStatus} from "@/common/enum";
 
 const router = useRouter();
 const entityStore = useThesisStore();
-const authStore = useAuthStore();
 const { entities, total, loading, keySearch, pageNumber, pageSize } =
     storeToRefs(entityStore);
 
@@ -144,33 +137,14 @@ const searchText = ref("");
 
 initData();
 
-onMounted(() => {});
-
-async function getMyThesisList() {
-    const studentId = authStore.loginInfo.user.userId;
-    const customWhere = [
-        {
-            command: 'AND',
-            columnName: 'studentId',
-            operator: '=',
-            value: studentId
-        }
-    ];
-
-    await entityStore.fetchList(customWhere);
-}
+onMounted(() => {
+    console.log("onMounted");
+});
 
 async function initData() {
-    await getMyThesisList();
+    await getThesisCompletedList();
 }
 
-const btnAddOnClick = () => {
-    popupDetail.value = {
-        visible: true,
-        entityId: null,
-        mode: "add",
-    };
-};
 
 const btnDeleteItemOnClick = (row) => {
     ElMessageBox.confirm(
@@ -182,7 +156,7 @@ const btnDeleteItemOnClick = (row) => {
             type: "warning",
         }
     ).then(async () => {
-        const isDeleted = await entityStore.deleteOne(row[entityInfo.keyName]);
+        const isDeleted = await entityStore.delete(row[entityInfo.keyName]);
         console.log(isDeleted);
         if (isDeleted) {
             ElMessage.success("Xóa thành công");
@@ -191,6 +165,19 @@ const btnDeleteItemOnClick = (row) => {
         }
     });
 };
+
+async function getThesisCompletedList() {
+    const customWhere = [
+        {
+            command: 'AND',
+            columnName: 'status',
+            operator: '=',
+            value: '4'
+        }
+    ];
+
+    await entityStore.fetchList(customWhere);
+}
 
 async function searchTextOnInput() {
     if (!debouncedFunction) {
@@ -218,7 +205,7 @@ const btnEditItemOnClick = (row) => {
 };
 
 async function btnRefreshOnClick() {
-    await getMyThesisList();
+    await getThesisCompletedList();
 }
 </script>
 

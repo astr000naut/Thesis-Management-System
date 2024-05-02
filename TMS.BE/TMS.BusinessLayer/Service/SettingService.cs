@@ -12,7 +12,9 @@ using TMS.BaseService;
 using TMS.BusinessLayer.DTO;
 using TMS.BusinessLayer.Interface;
 using TMS.DataLayer.Entity;
+using TMS.DataLayer.Enum;
 using TMS.DataLayer.Interface;
+using TMS.DataLayer.Repository;
 
 namespace TMS.BusinessLayer.Service
 {
@@ -42,6 +44,38 @@ namespace TMS.BusinessLayer.Service
             _unitOfWork.SetConnectionString(connectionString);
         }
 
+        public async Task<ServiceResponse<SettingDto>> GetSettingAsync()
+        {
+            var response = new ServiceResponse<SettingDto>();
+            try
+            {         
+                await _unitOfWork.OpenAsync();
+                var setting = await _settingRepository.GetSettingAsync();
+                response.Data = _mapper.Map<SettingDto>(setting);
+                await _unitOfWork.CommitAsync();
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                await _unitOfWork.CloseAsync();
+            }
+            return response;
+        }
+
+        public override async Task BeforeUpdate(SettingDto setting)
+        {
+
+            setting.ThesisRegistrationFromDate = setting.ThesisRegistrationFromDate!.Value.AddHours(7);
+            setting.ThesisRegistrationToDate = setting.ThesisRegistrationToDate!.Value.AddHours(7);
+            setting.ThesisEditTitleFromDate = setting.ThesisEditTitleFromDate!.Value.AddHours(7);
+            setting.ThesisEditTitleToDate = setting.ThesisEditTitleToDate!.Value.AddHours(7);
+
+
+
+        }
     }
 
 }

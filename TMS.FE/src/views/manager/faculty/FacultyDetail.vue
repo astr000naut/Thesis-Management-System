@@ -31,7 +31,7 @@
                     <div class="flex-row cg-4">
                         <div class="form-group fl-1">
                             <el-form-item label="Mã khoa">
-                                <el-input v-model="entity.facultyCode" :dis/>
+                                <el-input v-model="entity.facultyCode"/>
                             </el-form-item>
                         </div>
 

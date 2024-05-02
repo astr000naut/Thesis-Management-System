@@ -29,7 +29,7 @@
                     :action="pUrlUpload"
                     multiple
                     :auto-upload="false"
-                    limit="1"
+                    :limit="1"
                     ref="refUpload"
                     :on-success="handleOnSuccess"
                 >

@@ -13,6 +13,7 @@ export const router = createRouter({
   history: createWebHistory(),
   linkActiveClass: 'active',
   routes: [
+      {path: '/', redirect: '/account/login'},
       { ...accountRoutes },
       { ...managerRoutes},
       { ...studentRoutes},
@@ -43,7 +44,7 @@ router.beforeEach(async (to) => {
   if (authRequired) {
     const role = authStore.loginInfo.user.role ?? "";
     const isRoleMatched = to.meta.roles ? to.meta.roles.includes(role) : false;
-    
+
     if (!isRoleMatched) {
         return '/not-found';
     };

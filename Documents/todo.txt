@@ -1,3 +1,5 @@
 todo: 
-	- them description cho student, recreate db
+	- validate file export
+	- tai mau file nhap khau tu minio
+	- code tra cuu
 	

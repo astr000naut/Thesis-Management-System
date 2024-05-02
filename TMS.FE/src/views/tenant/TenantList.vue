@@ -111,7 +111,7 @@
         cancelButtonText: 'Hủy',
         type: 'warning',
       }).then(async () => {
-        const isDeleted = await tenantStore.delete(row.tenantId);
+        const isDeleted = await tenantStore.deleteOne(row.tenantId);
         console.log(isDeleted)
         if (isDeleted) {
           ElMessage.success('Xóa thành công');

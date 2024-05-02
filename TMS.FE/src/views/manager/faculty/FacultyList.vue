@@ -129,7 +129,7 @@
           cancelButtonText: 'Hủy',
           type: 'warning',
         }).then(async () => {
-          const isDeleted = await entityStore.delete(row[entityInfo.keyName]);
+          const isDeleted = await entityStore.deleteOne(row[entityInfo.keyName]);
           console.log(isDeleted)
           if (isDeleted) {
             ElMessage.success('Xóa thành công');

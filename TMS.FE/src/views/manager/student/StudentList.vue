@@ -133,7 +133,7 @@ const btnDeleteItemOnClick = (row) => {
             type: "warning",
         }
     ).then(async () => {
-        const isDeleted = await studentStore.delete(row.userId);
+        const isDeleted = await studentStore.deleteOne(row.userId);
         console.log(isDeleted);
         if (isDeleted) {
             ElMessage.success("Xóa thành công");

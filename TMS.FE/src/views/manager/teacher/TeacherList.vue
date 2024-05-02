@@ -126,7 +126,7 @@ const btnDeleteItemOnClick = (row) => {
             type: "warning",
         }
     ).then(async () => {
-        const isDeleted = await teacherStore.delete(row.userId);
+        const isDeleted = await teacherStore.deleteOne(row.userId);
         console.log(isDeleted);
         if (isDeleted) {
             ElMessage.success("Xóa thành công");

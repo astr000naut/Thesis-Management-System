@@ -2,6 +2,7 @@ export class BaseApi {
 
     constructor(controller) {
         this.baseUrl = '/api/' + controller;
+        this.workerUrl= '/api/worker/' + controller;
     }
     
     filter() {

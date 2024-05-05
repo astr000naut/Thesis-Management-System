@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TMS.BaseService", "..\TMS.B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TMS.BaseRepository", "..\TMS.BaseBE\TMS.BaseRepository\TMS.BaseRepository.csproj", "{7F303204-ED05-4127-AFF7-0CD38DE7057A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMS.Worker.API", "TMS.Worker.API\TMS.Worker.API.csproj", "{13E46874-A09E-4ED3-A2A1-9992196F83EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{7F303204-ED05-4127-AFF7-0CD38DE7057A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F303204-ED05-4127-AFF7-0CD38DE7057A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F303204-ED05-4127-AFF7-0CD38DE7057A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13E46874-A09E-4ED3-A2A1-9992196F83EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13E46874-A09E-4ED3-A2A1-9992196F83EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13E46874-A09E-4ED3-A2A1-9992196F83EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13E46874-A09E-4ED3-A2A1-9992196F83EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

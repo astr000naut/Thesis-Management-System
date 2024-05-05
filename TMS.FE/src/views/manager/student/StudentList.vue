@@ -3,7 +3,7 @@
     <div class="page__container flex-col rg-2">
         <PopupUpload
             v-model:visible="popupUpload.visible"
-            pUrlUpload="/api/students/upload"
+            pUrlUpload="/worker/api/students/upload"
             @close="popupUploadOnClose"
         ></PopupUpload>
         <div class="page__header flex-row">

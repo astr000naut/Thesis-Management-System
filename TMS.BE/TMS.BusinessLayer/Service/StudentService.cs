@@ -35,7 +35,7 @@ namespace TMS.BusinessLayer.Service
 
             // get connection string from httpcontext items
 
-            var connectionString = _httpContextAccessor.HttpContext.Items["ConnectionString"].ToString();
+            var connectionString = _httpContextAccessor.HttpContext.Items["ConnectionString"]?.ToString();
 
             if (connectionString == null)
             {

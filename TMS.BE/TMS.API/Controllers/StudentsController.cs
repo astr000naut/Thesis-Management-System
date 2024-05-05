@@ -18,16 +18,5 @@ namespace TMS.API.Controllers
             _studentService = studentService;
         }
 
-        [HttpPost("upload")]
-        public async Task<IActionResult> UploadFile([FromForm] IFormFile file)
-        {
-            if (file is null)
-            {
-                return BadRequest("Invalid client request");
-            }
-            var response = await _studentService.HanleUploadFileAsync(file);
-            return Ok(response);
-        }
-
     }
 }

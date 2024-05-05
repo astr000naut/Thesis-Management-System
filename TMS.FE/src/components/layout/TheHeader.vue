@@ -46,8 +46,8 @@ const showChangePassword = ref();
 
 const headerData = ref({});
 headerData.value = {
-  tenantName: authStore.tenantBaseInfo.tenantName ?? "",
-  userName: authStore.loginInfo.user.fullName ?? "",
+  tenantName: authStore.tenantBaseInfo?.tenantName ?? "",
+  userName: authStore.loginInfo?.user.fullName ?? "",
 };
 
 

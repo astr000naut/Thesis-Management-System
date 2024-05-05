@@ -31,8 +31,8 @@ export function useBaseStore(props) {
                 customWhere: customWhere
             });
 
-            entities.value = response.data ?? [];
-            total.value = response.total ?? 0;
+            entities.value = response?.data ?? [];
+            total.value = response?.total ?? 0;
         } catch (error) {
             const alertStore = useAlertStore();
             alertStore.alert('error', error);

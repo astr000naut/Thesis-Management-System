@@ -12,7 +12,7 @@ namespace TMS.BusinessLayer.Interface
     {
         Task<ServiceResponse<LoginResponseDto>> Login(string username, string password);
 
-        Task<LoginResponseDto> RefreshToken(string accessToken, string refreshToken);
+        Task<ServiceResponse<bool>> RefreshToken(string accessToken, string refreshToken);
         Task<ServiceResponse<bool>> ChangePasswordAsync(string oldPass, string newPass, string confirmPass);
     }
 }

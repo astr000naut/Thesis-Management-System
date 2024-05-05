@@ -33,14 +33,7 @@ function request(method) {
 // helper functions
 
 function authHeader() {
-
-    const { loginInfo } = useAuthStore();
-    const isLoggedIn = !!loginInfo?.accessToken;
-    if (isLoggedIn) {
-        return { Authorization: `Bearer ${loginInfo.accessToken}` };
-    } else {
-        return {};
-    }
+    return {};
 }
 
 async function handleError(err) {
@@ -51,16 +44,11 @@ async function handleError(err) {
     const response = err.response;
     if ([401, 403].includes(response.status))
     {
-        const { loginInfo, logout, refreshToken } = useAuthStore();
-        if (loginInfo?.refreshToken) {
-            await refreshToken();
-            const newToken = useAuthStore().loginInfo?.accessToken;
-            if (newToken) {
-                response.config.headers['Authorization'] = `Bearer ${newToken}`;
-                return axios(response.config);
-            } else {
-                logout();
-            }
+        const { logout, refreshToken } = useAuthStore();
+        const refreshTokenResult = await refreshToken();
+        if (refreshTokenResult) {
+            var resendResult = await axios(response.config);
+            return resendResult.data;
         } else {
             logout();
         }

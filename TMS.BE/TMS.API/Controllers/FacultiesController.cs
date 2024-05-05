@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TMS.API.Param;
 using TMS.BusinessLayer.DTO;
 using TMS.BusinessLayer.Interface;
@@ -9,6 +10,7 @@ namespace TMS.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "ADMIN")]
     public class FacultiesController : BaseController<FacultyDto>
     {
         private readonly IFacultyService _facultyService;

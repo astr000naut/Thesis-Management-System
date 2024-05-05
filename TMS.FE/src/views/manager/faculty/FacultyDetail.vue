@@ -97,8 +97,6 @@ const {loading} = storeToRefs(entityStore)
 
 const visible = defineModel("visible");
 
-initData();
-
 async function initData() {
     form.value.mode = props.pMode;
 

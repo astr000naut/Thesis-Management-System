@@ -55,7 +55,6 @@ const form = ref({
 
 const visible = defineModel("visible");
 
-initData();
 
 async function initData() {}
 

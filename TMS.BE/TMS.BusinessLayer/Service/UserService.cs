@@ -119,10 +119,25 @@ namespace TMS.BusinessLayer.Service
 
                     response.Data = new LoginResponseDto
                     {
-                        AccessToken = accessToken,
-                        RefreshToken = refreshToken,
                         User = _mapper.Map<UserDto>(user)
                     };
+
+                    var httpResponse = _httpContextAccessor.HttpContext.Response;
+
+                    // set access token to cookie
+                    httpResponse.Cookies.Append("x-token", accessToken, new CookieOptions
+                    {
+                        HttpOnly = false,
+                        Expires = DateTime.Now.AddHours(24)
+                    });
+
+                    // set refresh token to cookie with path /refresh-token
+                    httpResponse.Cookies.Append("x-refresh-token", refreshToken, new CookieOptions
+                    {
+                        HttpOnly = false,
+                        Expires = DateTime.Now.AddDays(double.Parse(_configuration["JWT:RefreshTokenExpiryInDays"] ?? "2") + 1),
+                        Path = "api/users/refresh-token"
+                    });
                 }
                 else
                 {
@@ -151,7 +166,7 @@ namespace TMS.BusinessLayer.Service
                 issuer: _configuration["JWT:ValidIssuer"],
                 audience: _configuration["JWT:ValidAudience"],
                 claims: claims,
-                expires: DateTime.Now.AddHours(double.Parse(_configuration["JWT:TokenExpiryInMinutes"] ?? "15")),
+                expires: DateTime.Now.AddMinutes(double.Parse(_configuration["JWT:TokenExpiryInMinutes"] ?? "15")),
                 signingCredentials: signinCredentials
             );
             var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
@@ -189,7 +204,7 @@ namespace TMS.BusinessLayer.Service
 
         }
 
-        public async Task<LoginResponseDto> RefreshToken(string accessToken, string refreshToken)
+        public async Task<ServiceResponse<bool>> RefreshToken(string accessToken, string refreshToken)
         {
             try
             {
@@ -216,12 +231,30 @@ namespace TMS.BusinessLayer.Service
 
                 await _unitOfWork.CommitAsync();
 
-                return new LoginResponseDto
+                var response = new ServiceResponse<bool>
                 {
-                    AccessToken = newAccessToken,
-                    RefreshToken = newRefreshToken,
-                    User = _mapper.Map<UserDto>(user)
+                    Data = true
                 };
+
+
+                var httpResponse = _httpContextAccessor.HttpContext.Response;
+
+                // set access token to cookie
+                httpResponse.Cookies.Append("x-token", newAccessToken, new CookieOptions
+                {
+                    HttpOnly = false,
+                    Expires = DateTime.Now.AddHours(24)
+                });
+
+                // set refresh token to cookie with path /refresh-token
+                httpResponse.Cookies.Append("x-refresh-token", newRefreshToken, new CookieOptions
+                {
+                    HttpOnly = false,
+                    Expires = DateTime.Now.AddDays(double.Parse(_configuration["JWT:RefreshTokenExpiryInDays"] ?? "2") + 1),
+                    Path = "api/users/refresh-token"
+                });
+
+                return response;
 
             }
             catch

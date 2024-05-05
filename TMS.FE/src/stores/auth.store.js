@@ -11,7 +11,7 @@ export const useAuthStore = defineStore('auth', {
     state: () => ({
         loginInfo: JSON.parse(localStorage.getItem('loginInfo')),
         returnUrl: null,
-        tenantBaseInfo: JSON.parse(localStorage.getItem('tenantBaseInfo'))
+        tenantBaseInfo: null,
     }),
     actions:{
         async getTenantBaseInfo() {
@@ -20,7 +20,6 @@ export const useAuthStore = defineStore('auth', {
                     Domain: window.location.hostname
                 };
                 const response = await httpClient.post($api.tenant.getTenantInfoLite(), body);
-                localStorage.setItem('tenantBaseInfo', JSON.stringify(response));
                 this.tenantBaseInfo = response;
             } catch (error) {
                 const alertStore = useAlertStore();
@@ -61,17 +60,11 @@ export const useAuthStore = defineStore('auth', {
         },
         async refreshToken() {
             try {
-                const response = await httpClient.post($api.user.refreshToken, { 
-                    accessToken: this.loginInfo.accessToken,
-                    refreshToken: this.loginInfo.refreshToken
-                });
-
-                if (response.Error) {
-                    this.logout();
-                } else {
-                    this.loginInfo = response;
-                    localStorage.setItem('loginInfo', JSON.stringify(response));
+                const response = await httpClient.get($api.user.refreshToken);
+                if (response && response.success && response.data) {
+                    return true;
                 }
+                return false;
             } catch (error) {
                 this.logout();
             }

@@ -37,22 +37,27 @@ namespace TMS.API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "ADMIN")]
         public ActionResult Test()
         {
             return Ok("Test");
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("refresh-token")]
-        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenParam refreshTokenParam)
+        public async Task<IActionResult> RefreshToken()
         {
-            if (refreshTokenParam is null)
+            // get access token from x-token cookies
+            var accessToken = Request.Cookies["x-token"];
+            // get refresh token from x-refresh-token cookies
+            var refreshToken = Request.Cookies["x-refresh-token"];
+
+            if (string.IsNullOrEmpty(accessToken) || string.IsNullOrEmpty(refreshToken))
             {
                 return BadRequest("Invalid client request");
             }
 
-            LoginResponseDto response = await _userService.RefreshToken(refreshTokenParam.AccessToken, refreshTokenParam.RefreshToken);
+            var response = await _userService.RefreshToken(accessToken, refreshToken);
             return Ok(response);
         }
     }

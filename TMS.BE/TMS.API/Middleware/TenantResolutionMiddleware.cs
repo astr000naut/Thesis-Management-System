@@ -32,6 +32,14 @@ namespace TMS.API.Middleware
                     
                 }
 
+                // Get x-token from cookies and set to header
+                var accessToken = context.Request.Cookies["x-token"];
+
+                if (!string.IsNullOrEmpty(accessToken))
+                {
+                    context.Request.Headers.Add("Authorization", "Bearer " + accessToken);
+                }
+
                 await _next(context);
             }
             catch (Exception)

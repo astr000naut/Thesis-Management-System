@@ -4,7 +4,7 @@ export class tenantApi extends BaseApi {
         super('tenants');
     }   
 
-    checkDBConnection = () => this.baseUrl + '/check-db-connection';
+    checkConnection = () => this.baseUrl + '/check-connection';
 
     activeTenant = () => this.baseUrl + '/active-tenant';
 }

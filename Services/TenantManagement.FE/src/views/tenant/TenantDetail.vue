@@ -117,11 +117,6 @@
                                 <el-input v-model="entity.minioEndpoint" :disabled="entity.autoCreateMinio" />
                             </el-form-item>
                         </div>
-                        <div class="form-group fl-1">
-                            <el-form-item label="Port">
-                                <el-input v-model="entity.minioPort" :disabled="entity.autoCreateMinio" />
-                            </el-form-item>
-                        </div>
                         
                     </div>  
                     <div class="flex-row cg-4">
@@ -237,11 +232,10 @@
 
     async function checkTenantConnection() {
         const result = await tenantStore.checkConnection({...entity.value});
-        if (result === "") {
-            
+        if (!result.ErrorCode) {  
             ElMessage.success('Thử kết nối thành công');
         } else {
-            ElMessage.error('Thử kết nối thất bại: ' + result);
+            ElMessage.error('Thử kết nối thất bại: ' + result.Message);
         }
     }
 

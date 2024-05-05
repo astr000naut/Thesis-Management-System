@@ -2,6 +2,7 @@
 using TenantManagement.API.Param;
 using TenantManagement.BusinessLayer.DTO;
 using TenantManagement.BusinessLayer.Interface;
+using TMS.BaseService;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,11 +19,11 @@ namespace TenantManagement.API.Controllers
             _tenantService = tenantService;
         }
 
-        [HttpPost("check-db-connection")]
-        public async Task<IActionResult> CheckDBConnection([FromBody] CheckDBConnectionParam param)
+        [HttpPost("check-connection")]
+        public async Task<ServiceResponse<bool>> CheckDBConnection([FromBody] CheckConnectionParam param)
         {
-            var response = await _tenantService.CheckDBConnection(param.AutoCreateDB, param.ConnectionString, param.DBName);
-            return Ok(response);
+            var response = await _tenantService.CheckConnection(param);
+            return response;
         }
 
         [HttpPost("active-tenant")]

@@ -16,6 +16,10 @@ using Dapper;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using TenantManagement.DataLayer.Entity;
+using Minio;
+using System.Net;
+using TenantManagement.API.Param;
+using Minio.DataModel.Args;
 
 namespace TenantManagement.BusinessLayer.Service
 {
@@ -57,6 +61,56 @@ namespace TenantManagement.BusinessLayer.Service
             tenantDto.MinioBucketName = "tenant-" + tenantDto.TenantId;
 
             return tenantDto;
+        }
+
+        public async Task<ServiceResponse<bool>> CheckConnection(CheckConnectionParam param)
+        {
+            var result = new ServiceResponse<bool>() { Data = true};
+            var checkDbResult = await CheckDBConnection(param.AutoCreateDB, param.ConnectionString, param.DBName);
+            if (!checkDbResult)
+            {
+                result.Data = false;
+                result.ErrorCode = "DB_CONNECTION_ERROR";
+                result.Message = "Không thể kết nối cơ sở dữ liệu";
+            }
+            var checkMinioResult = await CheckMinioConnection(param.AutoCreateMinio, param.MinioEndpoint, param.MinioAccessKey, param.MinioSecretKey, param.MinioBucketName);
+            if (!checkMinioResult)
+            {
+                result.Data = false;
+                result.ErrorCode = "MINIO_CONNECTION_ERROR";
+                result.Message = "Không thể kết nối Minio";
+            }
+            return result;
+
+        }
+
+        public async Task<bool> CheckMinioConnection(bool autoCreateMinio, string endpoint, string accessKey, string secretKey, string bucketName)
+        {
+            IMinioClient minio;
+            try
+            {
+                bool result = true;
+                minio = new MinioClient()
+                                    .WithEndpoint(endpoint)
+                                    .WithCredentials(accessKey, secretKey)
+                                    .Build();
+                if (autoCreateMinio)
+                {
+                    var listBucket = await minio.ListBucketsAsync();
+                } else
+                {
+                    // check if bucket exists
+                    BucketExistsArgs buketExistArgs = new BucketExistsArgs();
+                    buketExistArgs.WithBucket(bucketName);
+                    result = await minio.BucketExistsAsync(buketExistArgs);
+                }
+                minio.Dispose();
+                return result;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public async Task<bool> CheckDBConnection(bool autoCreateDB, string connectionString, string databaseName)
@@ -458,24 +512,22 @@ namespace TenantManagement.BusinessLayer.Service
         {
            try
             {
-                var url = _configuration.GetSection("Serviceurl:FileService").Value;
-                url += "/active-tenant";
-                bool isSuccess = false;
-                using (var httpClient = new HttpClient())
+                IMinioClient minio = new MinioClient()
+                                    .WithEndpoint(tenantDto.MinioEndpoint)
+                                    .WithCredentials(tenantDto.MinioAccessKey, tenantDto.MinioSecretKey)
+                                    .Build();
+
+                // create bucket if not exists
+                if (tenantDto.AutoCreateMinio)
                 {
-                    var requestBody = new StringContent(JsonConvert.SerializeObject(tenantDto), Encoding.UTF8, "application/json");
-                    var response = await httpClient.PostAsync(url, requestBody);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var content = await response.Content.ReadAsStringAsync();
-                        isSuccess = JsonConvert.DeserializeObject<bool>(content);
-                    } else
-                    {
-                        throw new Exception("Cannot connect to FileService");
-                    }
+                    MakeBucketArgs makeBucketArgs = new MakeBucketArgs();
+                    makeBucketArgs.WithBucket(tenantDto.MinioBucketName);
+                    await minio.MakeBucketAsync(makeBucketArgs);
                 }
-                return isSuccess;
-                
+
+                minio.Dispose();
+
+                return true;
 
             } catch (Exception)
             {

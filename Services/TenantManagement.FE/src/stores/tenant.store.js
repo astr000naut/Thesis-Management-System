@@ -183,49 +183,21 @@ export const useTenantStore = defineStore('tenant', {
             let body = {
                 AutoCreateDB: entity.autoCreateDB,
                 ConnectionString: entity.dbConnection,
-                DBName: entity.dbName
-            }
-            try {
-                const connectDBResponse = await httpClient.post($api.tenant.checkDBConnection(), body);
-            
-                if (connectDBResponse.Error) {
-                    throw connectDBResponse.Message;
-                }
+                DBName: entity.dbName,
 
-                if (connectDBResponse === false) {
-                    return "Không thể kết nối đến cơ sở dữ liệu.";
-                }
-            } catch {
-                return "Không thể kết nối đến cơ sở dữ liệu.";
-            }
-            
-            
-            body = {
                 AutoCreateMinio: entity.autoCreateMinio,
-                Endpoint: entity.minioEndpoint,
-                Port: entity.minioPort,
-                AccessKey: entity.minioAccessKey,
-                SecretKey: entity.minioSecretKey,
-                BucketName: entity.minioBucketName
+                MinioEndpoint: entity.minioEndpoint,
+                MinioAccessKey: entity.minioAccessKey,
+                MinioSecretKey: entity.minioSecretKey,
+                MinioBucketName: entity.minioBucketName
             }
             try {
-                const connectMinioReseponse = await httpClient.post($api.fileService.checkMinioConnection(), body);
-            
-                if (connectMinioReseponse.Error) {
-                    throw connectMinioReseponse.Message;
-                }
-    
-                if (connectMinioReseponse === false) {
-                    
-                    return "Không thể kết nối đến Minio.";
-                }
-                
-            } catch {
-                return "Không thể kết nối đến Minio.";
-            }   
-
-            
-            return "";
+                const checkConnectionResponse = await httpClient.post($api.tenant.checkConnection(), body);
+                return checkConnectionResponse;
+            } catch(error) {
+                const alertStore = useAlertStore();
+                alertStore.alert('error', error);
+            }
         },
 
         async activeTenant(entity) {

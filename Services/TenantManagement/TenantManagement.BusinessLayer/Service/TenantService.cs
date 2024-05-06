@@ -579,6 +579,61 @@ namespace TenantManagement.BusinessLayer.Service
             }
 
         }
+
+        public async Task<ServiceResponse<bool>> RemoveTenantResourceAsync(TenantDto tenantDto)
+        {
+            var res = new ServiceResponse<bool>();
+            try
+            {
+                var connection = tenantDto.DBConnection;
+                // drop database if exists then create new database
+                var query = "DROP DATABASE IF EXISTS `" + tenantDto.DBName + "`;";
+             
+                using (var conn = new MySqlConnector.MySqlConnection(connection))
+                {
+                    await conn.OpenAsync();
+                    var _transaction = await conn.BeginTransactionAsync();
+                    await conn.ExecuteAsync(query, transaction: _transaction);
+                    await _transaction.CommitAsync();
+                    await conn.CloseAsync();
+                }
+
+                IMinioClient minio = new MinioClient()
+                                    .WithEndpoint(tenantDto.MinioEndpoint)
+                                    .WithCredentials(tenantDto.MinioAccessKey, tenantDto.MinioSecretKey)
+                                    .Build();
+                // remove bucket
+                BucketExistsArgs buketExistArgs = new BucketExistsArgs();
+                buketExistArgs.WithBucket(tenantDto.MinioBucketName);
+
+                bool found = await minio.BucketExistsAsync(buketExistArgs);
+                if (found)
+                {
+                    // Remove bucket my-bucketname. This operation will succeed only if the bucket is empty.
+                    RemoveBucketArgs removeBucketArgs = new RemoveBucketArgs();
+                    removeBucketArgs.WithBucket(tenantDto.MinioBucketName);
+                    await minio.RemoveBucketAsync(removeBucketArgs);
+                }
+
+                await _unitOfWork.OpenAsync();
+                var tenant = await _tenantRepository.GetByIdAsync(tenantDto.TenantId);
+                if (tenant != null)
+                {
+                    tenant.Status = 0;
+                    await _tenantRepository.UpdateAsync(tenant);
+                }
+                await _unitOfWork.CommitAsync();
+
+            } catch (Exception e)
+            {
+                throw;
+            } finally
+            {
+                await _unitOfWork.CloseAsync();
+            }
+
+            return res;
+        }
     }
 }
 

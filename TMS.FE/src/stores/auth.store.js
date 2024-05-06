@@ -4,6 +4,7 @@ import {router} from '@/router';
 import { useAlertStore } from './alert.store';
 import { ref } from 'vue';
 import { ElMessage } from "element-plus";
+import { TenantStatusEnum } from '@/common/enum';
 
 import $api from '@/api';
 

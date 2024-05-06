@@ -153,7 +153,9 @@
                     </el-button>
                 </div>
                 <div v-else class="form-view-footer">
-                    <el-button v-show="curTabname === 'tenantSetting'" type="" @click="btnInactiveTenantOnClick">Ngừng hoạt động</el-button>
+                    <el-button v-show="curTabname === 'tenantSetting' && entity.status === 2" type="" @click="btnInactiveTenantOnClick">Ngừng hoạt động</el-button>
+                    <el-button v-show="curTabname === 'tenantSetting' && entity.status === 1" type="" @click="btnRemoveTenantResourceOnClick">Xóa tài nguyên</el-button>
+                    <el-button v-show="curTabname === 'tenantSetting' && entity.status === 1" type="" @click="btnReActiveTenantOnClick">Tiếp tục sử dụng</el-button>
                     <el-button v-show="curTabname === 'tenantSetting'" type="" @click="checkTenantConnection">Kiểm tra kết nối</el-button>
                     <el-button v-show="curTabname === 'tenantSetting' && entity.status === 0" type="primary" @click="btnActiveTenantOnClick">Kích hoạt</el-button>
                     <el-button v-show="curTabname !== 'tenantSetting'" type="primary" @click="btnEditOnClick">
@@ -209,7 +211,13 @@
         if (form.value.mode === 'add') {
             await tenantStore.insert({...entity.value});
         } else {
-            await tenantStore.update({...entity.value});
+            const message = await tenantStore.update({...entity.value});
+            if (message) {
+                ElMessage.error(message);
+            } else {
+                ElMessage.success('Cập nhật thành công');
+                router.push('/tenant');
+            }
         }
     }
 
@@ -219,12 +227,59 @@
         form.value.title = 'Sửa Khách hàng';
     }
 
+    async function btnRemoveTenantResourceOnClick() {
+        ElMessageBox.confirm('Bạn có chắc chắn muốn xóa tài nguyên của khách hàng này không?', 'Xác nhận', {
+            confirmButtonText: 'Đồng ý',
+            cancelButtonText: 'Hủy',
+            type: 'warning'
+        }).then(async () => {
+            const message = await tenantStore.removeResource({...entity.value});
+            if (message) {
+                ElMessage.error(message);
+            } else {
+                ElMessage.success('Đã xóa tài nguyên của khách hàng');
+                router.push('/tenant');
+            }
+
+        }).catch(() => {
+            // do nothing
+        });
+    }
+
     async function btnInactiveTenantOnClick() {
         ElMessageBox.confirm('Bạn có chắc chắn muốn ngừng hoạt động khách hàng này không?', 'Xác nhận', {
             confirmButtonText: 'Đồng ý',
             cancelButtonText: 'Hủy',
             type: 'warning'
         }).then(async () => {
+            entity.value.status = 1;
+            const message = await tenantStore.update({...entity.value});
+            if (message) {
+                ElMessage.error(message);
+            } else {
+                ElMessage.success('Đã ngừng hoạt động khách hàng');
+                router.push('/tenant');
+            }
+
+        }).catch(() => {
+            // do nothing
+        });
+    }
+
+    async function btnReActiveTenantOnClick() {
+        ElMessageBox.confirm('Bạn có chắc chắn muốn cho phép khách hàng tiếp tục sử dụng?', 'Xác nhận', {
+            confirmButtonText: 'Đồng ý',
+            cancelButtonText: 'Hủy',
+            type: 'warning'
+        }).then(async () => {
+            entity.value.status = 2;
+            const message = await tenantStore.update({...entity.value});
+            if (message) {
+                ElMessage.error(message);
+            } else {
+                router.push('/tenant');
+            }
+
         }).catch(() => {
             // do nothing
         });

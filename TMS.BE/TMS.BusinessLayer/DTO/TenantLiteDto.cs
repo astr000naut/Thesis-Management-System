@@ -18,6 +18,8 @@ namespace TMS.BusinessLayer.DTO
         public string TenantCode { get; set; }
 
         public string Domain { get; set; }
+
+        public int Status { get; set; }
        
         public string? LogoUrl { get; set; }
   

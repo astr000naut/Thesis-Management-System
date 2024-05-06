@@ -5,6 +5,8 @@ import accountRoutes from './account.routes';
 import studentRoutes from './student.routes';
 import teacherRoutes from './teacher.routes';
 import managerRoutes from "./manager.routes";
+import { TenantStatusEnum } from "@/common/enum";
+import { ElMessage } from "element-plus";
 
 import NotFound from '@/components/common/NotFound.vue';
 
@@ -33,6 +35,14 @@ router.beforeEach(async (to) => {
   // check current tenant info
   if (!authStore.tenantBaseInfo) {
       await authStore.getTenantBaseInfo();  
+  }
+
+  // check tenant active status         
+  if (authRequired && authStore.tenantBaseInfo && authStore.tenantBaseInfo.status !== TenantStatusEnum.Active) {
+      ElMessage.error('Hệ thống chưa được kích hoạt để sử dụng. Vui lòng liên hệ với quản trị viên để biết thêm chi tiết.');
+      setTimeout(() => {
+          authStore.logout();
+      }, 2000);
   }
 
 

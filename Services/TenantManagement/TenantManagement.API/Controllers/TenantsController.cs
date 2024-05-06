@@ -26,6 +26,13 @@ namespace TenantManagement.API.Controllers
             return response;
         }
 
+        [HttpPost("remove-resource")]
+        public async Task<ServiceResponse<bool>> RemoveResource([FromBody] TenantDto tenantDto)
+        {
+            var response = await _tenantService.RemoveTenantResourceAsync(tenantDto);
+            return response;
+        }
+
         [HttpPost("active-tenant")]
         public async Task<IActionResult> ActiveTenant([FromBody] ActiveTenantParam param)
         {

@@ -19,3 +19,9 @@ export const ThesisStatusEnum = {
     ApprovedTitle: 3,
     Finished: 4,
 }
+
+export const TenantStatusEnum = {
+    NotActive: 0,
+    Stop: 1,
+    Active: 2,
+}

@@ -12,6 +12,8 @@ namespace TenantManagement.BusinessLayer.Interface
     public interface ITenantService: IBaseService<TenantDto>
     {
         Task<ServiceResponse<bool>> CheckConnection(CheckConnectionParam param);
-        Task<TenantDto> ActiveTenant(Guid tenantId); 
+        Task<TenantDto> ActiveTenant(Guid tenantId);
+
+        Task<ServiceResponse<bool>> RemoveTenantResourceAsync(TenantDto tenantDto);
     }
 }

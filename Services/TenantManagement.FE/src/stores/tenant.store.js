@@ -83,13 +83,32 @@ export const useTenantStore = defineStore('tenant', {
                 const response = await httpClient.put($api.tenant.update(entity.tenantId), entity);
 
                 if (response.Error) {
+                    return response.Message;
+                }
+                
+                const index = this.tenants.findIndex(x => x.tenantId === entity.tenantId);
+                this.tenants[index] = entity;
+                return "";
+            } catch (error) {
+                const alertStore = useAlertStore();
+                return "Có lỗi xảy ra! Vui lòng thử lại sau."
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async removeResource(entity) {
+            this.loading = true;
+            try {
+                const response = await httpClient.post($api.tenant.removeResource(), entity);
+
+                if (response.Error) {
                     throw response.Message;
                 }
                 
                 const index = this.tenants.findIndex(x => x.tenantId === entity.tenantId);
                 this.tenants[index] = entity;
-                ElMessage.success('Cập nhật thông tin khách hàng thành công');
-                router.push('/tenant');
+                return "";
             } catch (error) {
                 const alertStore = useAlertStore();
                 alertStore.alert('error', error);

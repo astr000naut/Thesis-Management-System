@@ -43,8 +43,8 @@ export const useTenantStore = defineStore('tenant', {
             try {
                 const response = await httpClient.get($api.tenant.getById(id));
                 
-                if (response.Error) {
-                    throw response.Message;
+                if (response.errorCode) {
+                    throw response.message;
                 }
                 
                 return response;
@@ -61,8 +61,8 @@ export const useTenantStore = defineStore('tenant', {
             try {
                 const response = await httpClient.post($api.tenant.insert(), entity);
 
-                if (response.Error) {
-                    throw response.Message;
+                if (response.errorCode) {
+                    throw response.message;
                 }
                 
                 this.tenants.unshift(entity);
@@ -82,8 +82,8 @@ export const useTenantStore = defineStore('tenant', {
             try {
                 const response = await httpClient.put($api.tenant.update(entity.tenantId), entity);
 
-                if (response.Error) {
-                    throw response.Message;
+                if (response.errorCode) {
+                    throw response.message;
                 }
                 
                 const index = this.tenants.findIndex(x => x.tenantId === entity.tenantId);
@@ -103,8 +103,8 @@ export const useTenantStore = defineStore('tenant', {
             try {
                 const response = await httpClient.post($api.tenant.delete(), [id]);
 
-                if (response.Error) {
-                    throw response.Message;
+                if (response.errorCode) {
+                    throw response.message;
                 }
 
                 this.tenants = this.tenants.filter(x => x.tenantId !== id);
@@ -148,8 +148,8 @@ export const useTenantStore = defineStore('tenant', {
             try {
                 const response = await httpClient.get($api.tenant.getNew());
 
-                if (response.Error) {
-                    throw response.Message;
+                if (response.errorCode) {
+                    throw response.message;
                 }
 
                 return response;

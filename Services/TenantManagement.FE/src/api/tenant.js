@@ -7,4 +7,6 @@ export class tenantApi extends BaseApi {
     checkConnection = () => this.baseUrl + '/check-connection';
 
     activeTenant = () => this.baseUrl + '/active-tenant';
+
+    removeResource = () => this.baseUrl + '/remove-resource';
 }

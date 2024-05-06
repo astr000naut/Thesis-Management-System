@@ -40,6 +40,7 @@
                     @click="btnEditItemOnClick(scope.row)"
                   >Sửa</el-dropdown-item>
                   <el-dropdown-item
+                    v-if="scope.row.status === 0"
                     @click="btnDeleteItemOnClick(scope.row)"  
                   >Xóa</el-dropdown-item>
                 </el-dropdown-menu>

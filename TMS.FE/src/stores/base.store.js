@@ -31,8 +31,12 @@ export function useBaseStore(props) {
                 customWhere: customWhere
             });
 
-            entities.value = response?.data ?? [];
-            total.value = response?.total ?? 0;
+            if (response.errorCode) {
+                throw response.message;
+            } else {
+                entities.value = response?.data ?? [];
+                total.value = response?.total ?? 0;
+            }
         } catch (error) {
             const alertStore = useAlertStore();
             alertStore.alert('error', error);
@@ -51,8 +55,8 @@ export function useBaseStore(props) {
         try {
             const response = await httpClient.get(API.getById(id));
             
-            if (response.Error) {
-                throw response.Message;
+            if (response.errorCode) {
+                throw response.message;
             }
             
             return response;
@@ -69,8 +73,8 @@ export function useBaseStore(props) {
         try {
             const response = await httpClient.post(API.insert(), entity);
 
-            if (response.Error) {
-                throw response.Message;
+            if (response.errorCode) {
+                throw response.message;
             }
             entities.value.unshift(entity);
             ++ total.value;
@@ -89,8 +93,8 @@ export function useBaseStore(props) {
         try {
             const response = await httpClient.put(API.update(entity[keyName]), entity);
 
-            if (response.Error) {
-                throw response.Message;
+            if (response.errorCode) {
+                throw response.message;
             }
             entities.value = entities.value.map(x => x[keyName] === entity[keyName] ? entity : x);
             return true;
@@ -108,8 +112,8 @@ export function useBaseStore(props) {
         try {
             const response = await httpClient.post(API.delete(), [id]);
 
-            if (response.Error) {
-                throw response.Message;
+            if (response.errorCode) {
+                throw response.message;
             }
 
             entities.value = entities.value.filter(x => x[keyName] !== id);
@@ -155,8 +159,8 @@ export function useBaseStore(props) {
         try {
             const response = await httpClient.get(API.getNew());
 
-            if (response.Error) {
-                throw response.Message;
+            if (response.errorCode) {
+                throw response.message;
             }
 
             return response;

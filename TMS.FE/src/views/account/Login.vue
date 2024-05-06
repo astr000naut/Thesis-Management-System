@@ -77,7 +77,7 @@ async function onSubmit(values) {
 }
 
 function goToHome() {
-    const role = authStore.loginInfo.user.role ?? "";
+    const role = authStore?.loginInfo?.user.role ?? "";
     switch (role) {
         case "ADMIN":
             router.push('/m/faculty');

@@ -11,7 +11,7 @@
         <div
             class="dialog-body"
             v-loading.fullscreen="
-                loading
+                loading && visible
                     ? {
                           lock: true,
                           text: '',
@@ -104,6 +104,21 @@
                             />
                         </el-form-item>
                     </div>
+                    <el-upload
+                        ref="uploadRef"
+                        :auto-upload="false"
+                        :limit="1"
+                        v-model:file-list="fileList"
+                    >
+                        <template #trigger>
+                        <div class="select_upload">
+                            <Icon class="item__icon" icon="eva:attach-outline"/>
+                            <div class="upload__tex">File đính kèm</div>
+                        </div>
+                        </template>
+                        <template #tip>
+                        </template>
+                    </el-upload>
                 </el-form>
                 <el-form
                     v-if="form.mode === 'view'"
@@ -188,7 +203,7 @@
                     :loading="loading"
                     v-if="form.mode !== 'view'"
                 >
-                    Xác nhận
+                    Lưu
                 </el-button>
             </div>
         </template>
@@ -217,6 +232,15 @@ const entity = ref({});
 const listTeacher = ref([]);
 const allTeacher = [];
 const loadingGetTeacher = ref(false);
+const fileList = ref([
+    // {
+    //     uid: "1",
+    //     name: "xxx.png",
+    //     status: "ready",
+    //     size: 0,
+    //     raw: {}
+    // }
+]);
 
 const props = defineProps({
     pEntityId: String,
@@ -318,5 +342,14 @@ function btnCancelOnClick() {
   align-items: center;
   height: 100px;
   font-size: 20px;
+}
+
+.select_upload {
+    display: flex;
+    flex-direction: row;
+    column-gap: 4px;
+    align-items: center;
+    color: rgb(155, 189, 221);
+    cursor: pointer;
 }
 </style>

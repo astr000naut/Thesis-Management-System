@@ -74,11 +74,11 @@
                                         @click="btnEditItemOnClick(scope.row)"
                                         >Chỉnh sửa</el-dropdown-item
                                     >
-                                    <el-dropdown-item v-if="scope.row.status === ThesisStatusEnum.ApprovedGuiding"
+                                    <el-dropdown-item v-if="scope.row.status === ThesisStatusEnum.ApprovedGuiding && isDisplayApproveTitle()"
                                         @click="btnApproveTitleOnClick(scope.row)"
                                         >Xác nhận đề tài</el-dropdown-item
                                     >
-                                    <el-dropdown-item v-if="scope.row.status === ThesisStatusEnum.ApprovedTitle"
+                                    <el-dropdown-item v-if="scope.row.status === ThesisStatusEnum.ApprovedTitle && isDisplayApproveTitle()"
                                         @click="btnCancelApproveTitleOnClick(scope.row)"
                                         >Hủy xác nhận đề tài</el-dropdown-item
                                     >
@@ -112,7 +112,7 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { useThesisStore, useAuthStore } from "@/stores";
+import { useThesisStore, useAuthStore, useSettingStore } from "@/stores";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { Refresh, Search } from "@element-plus/icons-vue";
@@ -120,6 +120,9 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { debounce } from "lodash";
 import ThesisGuidingDetail from "./ThesisGuidingDetail.vue";
 import {ThesisStatus, ThesisStatusEnum} from "@/common/enum";
+const settingStore = useSettingStore();
+const {appSetting} = storeToRefs(settingStore);
+
 
 const router = useRouter();
 const entityStore = useThesisStore();
@@ -158,6 +161,21 @@ async function initData() {
 
 function onRemoveItem(id) {
     entityStore.removeOneEntity(id);
+}
+
+function isDisplayApproveTitle() {
+     // Get current date
+     let currentDate = new Date();
+
+    // Convert thesisRegistrationFromDate and thesisRegistrationToDate to Date objects
+    let thesisEditTitleFromDate = new Date(appSetting.value.thesisEditTitleFromDate);
+    let thesisEditTitleToDate = new Date(appSetting.value.thesisEditTitleToDate);
+    // Check if current date is between thesisRegistrationFromDate and thesisRegistrationToDate
+    if (currentDate >= thesisEditTitleFromDate && currentDate <= thesisEditTitleToDate) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 
@@ -199,7 +217,7 @@ const btnCancelGuidingOnClick = (entity) => {
         } else {
             // ElMessage.error('Xóa thất bại');
         }
-    });
+    }).catch(() => {});
 };
 
 const btnCancelApproveTitleOnClick = (entity) => {

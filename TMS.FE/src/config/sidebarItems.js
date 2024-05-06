@@ -65,7 +65,7 @@ const manager_item = [
 const student_item = [
     {
         name: "Danh sách giảng viên",
-        icon: "ph:book-light",
+        icon: "la:chalkboard-teacher",
         link: "/s/teacher-list",
     },
     {

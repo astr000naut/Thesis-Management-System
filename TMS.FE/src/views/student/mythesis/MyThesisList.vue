@@ -109,7 +109,7 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { useThesisStore, useAuthStore } from "@/stores";
+import { useThesisStore, useAuthStore, useSettingStore } from "@/stores";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { Refresh, Search } from "@element-plus/icons-vue";
@@ -123,6 +123,9 @@ const entityStore = useThesisStore();
 const authStore = useAuthStore();
 const { entities, total, loading, keySearch, pageNumber, pageSize } =
     storeToRefs(entityStore);
+
+const settingStore = useSettingStore();
+const {appSetting} = storeToRefs(settingStore);
 
 const popupDetail = ref({
     visible: false,
@@ -165,11 +168,45 @@ async function initData() {
 }
 
 const btnAddOnClick = () => {
-    popupDetail.value = {
+
+    // Check xem có khóa luận nào đang ở trạng thái chờ phê duyệt
+    // chờ xác nhận và đã xác nhận đề tài hay không
+    let canRegisNewThesis = true;
+    entities.value.forEach((entity) => {
+        if (
+            entity.status === ThesisStatusEnum.WaitingForApproval || 
+            entity.status === ThesisStatusEnum.ApprovedTitle ||
+            entity.status === ThesisStatusEnum.ApprovedGuiding) {
+            canRegisNewThesis = false;
+        }
+    });
+
+    if (!canRegisNewThesis) {
+        ElMessage.error("Không thể đăng ký nhiều khóa luận cùng lúc!");
+        return;
+    }
+
+
+    // Get current date
+    let currentDate = new Date();
+
+    // Convert thesisRegistrationFromDate and thesisRegistrationToDate to Date objects
+    let thesisRegistrationFromDate = new Date(appSetting.value.thesisRegistrationFromDate);
+    let thesisRegistrationToDate = new Date(appSetting.value.thesisRegistrationToDate);
+
+    // Check if current date is between thesisRegistrationFromDate and thesisRegistrationToDate
+    if (currentDate >= thesisRegistrationFromDate && currentDate <= thesisRegistrationToDate) {
+        popupDetail.value = {
         visible: true,
         entityId: null,
         mode: "add",
     };
+    } else {
+        ElMessage.error("Ngoài thời hạn đăng ký khóa luận!");
+    }
+
+
+
 };
 
 const btnDeleteItemOnClick = (row) => {

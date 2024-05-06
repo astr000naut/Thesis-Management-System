@@ -60,26 +60,12 @@
                 />
                 <el-table-column fixed="right" label="Thao tác" width="120">
                     <template #default="scope">
-                        <el-dropdown
-                            size="small"
-                            split-button
+                        <el-button
                             type="default"
                             @click="btnViewItemOnClick(scope.row)"
                         >
                             Xem
-                            <template #dropdown>
-                                <el-dropdown-menu>
-                                    <el-dropdown-item
-                                        @click="btnEditItemOnClick(scope.row)"
-                                        >Sửa</el-dropdown-item
-                                    >
-                                    <el-dropdown-item
-                                        @click="btnDeleteItemOnClick(scope.row)"
-                                        >Xóa</el-dropdown-item
-                                    >
-                                </el-dropdown-menu>
-                            </template>
-                        </el-dropdown>
+                        </el-button>
                     </template>
                 </el-table-column>
             </el-table>

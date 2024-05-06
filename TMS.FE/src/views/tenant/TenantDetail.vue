@@ -7,7 +7,7 @@
         @close="dialogOnClose"
         >  
         <div class="dialog-body"
-            v-loading.fullscreen="loading ? {
+            v-loading.fullscreen="loading && dialogVisible ? {
                 lock: true,
                 text: '',
                 background: 'rgba(0, 0, 0, 0.1)',

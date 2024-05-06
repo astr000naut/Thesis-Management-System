@@ -11,7 +11,7 @@
         <div
             class="dialog-body"
             v-loading.fullscreen="
-                loading
+                loading && visible
                     ? {
                           lock: true,
                           text: '',
@@ -179,6 +179,14 @@
 
         <template #footer>
             <div class="dialog-footer">
+                <el-button
+                    type="primary"
+                    @click="btnFinishThesisOnClick"
+                    :loading="loading"
+                    v-if="form.mode === 'view' && entity.status === ThesisStatusEnum.ApprovedTitle"
+                >
+                    Đánh dấu hoàn thành
+                </el-button>
                 <el-button @click="btnCancelOnClick">
                     {{ form.mode === "view" ? "Đóng" : "Hủy" }}
                 </el-button>
@@ -188,7 +196,7 @@
                     :loading="loading"
                     v-if="form.mode !== 'view'"
                 >
-                    Xác nhận
+                    Lưu
                 </el-button>
             </div>
         </template>
@@ -199,7 +207,7 @@
 import { ref } from "vue";
 import { useThesisStore, useAuthStore } from "@/stores";
 import { storeToRefs } from "pinia";
-import { ElMessage } from "element-plus";
+import { ElMessageBox, ElMessage } from "element-plus";
 import $api from "@/api/index.js";
 import { httpClient } from "@/helpers";
 import {ThesisStatus, ThesisStatusEnum} from "@/common/enum";
@@ -221,7 +229,7 @@ const props = defineProps({
     pEntityId: String,
     pMode: String,
 });
-const emit = defineEmits(["close"]);
+const emit = defineEmits(["close", "removeItem"]);
 
 const { loading } = storeToRefs(entityStore);
 
@@ -245,6 +253,33 @@ async function initData() {
         const newEntity = await entityStore.getNew();
         entity.value = { ...newEntity };
     }
+};
+
+
+async function btnFinishThesisOnClick() {
+    ElMessageBox.confirm(
+        `Xác nhận hoàn thành khóa luận này ?`,
+        "Xác nhận",
+        {
+            confirmButtonText: "Đồng ý",
+            cancelButtonText: "Hủy",
+            type: "info",
+        }
+    ).then(async () => {     
+        entity.value.status = ThesisStatusEnum.Finished;
+        let message = await entityStore.update({ ...entity.value });
+        if (message) {
+            ElMessage.success("Thao tác thành công!");
+            closeFormAndEmitRemove();
+        } else {
+            ElMessage.error(message);
+        }  
+    }).catch(() => {});
+}
+
+function closeFormAndEmitRemove() {
+    visible.value = false;
+    emit("removeItem", props.pEntityId);
 }
 
 async function btnConfirmOnClick() {

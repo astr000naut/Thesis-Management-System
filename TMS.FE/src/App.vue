@@ -12,6 +12,15 @@
 
 <script setup>
   import {BaseToastbox} from '@/components/base';
+  import { useSettingStore } from './stores';
+  const settingStore = useSettingStore();
+  initAppSetupData();
+
+
+  async function initAppSetupData() {
+    settingStore.fetchListSetting();
+  }
+
 </script>
 
 <style scoped>

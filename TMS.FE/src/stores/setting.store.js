@@ -5,7 +5,7 @@ import {useAlertStore} from '@/stores';
 
 export const useSettingStore = defineStore('setting', {
     state: () => ({
-        appSetting: {},
+        appSetting: null,
         loading: false,
     }),
     actions: {

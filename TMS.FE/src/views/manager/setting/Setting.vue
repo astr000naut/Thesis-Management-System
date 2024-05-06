@@ -17,7 +17,7 @@
                                     Hủy
                                 </el-button>
                                 <el-button type="primary" @click="btnConfirmOnClick">
-                                    Đồng ý
+                                    Lưu
                                 </el-button>
                             </div>
                         </div>
@@ -98,7 +98,6 @@ initData();
 
 
 async function initData() {
-    await settingStore.fetchListSetting();
     entity.value.thesisRegistrationRange[0] = appSetting.value.thesisRegistrationFromDate;
     entity.value.thesisRegistrationRange[1] = appSetting.value.thesisRegistrationToDate;
     entity.value.thesisEditTitleRange[0] = appSetting.value.thesisEditTitleFromDate;

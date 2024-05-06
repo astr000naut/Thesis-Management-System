@@ -11,7 +11,7 @@
         <div
             class="dialog-body"
             v-loading.fullscreen="
-                loading
+                loading && visible
                     ? {
                           lock: true,
                           text: '',

@@ -20,6 +20,8 @@ using Minio;
 using System.Net;
 using TenantManagement.API.Param;
 using Minio.DataModel.Args;
+using Minio.DataModel;
+using Minio.Exceptions;
 
 namespace TenantManagement.BusinessLayer.Service
 {
@@ -523,6 +525,7 @@ namespace TenantManagement.BusinessLayer.Service
                     MakeBucketArgs makeBucketArgs = new MakeBucketArgs();
                     makeBucketArgs.WithBucket(tenantDto.MinioBucketName);
                     await minio.MakeBucketAsync(makeBucketArgs);
+
                 }
 
                 // upload student_upload.xlsx
@@ -540,14 +543,14 @@ namespace TenantManagement.BusinessLayer.Service
                 putObjectArgs.WithObject(objectName);
                 putObjectArgs.WithFileName(filePath + "\\" + fileName);
                 putObjectArgs.WithContentType(contentType);
-                await minio.PutObjectAsync(putObjectArgs);
+                var putStudentFileRes = await minio.PutObjectAsync(putObjectArgs);
 
                 // upload teacher_upload.xlsx to minio
                 fileName = "teacher_upload.xlsx";
                 objectName = "teacher_upload.xlsx";
                 putObjectArgs.WithObject(objectName);
                 putObjectArgs.WithFileName(filePath + "\\" + fileName);
-                await minio.PutObjectAsync(putObjectArgs);
+                var putTeacherFileRes = await minio.PutObjectAsync(putObjectArgs);
 
                 minio.Dispose();
 
@@ -609,10 +612,63 @@ namespace TenantManagement.BusinessLayer.Service
                 bool found = await minio.BucketExistsAsync(buketExistArgs);
                 if (found)
                 {
-                    // Remove bucket my-bucketname. This operation will succeed only if the bucket is empty.
-                    RemoveBucketArgs removeBucketArgs = new RemoveBucketArgs();
-                    removeBucketArgs.WithBucket(tenantDto.MinioBucketName);
-                    await minio.RemoveBucketAsync(removeBucketArgs);
+
+                    // List objects from 'my-bucketname'
+                    ListObjectsArgs args = new ListObjectsArgs()
+                                              .WithBucket(tenantDto.MinioBucketName)
+                                              .WithRecursive(true);
+
+                    // Create a list to store object names
+                    List<string> objectNames = new List<string>();
+
+                    // Retrieve the list of objects asynchronously
+                    var observable = minio.ListObjectsAsync(args);
+
+                    // Iterate over the returned list of objects
+                    IDisposable subscription = observable.Subscribe(
+                        item => {
+                            objectNames.Add(item.Key);
+                        },
+                        ex => {
+                            throw new Exception("Error while listing objects", ex);
+                        },
+                        async () =>
+                        {
+                            if (objectNames.Count == 0)
+                            {
+                                // Remove bucket my-bucketname. This operation will succeed only if the bucket is empty.
+                                RemoveBucketArgs removeBucketArgs = new RemoveBucketArgs();
+                                removeBucketArgs.WithBucket(tenantDto.MinioBucketName);
+                                await minio.RemoveBucketAsync(removeBucketArgs);
+                            } else
+                            {
+                                // Remove all objects from bucket
+                                RemoveObjectsArgs rmArgs = new RemoveObjectsArgs()
+                                                                .WithBucket(tenantDto.MinioBucketName)
+                                                                .WithObjects(objectNames);
+                                IObservable<DeleteError> removeObjectsObservable = await minio.RemoveObjectsAsync(rmArgs);
+
+                                // Wait for the subscription to complete
+                                IDisposable deleteObjectsSubscription = removeObjectsObservable.Subscribe(
+                                    deleteError => {
+                                        throw new Exception("Error while delete objects: " + deleteError.Message);
+                                    },
+                                    ex => {
+                                        throw new Exception("Error while delete objects: " + ex.Message);
+                                    },
+                                    async () =>
+                                    {
+                                        // Remove bucket my-bucketname. This operation will succeed only if the bucket is empty.
+                                        RemoveBucketArgs removeBucketArgs = new RemoveBucketArgs();
+                                        removeBucketArgs.WithBucket(tenantDto.MinioBucketName);
+                                        await minio.RemoveBucketAsync(removeBucketArgs);
+                                    });
+
+                            }
+                            
+                        }
+                    );
+
                 }
 
                 await _unitOfWork.OpenAsync();

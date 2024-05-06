@@ -22,6 +22,11 @@ namespace TMS.API.Controllers
         public async Task<IActionResult> GetTenantBaseInfo([FromBody] TenantInfoParam param)
         {
             TenantLiteDto tenantLiteDto = await _tenantService.GetTenantBaseInfo(param.Domain);
+            if (tenantLiteDto == null)
+            {
+                return NotFound();
+            }
+
             var cookieOptions = new CookieOptions
             {
                 Expires = DateTimeOffset.MaxValue,

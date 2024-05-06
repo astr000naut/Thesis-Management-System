@@ -26,21 +26,23 @@ namespace TMS.API.Middleware
                     {       
                         var tenantInfo = await tenantService.GetTenantByIdAsync(tenantId);
 
-                        if(tenantInfo != null)
+                        if (tenantInfo == null || tenantInfo.Status != 2)
                         {
-                            if (tenantInfo.Status != 2)
+                            // response serviceresponse object
+                            context.Response.ContentType = "application/json";
+                            var exceptionResponse = new
                             {
-                                // response serviceresponse object
-                                context.Response.ContentType = "application/json";
-                                var exceptionResponse = new
-                                {
-                                    success = false,
-                                    errorCode = "TENANT_NOT_ACTIVE",
-                                    message = "Hệ thống chưa được kích hoạt để sử dụng. Vui lòng liên hệ quản trị viên."
-                                };
-                                await context.Response.WriteAsync(JsonSerializer.Serialize(exceptionResponse));
-                                return;
-                            }
+                                success = false,
+                                errorCode = "TENANT_NOT_ACTIVE",
+                                message = "Hệ thống chưa được kích hoạt để sử dụng. Vui lòng liên hệ quản trị viên."
+                            };
+                            await context.Response.WriteAsync(JsonSerializer.Serialize(exceptionResponse));
+                            return;
+
+                        }
+
+                        if (tenantInfo != null)
+                        { 
                             context.Items["ConnectionString"] = Regex.Unescape(tenantInfo.DBConnection + "Database=" + tenantInfo.DBName);
                             context.Items["TenantId"] = tenantId;
                         }

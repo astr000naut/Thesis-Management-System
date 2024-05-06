@@ -208,10 +208,17 @@
     }
 
     async function btnConfirmOnClick() {
+        let message = "";
         if (form.value.mode === 'add') {
-            await tenantStore.insert({...entity.value});
+            message = await tenantStore.insert({...entity.value});
+            if (message) {
+                ElMessage.error(message);
+            } else {
+                ElMessage.success('Thêm mới khách hàng thành công');
+                router.push('/tenant');
+            }
         } else {
-            const message = await tenantStore.update({...entity.value});
+            message = await tenantStore.update({...entity.value});  
             if (message) {
                 ElMessage.error(message);
             } else {
@@ -219,6 +226,7 @@
                 router.push('/tenant');
             }
         }
+       
     }
 
     async function btnEditOnClick() {
@@ -238,7 +246,7 @@
                 ElMessage.error(message);
             } else {
                 ElMessage.success('Đã xóa tài nguyên của khách hàng');
-                router.push('/tenant');
+                entity.value.status = 0;
             }
 
         }).catch(() => {
@@ -258,7 +266,6 @@
                 ElMessage.error(message);
             } else {
                 ElMessage.success('Đã ngừng hoạt động khách hàng');
-                router.push('/tenant');
             }
 
         }).catch(() => {
@@ -277,7 +284,6 @@
             if (message) {
                 ElMessage.error(message);
             } else {
-                router.push('/tenant');
             }
 
         }).catch(() => {
@@ -307,7 +313,13 @@
     }
 
     async function btnActiveTenantOnClick() {
-        await tenantStore.activeTenant({...entity.value});
+        const message = await tenantStore.activeTenant({...entity.value});
+        if (message == "") {  
+            ElMessage.success('Kích hoạt thành công');
+            entity.value.status = 2;
+        } else {
+            ElMessage.error(message);
+        }
     }
 
 

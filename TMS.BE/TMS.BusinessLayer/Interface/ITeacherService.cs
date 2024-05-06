@@ -13,5 +13,7 @@ namespace TMS.BusinessLayer.Interface
     {
         Task<ServiceResponse<UploadResult>> HanleUploadFileAsync(IFormFile file);
 
+        Task<byte[]> GetSampleUploadFile();
+
     }
 }

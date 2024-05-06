@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using TMS.BaseRepository;
 using TMS.BaseService;
 using TMS.BusinessLayer.DTO;
+using TMS.BusinessLayer.Infra;
 using TMS.BusinessLayer.Interface;
 using TMS.DataLayer.Entity;
 using TMS.DataLayer.Interface;
@@ -56,48 +57,8 @@ namespace TMS.BusinessLayer.Service
             {
                 var res = Array.Empty<byte>();
 
-                // get minio connection info from httpcontext items
-                var minioInfo = _httpContextAccessor.HttpContext.Items["MinioInfo"] as MinioConnectionInfo;
-
-                if (minioInfo == null)
-                {
-                    throw new Exception("Minio connection info is not resolved");
-                }
-
-                using (IMinioClient minio = new MinioClient()
-                                        .WithEndpoint(minioInfo.EndPoint)
-                                        .WithCredentials(minioInfo.AccessKey, minioInfo.SecretKey)
-                                        .Build())
-                {
-                    
-                    var objectName = "student_upload.xlsx";
-
-                    // Confirm object exists before attempting to get
-                    StatObjectArgs statObjectArgs = new StatObjectArgs()
-                        .WithBucket(minioInfo.BucketName)
-                        .WithObject(objectName);
-                    var stat = await minio.StatObjectAsync(statObjectArgs);
-
-
-                    // Create a MemoryStream to store the object data
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        // Get input stream to have content of the object
-                        GetObjectArgs getObjectArgs = new GetObjectArgs()
-                                                          .WithBucket(minioInfo.BucketName)
-                                                          .WithObject(objectName)
-                                                          .WithCallbackStream(async (stream) =>
-                                                          {
-                                                              // Copy the object data to the memory stream
-                                                              await stream.CopyToAsync(memoryStream);
-                                                          });
-                        var objData = await minio.GetObjectAsync(getObjectArgs);
-
-                        // Convert the memory stream to a byte array
-                        res = memoryStream.ToArray();
-
-                    }
-                }
+                IMinioService minioService = new MinioService(_httpContextAccessor);
+                res = await minioService.DownloadObjectAsync("student_upload.xlsx");
 
                 return res;
             } catch (Exception e)

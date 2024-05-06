@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Azure;
 using Microsoft.AspNetCore.Http;
+using Minio.DataModel.Args;
+using Minio;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -13,6 +15,7 @@ using TMS.BusinessLayer.DTO;
 using TMS.BusinessLayer.Interface;
 using TMS.DataLayer.Entity;
 using TMS.DataLayer.Interface;
+using TMS.BusinessLayer.Infra;
 
 namespace TMS.BusinessLayer.Service
 {
@@ -160,6 +163,24 @@ namespace TMS.BusinessLayer.Service
             finally
             {
                 await _unitOfWork.CloseAsync();
+            }
+
+        }
+
+        public async Task<byte[]> GetSampleUploadFile()
+        {
+            try
+            {
+                var res = Array.Empty<byte>();
+
+                IMinioService minioService = new MinioService(_httpContextAccessor);
+                res = await minioService.DownloadObjectAsync("teacher_upload.xlsx");
+
+                return res;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Error while getting sample upload file");
             }
 
         }

@@ -67,8 +67,7 @@ export const useTenantStore = defineStore('tenant', {
                 
                 this.tenants.unshift(entity);
                 ++ this.total;
-                ElMessage.success('Thêm mới khách hàng thành công');
-                router.push('/tenant');
+                return "";
             } catch (error) {
                 const alertStore = useAlertStore();
                 alertStore.alert('error', error);
@@ -107,6 +106,7 @@ export const useTenantStore = defineStore('tenant', {
                 }
                 
                 const index = this.tenants.findIndex(x => x.tenantId === entity.tenantId);
+                entity.status = 0;
                 this.tenants[index] = entity;
                 return "";
             } catch (error) {
@@ -232,8 +232,7 @@ export const useTenantStore = defineStore('tenant', {
                 
                 const index = this.tenants.findIndex(x => x.tenantId === entity.tenantId);
                 this.tenants[index] = response;
-                ElMessage.success('Kích hoạt khách hàng thành công');
-
+                return  "";
             } catch (error) {
                 const alertStore = useAlertStore();
                 alertStore.alert('error', error);

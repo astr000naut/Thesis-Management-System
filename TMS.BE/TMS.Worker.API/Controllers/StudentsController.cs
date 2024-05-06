@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Security.AccessControl;
 using TMS.BusinessLayer.DTO;
 using TMS.BusinessLayer.Interface;
+using TMS.BusinessLayer.Service;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -32,6 +34,15 @@ namespace TMS.Worker.API.Controllers
         public async Task<IActionResult> Test()
         {
             return Ok("Hello World!");
+        }
+
+        [HttpGet("sample_upload_file")]
+        public async Task<IActionResult> SampleUploadFile()
+        {
+            byte[] bytes = await _studentService.GetSampleUploadFile();
+
+            return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "student_upload.xlsx"); 
+
         }
 
     }

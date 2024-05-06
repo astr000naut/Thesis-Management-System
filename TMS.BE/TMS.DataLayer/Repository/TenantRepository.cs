@@ -27,27 +27,23 @@ namespace TMS.DataLayer.Repository
             using (var connection = _tmcontext.CreateConnection())
             {
 
-                string query = $"SELECT * FROM tenants WHERE Domain = '{domain}'";
-                var result = await connection.QueryAsync<Tenant>(query);
+                string query = $"SELECT * FROM tenants WHERE Domain = @domain";
+                var result = await connection.QueryAsync<Tenant>(query, new { domain });
                 return result.FirstOrDefault();
             }
 
         }
 
-        public async Task<string> GetTenantConnectionString(string tenantId)
+        public async Task<Tenant?> GetTenantById(string id)
         {
             using (var connection = _tmcontext.CreateConnection())
             {
-                string query = $"SELECT DBConnection, DBName FROM tenants WHERE TenantId = '{tenantId}'";
-                var result = await connection.QueryAsync<(string, string)>(query);
-                if (result == null || result.Count() == 0)
-                {
-                    throw new Exception("Tenant connection string not found");
-                }
-                var connectionString = result.FirstOrDefault().Item1 + "Database=" + result.FirstOrDefault().Item2+";";
-                return connectionString;
 
+                string query = $"SELECT * FROM tenants WHERE TenantId=@id";
+                var result = await connection.QueryAsync<Tenant>(query, new { id });
+                return result.FirstOrDefault();
             }
-        }   
+
+        } 
     }
 }

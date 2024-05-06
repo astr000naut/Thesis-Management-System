@@ -5,7 +5,7 @@
         width="800" draggable 
         :close-on-click-modal="false"
         @close="dialogOnClose"
-        top="8vh"
+        top="26vh"
         >  
         <div class="dialog-body"
             v-loading.fullscreen="loading ? {
@@ -153,6 +153,7 @@
                     </el-button>
                 </div>
                 <div v-else class="form-view-footer">
+                    <el-button v-show="curTabname === 'tenantSetting'" type="" @click="btnInactiveTenantOnClick">Ngừng hoạt động</el-button>
                     <el-button v-show="curTabname === 'tenantSetting'" type="" @click="checkTenantConnection">Kiểm tra kết nối</el-button>
                     <el-button v-show="curTabname === 'tenantSetting' && entity.status === 0" type="primary" @click="btnActiveTenantOnClick">Kích hoạt</el-button>
                     <el-button v-show="curTabname !== 'tenantSetting'" type="primary" @click="btnEditOnClick">
@@ -216,6 +217,17 @@
         router.push(`/tenant/edit/${entity.value.tenantId}`);
         form.value.mode = 'edit';
         form.value.title = 'Sửa Khách hàng';
+    }
+
+    async function btnInactiveTenantOnClick() {
+        ElMessageBox.confirm('Bạn có chắc chắn muốn ngừng hoạt động khách hàng này không?', 'Xác nhận', {
+            confirmButtonText: 'Đồng ý',
+            cancelButtonText: 'Hủy',
+            type: 'warning'
+        }).then(async () => {
+        }).catch(() => {
+            // do nothing
+        });
     }
 
     function btnCloseOnClick() {

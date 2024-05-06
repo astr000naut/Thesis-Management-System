@@ -525,6 +525,30 @@ namespace TenantManagement.BusinessLayer.Service
                     await minio.MakeBucketAsync(makeBucketArgs);
                 }
 
+                // upload student_upload.xlsx
+
+                var filePath = "D:\\Development\\TMS\\Services\\TenantManagement\\SeedData";
+                var fileName = "student_upload.xlsx";
+                var bucketName = tenantDto.MinioBucketName;
+                var objectName = "student_upload.xlsx";
+                var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+
+
+                PutObjectArgs putObjectArgs = new PutObjectArgs();
+                putObjectArgs.WithBucket(bucketName);
+                putObjectArgs.WithObject(objectName);
+                putObjectArgs.WithFileName(filePath + "\\" + fileName);
+                putObjectArgs.WithContentType(contentType);
+                await minio.PutObjectAsync(putObjectArgs);
+
+                // upload teacher_upload.xlsx to minio
+                fileName = "teacher_upload.xlsx";
+                objectName = "teacher_upload.xlsx";
+                putObjectArgs.WithObject(objectName);
+                putObjectArgs.WithFileName(filePath + "\\" + fileName);
+                await minio.PutObjectAsync(putObjectArgs);
+
                 minio.Dispose();
 
                 return true;

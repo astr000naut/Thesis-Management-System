@@ -11,6 +11,7 @@ namespace TMS.BusinessLayer.Interface
     public interface ITenantService
     {
         Task<TenantLiteDto> GetTenantBaseInfo(string domain);
-        Task<string> GetTenantConnectionString(string tenantId);
+
+        Task<TenantDto> GetTenantByIdAsync(string tenantId);
     }
 }

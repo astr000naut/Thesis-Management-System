@@ -4,6 +4,7 @@
         <PopupUpload
             v-model:visible="popupUpload.visible"
             pUrlUpload="/worker/api/students/upload"
+            pUrlDownloadSample="/worker/api/students/sample_upload_file"
             @close="popupUploadOnClose"
         ></PopupUpload>
         <div class="page__header flex-row">

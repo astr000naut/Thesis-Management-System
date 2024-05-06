@@ -21,7 +21,8 @@
         >
             <div class="upload-container" v-if="form.mode === 'upload'">
                 <div class="upload-instruction">
-                    Tải tệp dữ liệu mẫu <a href="#">Tải về</a>
+                    Tải tệp dữ liệu mẫu 
+                    <span class="download_sample_btn" @click="downloadSampleFile">Tải về</span>
                 </div>
                 <el-upload
                     class="upload"
@@ -95,6 +96,7 @@ import { ref } from "vue";
 import { UploadFilled } from "@element-plus/icons-vue";
 const props = defineProps({
     pUrlUpload: String,
+    pUrlDownloadSample: String,
 });
 
 const emit = defineEmits(['close']);
@@ -113,6 +115,22 @@ const visible = defineModel("visible");
 initData();
 
 async function initData() {}
+
+async function downloadSampleFile() { 
+    // download file from pUrlDownloadSample url
+    const response = await fetch(props.pUrlDownloadSample);
+    if (!response.ok) {
+        throw new Error("Network response was not ok");
+    }
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = "Mau_nhap_khau.xlsx"; // or any other filename you want
+    document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+    a.click();    
+    a.remove();  //afterwards we remove the element again         
+}
 
 function btnTryAgainOnClick() {
     resetForm();
@@ -154,6 +172,11 @@ function btnCancelOnClick() {
 </script>
 
 <style scoped>
+
+.download_sample_btn {
+    color: #1890ff;
+    cursor: pointer;
+}
 
 
 .subtitle {

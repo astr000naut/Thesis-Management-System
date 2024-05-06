@@ -5,6 +5,7 @@ namespace TMS.DataLayer.Interface
     public interface ITenantRepository
     {
         Task<Tenant> GetTenantByDomain(string domain);
-        Task<string> GetTenantConnectionString(string tenantId);
+        Task<Tenant> GetTenantById(string id);
+
     }
 }

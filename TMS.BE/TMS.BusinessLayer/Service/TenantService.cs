@@ -43,12 +43,13 @@ namespace TMS.BusinessLayer.Service
             }
         }
 
-        public async Task<string> GetTenantConnectionString(string tenantId)
+        public async Task<TenantDto> GetTenantByIdAsync(string tenantId)
         {
             try
             {
-                var connectionString = await _tenantRepository.GetTenantConnectionString(tenantId);
-                return connectionString;
+                var tenant = await _tenantRepository.GetTenantById(tenantId);
+                var tenantDto = _mapper.Map<TenantDto>(tenant);
+                return tenantDto;
             }
             catch
             {

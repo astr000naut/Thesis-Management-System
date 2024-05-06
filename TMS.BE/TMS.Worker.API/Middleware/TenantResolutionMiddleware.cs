@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using TMS.BusinessLayer.DTO;
 using TMS.BusinessLayer.Interface;
 
 namespace TMS.Worker.API.Middleware
@@ -19,17 +20,24 @@ namespace TMS.Worker.API.Middleware
                 if (!context.Items.ContainsKey("ConnectionString"))
                 {
                     var tenantId = context.Request.Cookies["x-tenantid"];
-                    if (tenantId != null)
-                    {       
-                        var connectionString = await tenantService.GetTenantConnectionString(tenantId);
-                        if (string.IsNullOrEmpty(connectionString))
+
+                    var tenantInfo = await tenantService.GetTenantByIdAsync(tenantId);
+
+                    if (tenantInfo != null)
+                    {
+                        context.Items["ConnectionString"] = Regex.Unescape(tenantInfo.DBConnection + "Database=" + tenantInfo.DBName);
+                        context.Items["TenantId"] = tenantInfo.TenantId;
+                        context.Items["MinioInfo"] = new MinioConnectionInfo
                         {
-                            throw new Exception("Can not resolve connection string for tenant: " + tenantId);
-                        }
-                        context.Items["ConnectionString"] = Regex.Unescape(connectionString);
-                        
+                            EndPoint = tenantInfo.MinioEndpoint,
+                            AccessKey = tenantInfo.MinioAccessKey,
+                            SecretKey = tenantInfo.MinioSecretKey,
+                            BucketName = tenantInfo.MinioBucketName
+                        };
                     }
-                    
+
+
+
                 }
 
                 await _next(context);

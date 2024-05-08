@@ -9,7 +9,7 @@ using TMS.DataLayer.Enum;
 
 namespace TMS.DataLayer.Entity
 {
-    [Common.Attribute.Table("theses", "view_theses")]
+    [Common.Attribute.Table("theses", "view_theses", true)]
     public class Thesis
     {
         [Key]
@@ -30,6 +30,9 @@ namespace TMS.DataLayer.Entity
         public string? FacultyCode { get; set; }
         [NotMapped]
         public string? FacultyName { get; set; }
+
+        [NotMapped]
+        public List<CoTeacher> CoTeachers { get; set; }
         public int Year { get; set; }
         public int Semester { get; set; }
         public string? ThesisFileUrl { get; set; }

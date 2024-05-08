@@ -1,12 +1,11 @@
 import Main from '@/views/Main.vue';
-import MyThesisList from '@/views/student/mythesis/MyThesisList.vue';
-import ThesisGuidingList from '@/views/teacher/thesis-guiding/ThesisGuidingList.vue';
-import ThesisReviewingList from '@/views/teacher/thesis-reviewing/ThesisReviewingList.vue';
-import ThesisRequestList from '@/views/teacher/thesis-request/ThesisRequestList.vue';
-import ThesisCompletedList from '@/views/teacher/thesis-completed/ThesisCompletedList.vue';
+const ThesisRequestList = () => import('@/views/teacher/thesis-request/ThesisRequestList.vue');
+const ThesisCompletedList = () => import('@/views/teacher/thesis-completed/ThesisCompletedList.vue');
 const TeacherInfo = () => import('@/views/teacher/personal-info/TeacherInfo.vue');
 const ThesisSearchList = () => import('@/views/search/ThesisSearchList.vue');
 const UnderContruction = () => import('@/components/common/UnderContruction.vue');
+const ThesisGuidingList = () => import('@/views/teacher/thesis-guiding/ThesisGuidingList.vue');
+
 export default {
     path: '/t',
     component: Main,

@@ -14,6 +14,7 @@ using TMS.BusinessLayer.Interface;
 using TMS.DataLayer.Entity;
 using TMS.DataLayer.Enum;
 using TMS.DataLayer.Interface;
+using TMS.DataLayer.Param;
 
 namespace TMS.BusinessLayer.Service
 {
@@ -53,7 +54,7 @@ namespace TMS.BusinessLayer.Service
                 var newThesisCode = await _thesisRepository.GetNewThesisCode();
                 var studentId = new Guid(_httpContextAccessor.HttpContext.User.FindFirst("UserId").Value);
                 var studentName = _httpContextAccessor.HttpContext.User.FindFirst("FullName").Value;
-                var student = await _studentService.GetByIdAsync(studentId);
+                var student = await _studentService.GetByIdAsync(studentId.ToString());
                 return new ThesisDto()
                 {
                     ThesisId = Guid.NewGuid(),
@@ -76,5 +77,117 @@ namespace TMS.BusinessLayer.Service
 
         }
 
+        public override async Task AfterCreate(ThesisDto thesisDto)
+        {
+            if (thesisDto.CoTeachers != null && thesisDto.CoTeachers.Count > 0)
+            {
+                await SaveCoTeacher(thesisDto);
+            }
+
+        }
+
+        public override async Task AfterUpdate(ThesisDto thesisDto)
+        {
+            if (thesisDto.CoTeachers != null && thesisDto.CoTeachers.Count > 0)
+            {
+                await SaveCoTeacher(thesisDto);
+            }
+        }
+
+        public override async Task AfterDelete(ThesisDto thesisDto)
+        {
+            try
+            {
+                await _unitOfWork.OpenAsync();
+                await _thesisRepository.RemoveAllThesisCoTeacher(thesisDto.ThesisId);
+                await _unitOfWork.CommitAsync();
+            } catch
+            {
+                throw;
+            } finally
+            {
+                await _unitOfWork.CloseAsync();
+            }
+        }  
+        
+ 
+
+        public async Task SaveCoTeacher(ThesisDto thesisDto)
+        {
+            // save thesis co teachers
+            try
+            {
+                await _unitOfWork.OpenAsync();
+
+                foreach (var coTeacher in thesisDto.CoTeachers)
+                {
+                    if (coTeacher.State == EntityState.Create)
+                    {
+                        await _thesisRepository.AddThesisCoTeacher(thesisDto.ThesisId, coTeacher.TeacherId);
+                    }
+
+                    if (coTeacher.State == EntityState.Delete)
+                    {
+                        await _thesisRepository.RemoveThesisCoTeacher(thesisDto.ThesisId, coTeacher.TeacherId);
+                    }
+
+                }
+
+                await _unitOfWork.CommitAsync();
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                await _unitOfWork.CloseAsync();
+            }
+        }
+
+        public async Task<ServiceResponse<List<ThesisDto>>> GetGuidingList(string teacherId)
+        {
+            try
+            {
+                await _unitOfWork.OpenAsync();
+                var listCoGuiding = await _thesisRepository.GetListCoGuiding(teacherId);
+                var listGuiding = await _thesisRepository.GetListGuiding(teacherId);
+                
+                var list = listCoGuiding.Concat(listGuiding).ToList();
+                var mappedList = _mapper.Map<List<ThesisDto>>(list);
+                var result =  new ServiceResponse<List<ThesisDto>>()
+                {
+                    Data = mappedList,
+                    Message = "Success",
+                    Success = true
+                };
+                await _unitOfWork.CommitAsync();
+                return result;
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                await _unitOfWork.CloseAsync();
+            }
+
+        }
+
+        public async Task<(List<ThesisDto>, int)> GetListThesisGuided(TeacherThesisFilterParam param)
+        {
+            try
+            {
+                await _unitOfWork.OpenAsync();
+                var result = await _thesisRepository.GetListThesisGuided(param);
+                var mappedList = _mapper.Map<List<ThesisDto>>(result.Item1);
+                return (mappedList, result.Item2);
+            } catch { throw; }
+            finally
+            {
+                await _unitOfWork.CloseAsync();
+            }
+        }
     }
 }

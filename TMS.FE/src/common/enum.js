@@ -25,3 +25,10 @@ export const TenantStatusEnum = {
     Stop: 1,
     Active: 2,
 }
+
+export const EntityStateEnum = {
+    None : 0,
+    Create : 1,
+    Update : 2,
+    Delete : 3
+}

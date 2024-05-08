@@ -39,7 +39,7 @@ namespace TenantManagement.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync(Guid id)
         {
-            var entity = await _baseService.GetByIdAsync(id);
+            var entity = await _baseService.GetByIdAsync(id.ToString());
             return Ok(entity);
         }
 

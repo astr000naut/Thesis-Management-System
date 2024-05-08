@@ -33,13 +33,15 @@ namespace TMS.BaseRepository
         /// <returns>Số lượng entity đã bị xóa</returns>
         Task<int> DeleteMultipleAsync(List<string> listId);
 
+        Task<int> DeleteAsync(string id);
+
 
         /// <summary>
         /// Lấy một Entity theo ID
         /// </summary>
         /// <param name="id">ID của engity</param>
         /// <returns>Entity tìm thấy nếu có</returns>
-        Task<T?> GetByIdAsync(Guid id);
+        Task<T?> GetByIdAsync(string id);
 
 
         /// <summary>

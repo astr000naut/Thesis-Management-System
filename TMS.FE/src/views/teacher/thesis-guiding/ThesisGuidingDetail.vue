@@ -37,8 +37,9 @@
 
                         <div class="form-group fl-4">
                             <el-form-item label="Tên đề tài">
-                                <el-input v-model="entity.thesisName" 
-                                :disabled="entity.status === ThesisStatusEnum.ApprovedTitle"
+                                <el-input 
+                                    v-model="entity.thesisName" 
+                                    :disabled="entity.status === ThesisStatusEnum.ApprovedTitle || entity.teacherId !== currentUser.userId"
                                 />
                             </el-form-item>
                         </div>
@@ -54,34 +55,15 @@
                         </div>
 
                         <div class="form-group fl-1">
-                            <el-form-item label="Cán bộ hướng dẫn">
-                                <el-select
-                                    v-model="entity.teacherId"
-                                    filterable
-                                    remote
-                                    reserve-keyword
-                                    placeholder="Chọn cán bộ hướng dẫn"
-                                    :remote-method="getListTeacher"
-                                    :loading="loadingGetTeacher"
-                                    remote-show-suffix
-                                    :name="entity.teacherName"
+                            <el-form-item label="Mã sinh viên">
+                                <el-input
+                                    v-model="entity.studentCode"
                                     disabled
-                                >
-                                    <el-option
-                                        v-for="teacher in listTeacher"
-                                        :key="teacher.userId"
-                                        :label="teacher.teacherName"
-                                        :value="teacher.userId"
-                                    />
-                                    <template #loading>
-                                        Loading
-                                    </template>
-                                </el-select>
+                                />
                             </el-form-item>
                         </div>
-                    </div>
 
-                    <div class="flex-row cg-4">
+
                         <div class="form-group fl-1">
                             <el-form-item label="Năm học">
                                 <el-input v-model="entity.year" disabled/>
@@ -91,6 +73,44 @@
                         <div class="form-group fl-1">
                             <el-form-item label="Học kỳ">
                                 <el-input v-model="entity.semester" disabled/>
+                            </el-form-item>
+                        </div>
+                    </div>
+
+                    <div class="flex-row cg-4">
+                        <div class="form-group fl-1">
+                            <el-form-item label="Cán bộ hướng dẫn">
+                                <el-input
+                                    v-model="entity.teacherName"
+                                    disabled
+                                />
+                            </el-form-item>
+                        </div>
+                        <div class="form-group fl-1">
+                            <el-form-item label="Cán bộ đồng hướng dẫn">
+                                <el-select
+                                    v-model="coTeacherIdSelected"
+                                    filterable
+                                    remote
+                                    reserve-keyword
+                                    multiple
+                                    placeholder="Chọn cán bộ đồng hướng dẫn"
+                                    :remote-method="getListTeacher"
+                                    :loading="loadingGetTeacher"
+                                    remote-show-suffix
+                                    :name="entity.teacherName"
+                                    :disabled="entity.teacherId !== currentUser.userId"
+                                >
+                                    <el-option
+                                        v-for="teacher in listCoTeacher"
+                                        :key="teacher.userId"
+                                        :label="teacher.teacherName"
+                                        :value="teacher.userId"
+                                    />
+                                    <template #loading>
+                                        Loading
+                                    </template>
+                                </el-select>
                             </el-form-item>
                         </div>
                     </div>
@@ -137,15 +157,15 @@
                         </div>
 
                         <div class="form-group fl-1">
-                            <el-form-item label="Cán bộ hướng dẫn">
+                            <el-form-item label="Mã sinh viên">
                                 <el-input
-                                    v-model="entity.teacherName"
+                                    v-model="entity.studentCode"
+                                    disabled
                                 />
                             </el-form-item>
                         </div>
-                    </div>
 
-                    <div class="flex-row cg-4">
+
                         <div class="form-group fl-1">
                             <el-form-item label="Năm học">
                                 <el-input v-model="entity.year" disabled/>
@@ -157,6 +177,45 @@
                                 <el-input v-model="entity.semester" disabled/>
                             </el-form-item>
                         </div>
+                    </div>
+
+                    <div class="flex-row cg-4">
+                        <div class="form-group fl-1">
+                            <el-form-item label="Cán bộ hướng dẫn">
+                                <el-input
+                                    v-model="entity.teacherName"
+                                />
+                            </el-form-item>
+                        </div>
+
+                        <div class="form-group fl-1">
+                            <el-form-item label="Cán bộ đồng hướng dẫn">
+                                <el-select
+                                    v-model="coTeacherIdSelected"
+                                    filterable
+                                    remote
+                                    reserve-keyword
+                                    multiple
+                                    placeholder=""
+                                    :remote-method="getListTeacher"
+                                    :loading="loadingGetTeacher"
+                                    remote-show-suffix
+                                    :name="entity.teacherName"
+                                    disabled
+                                >
+                                    <el-option
+                                        v-for="teacher in listCoTeacher"
+                                        :key="teacher.userId"
+                                        :label="teacher.teacherName"
+                                        :value="teacher.userId"
+                                    />
+                                    <template #loading>
+                                        Loading
+                                    </template>
+                                </el-select>
+                            </el-form-item>
+                        </div>
+
                         <div class="form-group fl-1">
                             <el-form-item label="Trạng thái">
                                 <el-input v-model="entity.status" disabled :formatter="() => ThesisStatus[entity.status]"/>
@@ -183,7 +242,10 @@
                     type="primary"
                     @click="btnFinishThesisOnClick"
                     :loading="loading"
-                    v-if="form.mode === 'view' && entity.status === ThesisStatusEnum.ApprovedTitle"
+                    v-if="form.mode === 'view' 
+                    && entity.status === ThesisStatusEnum.ApprovedTitle
+                    && entity.teacherId === currentUser.userId
+                    "
                 >
                     Đánh dấu hoàn thành
                 </el-button>
@@ -204,17 +266,19 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useThesisStore, useAuthStore } from "@/stores";
 import { storeToRefs } from "pinia";
 import { ElMessageBox, ElMessage } from "element-plus";
 import $api from "@/api/index.js";
 import { httpClient } from "@/helpers";
-import {ThesisStatus, ThesisStatusEnum} from "@/common/enum";
+import {ThesisStatus, ThesisStatusEnum, EntityStateEnum} from "@/common/enum";
 
 
 
 const entityStore = useThesisStore();
+const authStore = useAuthStore();
+const currentUser = authStore.loginInfo.user;
 
 const form = ref({
     title: "",
@@ -222,8 +286,14 @@ const form = ref({
     entityName: "Khoá luận",
 });
 const entity = ref({});
+const coTeacherIdSelected = ref([]);
 const listTeacher = ref([]);
 const loadingGetTeacher = ref(false);
+const allTeacher = [];
+
+const listCoTeacher = computed(() => {
+    return listTeacher.value.filter((x) => entity.value.teacherId != x.userId);
+});
 
 const props = defineProps({
     pEntityId: String,
@@ -247,6 +317,10 @@ async function initData() {
         entity.value = { ...e };
 
         listTeacher.value = [{ userId: e.teacherId, teacherName: e.teacherName }];
+        listTeacher.value = listTeacher.value.concat(e.coTeachers.map(
+            x => { return { userId: x.teacherId, teacherName: x.teacherName } 
+        }));
+        coTeacherIdSelected.value = e.coTeachers.map(x => x.teacherId);
 
     } else if (form.value.mode === "add") {
         form.value.title = "Đăng ký " + form.value.entityName;
@@ -282,8 +356,35 @@ function closeFormAndEmitRemove() {
     emit("removeItem", props.pEntityId);
 }
 
+function updateListCoTeachers() {
+    let curListCoTeachers = listCoTeacher.value
+            .filter(x => coTeacherIdSelected.value.includes(x.userId))
+            .map(x=> {
+                return {
+                    thesisId: entity.value.thesisId,
+                    teacherId: x.userId,
+                }
+            });
+
+    for (const ct of entity.value.coTeachers) {
+        // check if ct is not in curListCoTeachers then delete it
+        if (!curListCoTeachers.some(x => x.teacherId === ct.teacherId)) {
+            ct.state = EntityStateEnum.Delete;
+        };
+    }
+
+    for (const ct of curListCoTeachers) {
+        // check if ct is not in entity.coTeachers then add it
+        if (!entity.value.coTeachers.some(x => x.teacherId === ct.teacherId)) {
+            ct.state = EntityStateEnum.Create;
+            entity.value.coTeachers.push(ct);
+        };
+    }
+}
+
 async function btnConfirmOnClick() {
     let result = false;
+    updateListCoTeachers();
     if (form.value.mode === "add") {
         result = await entityStore.insert({ ...entity.value });
     } else {
@@ -300,18 +401,30 @@ async function btnConfirmOnClick() {
 }
 
 async function getListTeacher(query) {
-    loadingGetTeacher.value = true;
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const res = await httpClient.post($api.teacher.filter(), {
-        skip: 0,
-        take: 0,
-        keySearch: query ?? '',
-        filterColumns: ["teacherName", "phoneNumber", "email"],
-    });
-    if (res.data) {
-        listTeacher.value = res.data;
+    if (allTeacher.length === 0) {
+        loadingGetTeacher.value = true;
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const res = await httpClient.post($api.teacher.filter(), {
+            skip: 0,
+            take: 0,
+            keySearch: '',
+            filterColumns: [],
+        });
+        if (res.data) {
+            allTeacher.push(...res.data);
+        }
+        loadingGetTeacher.value = false;
+    };
+
+    if (!query) {
+        listTeacher.value = allTeacher;
+    } else {
+        listTeacher.value = allTeacher.filter((item) => 
+            item.teacherName.toLowerCase().includes(query.toLowerCase()) ||
+            item.teacherCode.toLowerCase().includes(query.toLowerCase())
+        );
     }
-    loadingGetTeacher.value = false;
+
 };
 
 async function dialogOnOpen() {
@@ -339,5 +452,11 @@ function btnCancelOnClick() {
   align-items: center;
   height: 100px;
   font-size: 20px;
+}
+:deep(.el-tag.el-tag--info) {
+    background-color: #cfdef3;
+}
+:deep(.el-select__wrapper.is-disabled .el-select__suffix) {
+    display: none;
 }
 </style>

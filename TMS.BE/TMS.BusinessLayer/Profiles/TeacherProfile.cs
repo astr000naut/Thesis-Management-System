@@ -10,6 +10,8 @@ namespace TMS.BusinessLayer.Profiles
         {
             CreateMap<Teacher, TeacherDto>();
             CreateMap<TeacherDto, Teacher>();
+            CreateMap<CoTeacher, CoTeacherDto>();
+            CreateMap<CoTeacherDto, CoTeacher>();
         }
     }
 }

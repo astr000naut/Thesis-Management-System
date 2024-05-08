@@ -10,11 +10,13 @@ namespace TMS.Common.Attribute
     {
         public string TableName;
         public string ViewName;
+        public bool HasDetail;
 
-        public TableAttribute(string tableName, string viewName)
+        public TableAttribute(string tableName, string viewName, bool hasDetail = false)
         {
             TableName = tableName;
             ViewName = viewName;
+            HasDetail = hasDetail;
         }
     }
 }

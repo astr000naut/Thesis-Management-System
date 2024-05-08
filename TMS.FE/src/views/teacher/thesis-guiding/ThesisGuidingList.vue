@@ -15,7 +15,7 @@
             <div class="reload-btn">
                 <el-button :icon="Refresh" circle @click="btnRefreshOnClick" />
             </div>
-            <div class="search-input">
+            <!-- <div class="search-input">
                 <el-input
                     v-model="searchText"
                     style="width: 240px"
@@ -24,7 +24,7 @@
                     @input="searchTextOnInput"
                     clearable
                 />
-            </div>
+            </div> -->
         </div>
         <div class="table__container fl-1">
             <el-table
@@ -74,15 +74,23 @@
                                         @click="btnEditItemOnClick(scope.row)"
                                         >Chỉnh sửa</el-dropdown-item
                                     >
-                                    <el-dropdown-item v-if="scope.row.status === ThesisStatusEnum.ApprovedGuiding && isDisplayApproveTitle()"
+                                    <el-dropdown-item v-if="scope.row.status === ThesisStatusEnum.ApprovedGuiding 
+                                        && isDisplayApproveTitle()
+                                        && scope.row.teacherId === currentUser.userId
+                                    "
                                         @click="btnApproveTitleOnClick(scope.row)"
                                         >Xác nhận đề tài</el-dropdown-item
                                     >
-                                    <el-dropdown-item v-if="scope.row.status === ThesisStatusEnum.ApprovedTitle && isDisplayApproveTitle()"
+                                    <el-dropdown-item v-if="scope.row.status === ThesisStatusEnum.ApprovedTitle 
+                                        && isDisplayApproveTitle()
+                                        && scope.row.teacherId === currentUser.userId
+                                        "
                                         @click="btnCancelApproveTitleOnClick(scope.row)"
                                         >Hủy xác nhận đề tài</el-dropdown-item
                                     >
-                                    <el-dropdown-item v-if="scope.row.status === ThesisStatusEnum.ApprovedGuiding"
+                                    <el-dropdown-item v-if="scope.row.status === ThesisStatusEnum.ApprovedGuiding
+                                        && scope.row.teacherId === currentUser.userId
+                                    "
                                         @click="btnCancelGuidingOnClick(scope.row)"
                                         >Dừng hướng dẫn khóa luận</el-dropdown-item
                                     >
@@ -131,6 +139,8 @@ const authStore = useAuthStore();
 const { entities, total, loading, keySearch, pageNumber, pageSize } =
     storeToRefs(entityStore);
 
+const currentUser = authStore.loginInfo.user;
+
 const popupDetail = ref({
     visible: false,
     entityId: null,
@@ -156,7 +166,7 @@ onMounted(() => {
 });
 
 async function initData() {
-    await getThesisRequestList();
+    await getThesisGuidingList();
 }
 
 function onRemoveItem(id) {
@@ -266,40 +276,13 @@ const btnEditItemOnClick = (row) => {
     };
 };
 
-async function getThesisRequestList() {
-    const teacherId = authStore.loginInfo.user.userId;
-    const customWhere = [
-        {
-            command: 'AND',
-            columnName: 'status',
-            operator: '!=',
-            value: '0'
-        },
-        {
-            command: 'AND',
-            columnName: 'status',
-            operator: '!=',
-            value: '2'
-        },
-        {
-            command: 'AND',
-            columnName: 'status',
-            operator: '!=',
-            value: '4'
-        },
-        {
-            command: 'AND',
-            columnName: 'teacherId',
-            operator: '=',
-            value: teacherId
-        }
-    ];
-
-    await entityStore.fetchList(customWhere);
+async function getThesisGuidingList() {
+    const teacherId = currentUser.userId;
+    await entityStore.fetchThesisGuidingList(teacherId);
 }
 
 async function btnRefreshOnClick() {
-    await getThesisRequestList();
+    await getThesisGuidingList();
 }
 </script>
 

@@ -109,6 +109,7 @@
                         :auto-upload="false"
                         :limit="1"
                         v-model:file-list="fileList"
+                        v-if="entity.status === ThesisStatusEnum.ApprovedTitle"
                     >
                         <template #trigger>
                         <div class="select_upload">
@@ -128,7 +129,7 @@
                     size="default"
                     :disabled="true"
                 >
-                    <div class="flex-row cg-4">
+                <div class="flex-row cg-4">
                         <div class="form-group fl-1">
                             <el-form-item label="Mã khóa luận">
                                 <el-input v-model="entity.thesisCode" disabled />
@@ -152,15 +153,15 @@
                         </div>
 
                         <div class="form-group fl-1">
-                            <el-form-item label="Cán bộ hướng dẫn">
+                            <el-form-item label="Mã sinh viên">
                                 <el-input
-                                    v-model="entity.teacherName"
+                                    v-model="entity.studentCode"
+                                    disabled
                                 />
                             </el-form-item>
                         </div>
-                    </div>
 
-                    <div class="flex-row cg-4">
+
                         <div class="form-group fl-1">
                             <el-form-item label="Năm học">
                                 <el-input v-model="entity.year" disabled/>
@@ -172,6 +173,45 @@
                                 <el-input v-model="entity.semester" disabled/>
                             </el-form-item>
                         </div>
+                    </div>
+
+                    <div class="flex-row cg-4">
+                        <div class="form-group fl-1">
+                            <el-form-item label="Cán bộ hướng dẫn">
+                                <el-input
+                                    v-model="entity.teacherName"
+                                />
+                            </el-form-item>
+                        </div>
+
+                        <div class="form-group fl-1">
+                            <el-form-item label="Cán bộ đồng hướng dẫn">
+                                <el-select
+                                    v-model="coTeacherIdSelected"
+                                    filterable
+                                    remote
+                                    reserve-keyword
+                                    multiple
+                                    placeholder=""
+                                    :remote-method="getListTeacher"
+                                    :loading="loadingGetTeacher"
+                                    remote-show-suffix
+                                    :name="entity.teacherName"
+                                    disabled
+                                >
+                                    <el-option
+                                        v-for="teacher in listCoTeacher"
+                                        :key="teacher.userId"
+                                        :label="teacher.teacherName"
+                                        :value="teacher.userId"
+                                    />
+                                    <template #loading>
+                                        Loading
+                                    </template>
+                                </el-select>
+                            </el-form-item>
+                        </div>
+
                         <div class="form-group fl-1">
                             <el-form-item label="Trạng thái">
                                 <el-input v-model="entity.status" disabled :formatter="() => ThesisStatus[entity.status]"/>
@@ -274,6 +314,13 @@ async function initData() {
 
 async function btnConfirmOnClick() {
     let result = false;
+
+    // cập nhật tên cán bộ hướng dẫn vào entity để  thêm vào list trong store
+    if (entity.value.teacherId) {
+        const teacher = listTeacher.value.find((item) => item.userId === entity.value.teacherId);
+        entity.value.teacherName = teacher.teacherName;
+    }
+
     if (form.value.mode === "add") {
         result = await entityStore.insert({ ...entity.value });
     } else {
@@ -351,5 +398,12 @@ function btnCancelOnClick() {
     align-items: center;
     color: rgb(155, 189, 221);
     cursor: pointer;
+}
+
+:deep(.el-tag.el-tag--info) {
+    background-color: #cfdef3;
+}
+:deep(.el-select__wrapper.is-disabled .el-select__suffix) {
+    display: none;
 }
 </style>

@@ -68,13 +68,14 @@
                             split-button
                             type="default"
                             @click="btnViewItemOnClick(scope.row)"
+                            v-if="scope.row.status !== ThesisStatusEnum.Finished"
                         >
                             Xem
                             <template #dropdown>
                                 <el-dropdown-menu>
-                                    <el-dropdown-item
+                                    <el-dropdown-item                                      
                                         @click="btnEditItemOnClick(scope.row)"
-                                        >Sửa</el-dropdown-item
+                                        >Sửa</el-dropdown-item                                  
                                     >
                                     <el-dropdown-item
                                         v-if="scope.row.status === ThesisStatusEnum.WaitingForApproval
@@ -86,6 +87,12 @@
                                 </el-dropdown-menu>
                             </template>
                         </el-dropdown>
+                        <el-button
+                            v-else
+                            @click="btnViewItemOnClick(scope.row)"
+                        >
+                            Xem
+                        </el-button>
                     </template>
                 </el-table-column>
             </el-table>

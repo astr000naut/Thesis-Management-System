@@ -18,7 +18,7 @@
 
 
   async function initAppSetupData() {
-    settingStore.fetchListSetting();
+    await settingStore.fetchListSetting();
   }
 
 </script>

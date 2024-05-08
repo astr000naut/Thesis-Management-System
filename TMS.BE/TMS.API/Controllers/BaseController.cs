@@ -39,7 +39,7 @@ namespace TMS.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync(Guid id)
         {
-            var entity = await _baseService.GetByIdAsync(id);
+            var entity = await _baseService.GetByIdAsync(id.ToString());
             return Ok(entity);
         }
 
@@ -90,9 +90,18 @@ namespace TMS.API.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteMultipleAsync([FromBody] List<string> entityIdList)
         {
-            var deleted = await _baseService.DeleteMultipleAsync(entityIdList);
+            int deleted;
+            if (entityIdList.Count == 1)
+            {
+                deleted = await _baseService.DeleteAsync(entityIdList[0]);
+            } else
+            {
+                deleted = await _baseService.DeleteMultipleAsync(entityIdList);
+            }
             return Ok(deleted);
         }
+
+
 
     }
 }

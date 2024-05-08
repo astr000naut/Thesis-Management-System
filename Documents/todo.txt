@@ -1,5 +1,11 @@
 todo: 
-	- validate file export
-	- tai mau file nhap khau tu minio
-	- code tra cuu
+	- validate file export 
+	- tai mau file nhap khau tu minio - DONE
+	- code tra cuu - DONE
+	
+	- cho phep nhieu nguoi huong dan
+	- upload file attachment
+	
+
+
 	

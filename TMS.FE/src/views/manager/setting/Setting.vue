@@ -141,6 +141,7 @@ async function btnConfirmOnClick() {
 <style scoped>
 .page_container {
     width: 100%;
+    min-width: 1200px;
     height: 100%;
     background-color: #fff;
     border-radius: 4px;

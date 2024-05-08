@@ -4,10 +4,11 @@
             v-model:visible="popupDetail.visible"
             :pEntityId="popupDetail.entityId"
             :pMode="popupDetail.mode"
+            @removeItem="onRemoveItem"
         />
         <div class="page__header flex-row">
             <h1 class="page__title" style="font-size: 24px">
-                Khóa luận đã hoàn thành
+                Khóa luận đang hướng dẫn
             </h1>
         </div>
         <div class="search-container flex-row al-center cg-2">
@@ -61,6 +62,8 @@
                 <el-table-column fixed="right" label="Thao tác" width="120">
                     <template #default="scope">
                         <el-button
+                            size="small"
+                            split-button
                             type="default"
                             @click="btnViewItemOnClick(scope.row)"
                         >
@@ -89,7 +92,7 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { useThesisStore, useAuthStore } from "@/stores";
+import { useThesisStore, useAuthStore, useSettingStore } from "@/stores";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { Refresh, Search } from "@element-plus/icons-vue";
@@ -97,12 +100,18 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { debounce } from "lodash";
 import ThesisCompletedDetail from "./ThesisCompletedDetail.vue";
 import {ThesisStatus} from "@/common/enum";
+const settingStore = useSettingStore();
+
+
 
 const router = useRouter();
 const entityStore = useThesisStore();
 const authStore = useAuthStore();
+
 const { entities, total, loading, keySearch, pageNumber, pageSize } =
     storeToRefs(entityStore);
+
+const currentUser = authStore.loginInfo.user;
 
 const popupDetail = ref({
     visible: false,
@@ -132,45 +141,8 @@ async function initData() {
     await getThesisCompletedList();
 }
 
-
-const btnDeleteItemOnClick = (row) => {
-    ElMessageBox.confirm(
-        `Bạn có chắc chắn muốn xóa khoa ${row.thesisName} ?`,
-        "Xác nhận",
-        {
-            confirmButtonText: "Đồng ý",
-            cancelButtonText: "Hủy",
-            type: "warning",
-        }
-    ).then(async () => {
-        const isDeleted = await entityStore.deleteOne(row[entityInfo.keyName]);
-        console.log(isDeleted);
-        if (isDeleted) {
-            ElMessage.success("Xóa thành công");
-        } else {
-            // ElMessage.error('Xóa thất bại');
-        }
-    });
-};
-
-async function getThesisCompletedList() {
-    const teacherId = authStore.loginInfo.user.userId;
-    const customWhere = [
-        {
-            command: 'AND',
-            columnName: 'status',
-            operator: '=',
-            value: '4'
-        },
-        {
-            command: 'AND',
-            columnName: 'teacherId',
-            operator: '=',
-            value: teacherId
-        }
-    ];
-
-    await entityStore.fetchList(customWhere);
+function onRemoveItem(id) {
+    entityStore.removeOneEntity(id);
 }
 
 async function searchTextOnInput() {
@@ -190,13 +162,9 @@ const btnViewItemOnClick = (row) => {
     };
 };
 
-const btnEditItemOnClick = (row) => {
-    popupDetail.value = {
-        visible: true,
-        entityId: row[entityInfo.keyName],
-        mode: "edit",
-    };
-};
+async function getThesisCompletedList() {
+    await entityStore.fetchThesisGuidedList();
+}
 
 async function btnRefreshOnClick() {
     await getThesisCompletedList();

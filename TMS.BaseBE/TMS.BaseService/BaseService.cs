@@ -27,17 +27,19 @@ namespace TMS.BaseService
 
         public async virtual Task BeforeCreate() { }
 
-        public async virtual Task AfterCreate() { }
+        public async virtual Task AfterCreate(TEntityDto entityDto) { }
 
         public async virtual Task BeforeUpdate(TEntityDto t) { }
 
-        public async virtual Task AfterUpdate() { }
+        public async virtual Task AfterUpdate(TEntityDto t) { }
+
+        public async virtual Task AfterDelete(TEntityDto t) { }
 
         public async Task<bool?> CreateAsync(TEntityDto t)
         {
             try
             {
-                BeforeCreate();
+                await BeforeCreate();
 
                 await _unitOfWork.OpenAsync();
                 var entityInput = _mapper.Map<TEntity>(t);
@@ -45,9 +47,9 @@ namespace TMS.BaseService
 
                 await _baseRepository.CreateAsync(entityInput);
 
-                await _unitOfWork.CommitAsync();
+                await AfterCreate(t);
 
-                AfterCreate();
+                await _unitOfWork.CommitAsync();
 
                 return true;
 
@@ -65,6 +67,28 @@ namespace TMS.BaseService
         {
             var result = await _baseRepository.DeleteMultipleAsync(entityIdList);
             return result;
+        }
+
+        public async Task<int> DeleteAsync(string id)
+        {
+            try
+            {
+                await _unitOfWork.OpenAsync();
+                var entity = await _baseRepository.GetByIdAsync(id);
+                var entityDto = _mapper.Map<TEntityDto>(entity);
+                var result = await _baseRepository.DeleteAsync(id);
+                await AfterDelete(entityDto);
+                await _unitOfWork.CommitAsync();
+                return result;
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                await _unitOfWork.CloseAsync();
+            }
         }
 
         public async Task<(IEnumerable<TEntityDto>, int total)> FilterAsync(FilterParam filterParam)
@@ -87,7 +111,7 @@ namespace TMS.BaseService
             }
         }
 
-        public async Task<TEntityDto?> GetByIdAsync(Guid id)
+        public async Task<TEntityDto?> GetByIdAsync(string id)
         {
             var entity = await _baseRepository.GetByIdAsync(id);
             var response = _mapper.Map<TEntityDto>(entity);
@@ -102,6 +126,7 @@ namespace TMS.BaseService
                 await BeforeUpdate(t);
                 var entity = _mapper.Map<TEntity>(t);
                 var result = await _baseRepository.UpdateAsync(entity);
+                await AfterUpdate(t);
                 await _unitOfWork.CommitAsync();
                 return result;
             }

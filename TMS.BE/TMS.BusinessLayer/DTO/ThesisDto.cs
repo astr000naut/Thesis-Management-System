@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TMS.Common.Attribute;
+using TMS.DataLayer.Entity;
 using TMS.DataLayer.Enum;
 
 namespace TMS.BusinessLayer.DTO
@@ -24,6 +26,7 @@ namespace TMS.BusinessLayer.DTO
         public string? TeacherCode { get; set; }
         public string? FacultyCode { get; set; }
         public string? FacultyName { get; set; }
+        public List<CoTeacherDto>? CoTeachers { get; set; }
         public int Year { get; set; }
         public int Semester { get; set; }
         public string? ThesisFileUrl { get; set; }

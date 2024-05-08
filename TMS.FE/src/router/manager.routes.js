@@ -1,8 +1,8 @@
 import Main from '@/views/Main.vue';
-import FacultyList from '@/views/manager/faculty/FacultyList.vue';
-import StudentList from '@/views/manager/student/StudentList.vue';
-import TeacherList from '@/views/manager/teacher/TeacherList.vue';
-import ThesisList from '@/views/manager/thesis/ThesisList.vue';
+const FacultyList = () => import('@/views/manager/faculty/FacultyList.vue');
+const StudentList = () => import('@/views/manager/student/StudentList.vue');
+const TeacherList = () => import('@/views/manager/teacher/TeacherList.vue');
+const ThesisList = () => import('@/views/manager/thesis/ThesisList.vue');
 const Setting = () => import('@/views/manager/setting/Setting.vue');
 const ThesisSearchList = () => import('@/views/search/ThesisSearchList.vue');
 const UnderContruction = () => import('@/components/common/UnderContruction.vue');

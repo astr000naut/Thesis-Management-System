@@ -149,7 +149,7 @@ namespace TenantManagement.BusinessLayer.Service
 
             try
             {
-                var tenant = await _tenantRepository.GetByIdAsync(tenantId);
+                var tenant = await _tenantRepository.GetByIdAsync(tenantId.ToString());
                 var tenantDto = _mapper.Map<TenantDto>(tenant);
                 bool activeDatabaseSuccess = await ActiveTenantDatabase(tenantDto);
                 if (!activeDatabaseSuccess)
@@ -335,6 +335,7 @@ namespace TenantManagement.BusinessLayer.Service
                       ThesisFileName varchar(255) DEFAULT '',
 
                       Status int(11) NOT NULL DEFAULT 0,
+                      CreatedDate datetime DEFAULT CURRENT_TIMESTAMP,
                       PRIMARY KEY (ThesisId)
                     )
                     ENGINE = INNODB,
@@ -439,12 +440,49 @@ namespace TenantManagement.BusinessLayer.Service
                         students.StudentName,
                         teachers.TeacherCode,
                         teachers.TeacherName,
-                        faculties.FacultyName
+                        faculties.FacultyName,
+                        theses.CreatedDate
                     FROM theses
                     LEFT JOIN students ON theses.StudentId = students.UserId
                     LEFT JOIN teachers ON theses.TeacherId = teachers.UserId
                     LEFT JOIN faculties ON theses.FacultyCode = faculties.FacultyCode;";
                 await transaction.Connection.ExecuteAsync(createViewThesesQuery, transaction: transaction);
+
+                // create theis_co_guides table
+                string createThesisCoTeachersQuery = @"
+                    CREATE TABLE thesis_co_teachers (
+                      Id char(36) NOT NULL DEFAULT '',
+                      ThesisId char(36) NOT NULL DEFAULT '',
+                      TeacherId char(36) NOT NULL DEFAULT '',
+                      PRIMARY KEY (Id)
+                    )
+                    ENGINE = INNODB,
+                    AVG_ROW_LENGTH = 16384,
+                    CHARACTER SET utf8,
+                    COLLATE utf8_general_ci;";
+                await transaction.Connection.ExecuteAsync(createThesisCoTeachersQuery, transaction: transaction);
+
+                // create relation for thesis_co_teachers table 
+                string createThesisCoGuidesForeignKeyQuery = @"
+                    ALTER TABLE thesis_co_teachers
+                    ADD CONSTRAINT FK_ThesisCoGuides_Thesis FOREIGN KEY (ThesisId) REFERENCES theses(ThesisId);
+                    ALTER TABLE thesis_co_teachers
+                    ADD CONSTRAINT FK_ThesisCoGuides_Teacher FOREIGN KEY (TeacherId) REFERENCES teachers(UserId);";
+                await transaction.Connection.ExecuteAsync(createThesisCoGuidesForeignKeyQuery, transaction: transaction);
+
+                // create view_thesis_co_teachers
+                string createViewThesisCoGuidesQuery = @"
+                    CREATE VIEW view_thesis_co_teachers AS
+                    SELECT 
+                        thesis_co_teachers.Id,
+                        thesis_co_teachers.ThesisId,
+                        thesis_co_teachers.TeacherId,
+                        teachers.TeacherCode,
+                        teachers.TeacherName
+                    FROM thesis_co_teachers
+                    LEFT JOIN teachers ON thesis_co_teachers.TeacherId = teachers.UserId;";
+
+                await transaction.Connection.ExecuteAsync(createViewThesisCoGuidesQuery, transaction: transaction);
 
                 return true;
             } catch (Exception)
@@ -566,7 +604,7 @@ namespace TenantManagement.BusinessLayer.Service
         public override async Task BeforeUpdate(TenantDto t)
         {
 
-            var tenant = await _tenantRepository.GetByIdAsync(t.TenantId);
+            var tenant = await _tenantRepository.GetByIdAsync(t.TenantId.ToString());
             if (tenant.Status == 2)
             {
                 if (
@@ -672,7 +710,7 @@ namespace TenantManagement.BusinessLayer.Service
                 }
 
                 await _unitOfWork.OpenAsync();
-                var tenant = await _tenantRepository.GetByIdAsync(tenantDto.TenantId);
+                var tenant = await _tenantRepository.GetByIdAsync(tenantDto.TenantId.ToString());
                 if (tenant != null)
                 {
                     tenant.Status = 0;

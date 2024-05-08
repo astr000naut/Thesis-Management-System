@@ -145,16 +145,35 @@ namespace TMS.BaseRepository
 
         }
 
-        public async Task<T?> GetByIdAsync(Guid id)
+        public async Task<int> DeleteAsync(string id)
+        {
+            var tableName = (typeof(T).GetCustomAttribute<TableAttribute>()?.TableName);
+            var key = typeof(T).GetProperties().FirstOrDefault(p => p.GetCustomAttribute<KeyAttribute>() != null).Name;
+            var query = $"DELETE FROM {tableName} WHERE {key} = @id";
+            var result = await _unitOfWork.Connection.ExecuteAsync(query, new { id }, _unitOfWork.Transaction);
+            return result;
+        }
+
+        public async Task<T?> GetByIdAsync(string id)
         {
             var tableName = (typeof(T).GetCustomAttribute<TableAttribute>()?.TableName);
             var viewName = (typeof(T).GetCustomAttribute<TableAttribute>()?.ViewName);
+            var hasDetail = (typeof(T).GetCustomAttribute<TableAttribute>()?.HasDetail);
             var source = tableName;
             if (!string.IsNullOrEmpty(viewName)) source = viewName;
             var key = typeof(T).GetProperties().FirstOrDefault(p => p.GetCustomAttribute<KeyAttribute>() != null).Name;
             var query = $"SELECT * FROM {source} WHERE {key} = @id";
             var result = await _unitOfWork.Connection.QueryFirstOrDefaultAsync<T>(query, new { id }, _unitOfWork.Transaction);
+            if (result != null && hasDetail == true)
+            {
+                result = await GetDetailData(result);
+            }
             return result;
+        }
+
+        public virtual Task<T> GetDetailData(T t)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<bool> UpdateAsync(T t)

@@ -1,6 +1,6 @@
 import Main from '@/views/Main.vue';
-import TenantDetail from '@/views/tenant/TenantDetail.vue';
-import TenantList from '@/views/tenant/TenantList.vue';
+const TenantDetail = () => import('@/views/tenant/TenantDetail.vue');
+const TenantList = () => import('@/views/tenant/TenantList.vue');
 
 export default {
     path: '/tenant',

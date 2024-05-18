@@ -96,13 +96,12 @@ namespace TMS.BusinessLayer.Service
                             rowEnd = worksheet.Dimension.End.Row,
                             colIndex = 1,
                             colStart = 2,
-                            colEnd = 10;
+                            colEnd = 9;
 
                         List<(string, string)> dataFormat = new List<(string, string)>() {
                             ("StudentCode", "require"),
                             ("StudentName", "require"),
                             ("FacultyCode", "require"),
-                            ("FacultyName", ""),
                             ("Major", "require"),
                             ("Class", "require"),
                             ("GPA", ""),

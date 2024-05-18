@@ -8,7 +8,7 @@
         />
         <div class="page__header flex-row">
             <h1 class="page__title" style="font-size: 24px">
-                Danh sách khóa luận đang thực hiện
+                Danh sách khóa luận
             </h1>
         </div>
         <div class="search-container flex-row al-center cg-2">

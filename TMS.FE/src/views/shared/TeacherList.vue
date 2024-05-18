@@ -170,8 +170,7 @@ const popupDetail = ref({
 
 initData();
 
-onMounted(() => {
-});
+
 
 async function initData() {
     await teacherStore.fetchList();

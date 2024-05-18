@@ -154,7 +154,6 @@ const searchText = ref("");
 
 initData();
 
-onMounted(() => {});
 
 async function getMyThesisList() {
     const studentId = authStore.loginInfo.user.userId;

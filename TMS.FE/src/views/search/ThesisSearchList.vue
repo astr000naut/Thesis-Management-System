@@ -123,9 +123,7 @@ const searchText = ref("");
 
 initData();
 
-onMounted(() => {
-    console.log("onMounted");
-});
+
 
 async function initData() {
     await getThesisCompletedList();

@@ -107,8 +107,6 @@
   
       initData();
   
-      onMounted(() => {
-      });
   
       async function initData() {
         await entityStore.fetchList();

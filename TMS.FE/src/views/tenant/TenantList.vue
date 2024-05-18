@@ -93,9 +93,7 @@
 
     initData();
 
-    onMounted(() => {
-      console.log('onMounted');
-    });
+
 
     async function initData() {
       await tenantStore.fetchList();

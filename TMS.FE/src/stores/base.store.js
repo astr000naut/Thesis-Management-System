@@ -132,7 +132,7 @@ export function useBaseStore(props) {
     }
 
     const setPageSize = async (newPageSize) => {
-        if (pageSize.value === newPageSize) {
+        if (pageSize.value === newPageSize || newPageSize == 0) {
             return;
         }
 

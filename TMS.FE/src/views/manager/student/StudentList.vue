@@ -16,18 +16,36 @@
             >
         </div>
         <div class="search-container flex-row al-center cg-2">
-            <div class="reload-btn">
-                <el-button :icon="Refresh" circle @click="btnRefreshOnClick" />
-            </div>
-            <div class="search-input">
-                <el-input
-                    v-model="searchText"
-                    style="width: 240px"
-                    placeholder="Tìm kiếm"
-                    :prefix-icon="Search"
-                    @input="searchTextOnInput"
-                    clearable
+            <div class="flex-left">
+                <el-select
+                v-model="selectedFaculty"
+                placeholder="Chọn khoa"
+                size="large"
+                style="width: 240px"
+                @change="facultyOnChanged"
+                >
+                <el-option
+                    v-for="item in facultyOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
                 />
+            </el-select>
+            </div>
+            <div class="flex-right flex-row cg-2">
+                <div class="reload-btn">
+                    <el-button :icon="Refresh" circle @click="btnRefreshOnClick" />
+                </div>
+                <div class="search-input">
+                    <el-input
+                        v-model="searchText"
+                        style="width: 240px"
+                        placeholder="Tìm kiếm"
+                        :prefix-icon="Search"
+                        @input="searchTextOnInput"
+                        clearable
+                    />
+                </div>
             </div>
         </div>
         <div class="table__container fl-1">
@@ -86,7 +104,7 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { useStudentStore } from "@/stores";
+import { useStudentStore, useFacultyStore } from "@/stores";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { Refresh, Search } from "@element-plus/icons-vue";
@@ -96,9 +114,19 @@ import PopupUpload from '@/components/common/PopupUpload.vue';
 
 const router = useRouter();
 const studentStore = useStudentStore();
+const facultyStore = useFacultyStore();
+
 const { entities, total, loading, keySearch, pageNumber, pageSize } =
     storeToRefs(studentStore);
+
+const {entities: facultyEntities} = storeToRefs(facultyStore);
+
 let debouncedFunction = null;
+
+const facultyOptions = ref([
+    { value: "-1", label: "Tất cả khoa" },
+]);
+const selectedFaculty = ref("-1");
 
 const searchText = ref("");
 const popupUpload = ref({
@@ -111,7 +139,34 @@ onMounted(() => {
 });
 
 async function initData() {
+
     await studentStore.fetchList();
+
+    facultyStore.setPageSize(0);
+    await facultyStore.fetchList();
+    facultyOptions.value = facultyOptions.value.concat(
+        facultyEntities.value.map((item) => ({
+            value: item.facultyCode,
+            label: item.facultyName,
+        }))
+    );
+}
+
+async function facultyOnChanged(value) {
+    const customWhere = [
+        {
+            command: 'AND',
+            columnName: 'facultyCode',
+            operator: '=',
+            value: value
+        }
+    ];
+
+    if (value === '-1') {
+        customWhere.pop();
+    }
+
+    await studentStore.fetchList(customWhere);
 }
 
 async function popupUploadOnClose(isUploadSuccess) {
@@ -202,7 +257,7 @@ async function btnRefreshOnClick() {
 }
 
 .search-container {
-    justify-content: flex-end;
+    justify-content: space-between;
 }
 
 :deep(.el-button.is-circle) {

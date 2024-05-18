@@ -26,7 +26,8 @@ export const useStudentStore = defineStore('student', () => {
             API: $api.student, 
             filterColumns: ["studentName", "studentCode"],
             keyName: 'userId'
-        });  
+        }); 
+        
     return {
         entities,
         total,

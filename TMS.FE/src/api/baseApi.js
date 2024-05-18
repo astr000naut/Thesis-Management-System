@@ -2,11 +2,15 @@ export class BaseApi {
 
     constructor(controller) {
         this.baseUrl = '/api/' + controller;
-        this.workerUrl= '/api/worker/' + controller;
+        this.workerUrl= '/worker/api/' + controller;
     }
     
     filter() {
         return this.baseUrl + '/filter';
+    }
+
+    export() {
+        return this.workerUrl + '/export';
     }
 
     insert() {

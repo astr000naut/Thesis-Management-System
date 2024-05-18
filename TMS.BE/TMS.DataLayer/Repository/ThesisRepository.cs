@@ -133,7 +133,7 @@ namespace TMS.DataLayer.Repository
             var qResult2 = await _unitOfWork.Connection.QueryAsync<Thesis>(sql: query2, param: parameters2, transaction: _unitOfWork.Transaction);
 
             // lấy tổng số khóa luận đồng hướng dẫn và đã hoàn thành
-            var query3 = $"SELECT COUNT(*) FROM theses WHERE ThesisId IN @ThesisIdList " +
+            var query3 = $"SELECT COUNT(*) FROM view_theses WHERE ThesisId IN @ThesisIdList " +
                 $"AND Status = {(int)ThesisStatus.Finished} " +
                 searchQuery;
 
@@ -165,7 +165,7 @@ namespace TMS.DataLayer.Repository
 
             // lấy tổng số khóa luận mà giáo viên hướng dẫn và đã hoàn thành
 
-            var query2 = $"SELECT COUNT(*) FROM theses WHERE TeacherId = @TeacherId " +
+            var query2 = $"SELECT COUNT(*) FROM view_theses WHERE TeacherId = @TeacherId " +
                 $"AND Status = {(int)ThesisStatus.Finished} " +
                 searchQuery;
 

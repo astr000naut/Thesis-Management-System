@@ -19,10 +19,25 @@
             <h1 class="page__title" style="font-size: 24px">
                 Danh sách Giảng viên
             </h1>
-            <el-button type="primary" @click="btnImportOnClick"
+
+            <el-dropdown
                 v-if="loginInfo.user.role == 'ADMIN'"
-                >Nhập khẩu</el-button
+                size="small"
+                split-button
+                type="primary"
+                @click="btnImportOnClick"
             >
+                Nhập khẩu
+                <template #dropdown>
+                    <el-dropdown-menu>
+                        <el-dropdown-item                                      
+                            @click="btnExportOnClick"
+                            >Xuất khẩu</el-dropdown-item                                  
+                        >
+                    </el-dropdown-menu>
+                </template>
+            </el-dropdown>
+
         </div>
         <div class="search-container flex-row al-center cg-2">
             <div class="flex-left">
@@ -120,8 +135,8 @@
                 :background="false"
                 layout="total, sizes, prev, pager, next"
                 :total="total"
-                @size-change="teacherStore.setPageSize"
-                @current-change="teacherStore.setPageNumber"
+                @size-change="entityStore.setPageSize"
+                @current-change="entityStore.setPageNumber"
             />
         </div>
     </div>
@@ -140,12 +155,12 @@ import PopupUpload from '@/components/common/PopupUpload.vue';
 import TeacherDetail from "./TeacherDetail.vue";
 
 const router = useRouter();
-const teacherStore = useTeacherStore();
+const entityStore = useTeacherStore();
 const facultyStore = useFacultyStore();
 const authStore = useAuthStore();
 
 const { entities, total, loading, keySearch, pageNumber, pageSize } =
-    storeToRefs(teacherStore);
+    storeToRefs(entityStore);
 let debouncedFunction = null;
 const {loginInfo} = storeToRefs(authStore);
 
@@ -173,7 +188,7 @@ initData();
 
 
 async function initData() {
-    await teacherStore.fetchList();
+    await entityStore.fetchList();
 
     facultyStore.setPageSize(0);
     await facultyStore.fetchList();
@@ -199,12 +214,12 @@ async function facultyOnChanged(value) {
         customWhere.pop();
     }
 
-    await teacherStore.fetchList(customWhere);
+    await entityStore.fetchList(customWhere);
 }
 
 async function popupUploadOnClose(isUploadSuccess) {
     if (isUploadSuccess) {
-        await teacherStore.fetchList();
+        await entityStore.fetchList();
     }
 }
 
@@ -222,7 +237,7 @@ const btnDeleteItemOnClick = (row) => {
             type: "warning",
         }
     ).then(async () => {
-        const isDeleted = await teacherStore.deleteOne(row.userId);
+        const isDeleted = await entityStore.deleteOne(row.userId);
         console.log(isDeleted);
         if (isDeleted) {
             ElMessage.success("Xóa thành công");
@@ -232,10 +247,64 @@ const btnDeleteItemOnClick = (row) => {
     });
 };
 
+async function btnExportOnClick() {
+    const exportOpt = {
+        fileName: "danh_sach_giang_vien.xlsx",
+        tableHeading: "Danh sách giảng viên",
+        columns:[
+            {
+                name: "STT",
+                caption: "STT",
+                width: 10,
+                align: "left",
+                type: "text",
+            },
+            {
+                name: "TeacherCode",
+                caption: "Mã giảng viên",
+                width: 20,
+                align: "left",
+                type: "text"
+            },
+            {
+                name: "TeacherName",
+                caption: "Tên giảng viên",
+                width: 30,
+                align: "left",
+                type: "text"
+            },
+            {
+                name: "FacultyName",
+                caption: "Khoa",
+                width: 40,
+                align: "left",
+                type: "text"
+            },
+            {
+                name: "Email",
+                caption: "Email",
+                width: 30,
+                align: "left",
+                type: "text"
+            },
+            {
+                name: "PhoneNumber",
+                caption: "Số điện thoại",
+                width: 30,
+                align: "left",
+                type: "text"
+            }
+           
+        ]
+    }
+    const customWhere = [];
+    await entityStore.exportList(exportOpt, customWhere);
+}
+
 async function searchTextOnInput() {
     if (!debouncedFunction) {
         debouncedFunction = debounce(() => {
-            teacherStore.setKeySearch(searchText.value);
+            entityStore.setKeySearch(searchText.value);
         }, 800);
     }
     debouncedFunction();
@@ -259,7 +328,7 @@ const btnEditItemOnClick = (row) => {
 
 
 async function btnRefreshOnClick() {
-    await teacherStore.fetchList();
+    await entityStore.fetchList();
 }
 
 </script>

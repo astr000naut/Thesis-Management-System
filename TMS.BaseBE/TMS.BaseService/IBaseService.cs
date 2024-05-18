@@ -1,4 +1,5 @@
 ﻿using TMS.BaseRepository.Param;
+using TMS.BusinessLayer.Param;
 
 namespace TMS.BaseService
 {
@@ -15,6 +16,8 @@ namespace TMS.BaseService
         Task<int> DeleteAsync(string id);
 
         Task<TEntityDto> GetNew();
+
+       Task<byte[]> ExportExcelAsync(ExportParam exportParam);
 
     }
 }

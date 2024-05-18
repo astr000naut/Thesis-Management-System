@@ -11,7 +11,7 @@ export const httpClient = {
 };
 
 function request(method) {
-    return (url, body) => {
+    return (url, body, opts) => {
         const headers = authHeader();
 
         if (body) {
@@ -24,7 +24,8 @@ function request(method) {
             url: url,
             headers: headers,
             data: body,
-            withCredentials: true
+            withCredentials: true,
+            ...opts
         }).then((response) => response.data)
         .catch((err) => handleError(err));
     }

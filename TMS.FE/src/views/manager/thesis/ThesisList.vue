@@ -10,8 +10,12 @@
             <h1 class="page__title" style="font-size: 24px">
                 Danh sách khóa luận
             </h1>
+            <el-button type="primary" @click="btnExportOnClick"
+                >Xuất khẩu</el-button
+            >
         </div>
         <div class="search-container flex-row al-center cg-2">
+  
             <div class="reload-btn">
                 <el-button :icon="Refresh" circle @click="btnRefreshOnClick" />
             </div>
@@ -192,6 +196,73 @@ const btnEditItemOnClick = (row) => {
         mode: "edit",
     };
 };
+
+async function btnExportOnClick() {
+    const exportOpt = {
+        fileName: "danh_sach_khoa_luan.xlsx",
+        tableHeading: "Danh sách khóa luận",
+        columns:[
+            {
+                name: "STT",
+                caption: "STT",
+                width: 10,
+                align: "left",
+                type: "text",
+            },
+            {
+                name: "ThesisCode",
+                caption: "Mã khóa luận",
+                width: 30,
+                align: "left",
+                type: "text"
+            },
+            {
+                name: "ThesisName",
+                caption: "Tên đề tài",
+                width: 60,
+                align: "left",
+                type: "text"
+            },
+            {
+                name: "Year",
+                caption: "Năm học",
+                width: 15,
+                align: "left",
+                type: "text"
+            },
+            {
+                name: "Semester",
+                caption: "Học kỳ",
+                width: 15,
+                align: "left",
+                type: "text"
+            },
+            {
+                name: "StudentName",
+                caption: "Sinh viên",
+                width: 30,
+                align: "left",
+                type: "text"
+            },
+            {
+                name: "TeacherName",
+                caption: "Cán bộ hướng dẫn",
+                width: 30,
+                align: "left",
+                type: "text"
+            },
+            {
+                name: "CoTeachers",
+                caption: "Cán bộ đồng hướng dẫn",
+                width: 60,
+                align: "left",
+                type: "text"
+            }
+        ]
+    }
+    const customWhere = [];
+    await entityStore.exportList(exportOpt, customWhere);
+}
 
 async function getListThesis() {
     const customWhere = [

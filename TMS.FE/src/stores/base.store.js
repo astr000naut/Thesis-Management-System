@@ -45,6 +45,44 @@ export function useBaseStore(props) {
         }
     };
 
+    const exportList = async (exportOpt, customWhere) => {
+        loading.value = true;
+        try {
+            const response = await httpClient.post(API.export(), {
+                fileName: exportOpt.fileName,  
+                tableHeading: exportOpt.tableHeading,
+                columns: exportOpt.columns,
+                keySearch: keySearch.value,
+                filterColumns: filterColumns,
+                customWhere: customWhere
+            }, 
+            {
+                responseType: "blob",
+            });
+            
+            const url = window.URL.createObjectURL(new Blob([response]));
+                // Tạo thẻ a và gắn url blob data vào
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", exportOpt.fileName);
+
+            // Append link element vào DOM và tự click để download
+            document.body.appendChild(link);
+            link.click();
+
+            // Remove các element vừa mới tạo khỏi trang
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(link);
+
+            
+        } catch (error) {
+            const alertStore = useAlertStore();
+            alertStore.alert('error', error);
+        } finally {
+            loading.value = false;
+        }
+    }
+
     const removeOneEntity = (id) => {
         entities.value = entities.value.filter(x => x[keyName] !== id);
         -- total.value;
@@ -180,6 +218,7 @@ export function useBaseStore(props) {
         pageNumber,
         pageSize,
         filterColumns,
+        exportList,
         removeOneEntity,
         fetchList,
         getById,

@@ -16,9 +16,22 @@
             <h1 class="page__title" style="font-size: 24px">
                 Danh sách Sinh viên
             </h1>
-            <el-button type="primary" @click="btnImportOnClick"
-                >Nhập khẩu</el-button
+            <el-dropdown
+                size="small"
+                split-button
+                type="primary"
+                @click="btnImportOnClick"
             >
+                Nhập khẩu
+                <template #dropdown>
+                    <el-dropdown-menu>
+                        <el-dropdown-item                                      
+                            @click="btnExportOnClick"
+                            >Xuất khẩu</el-dropdown-item                                  
+                        >
+                    </el-dropdown-menu>
+                </template>
+            </el-dropdown>
         </div>
         <div class="search-container flex-row al-center cg-2">
             <div class="flex-left">
@@ -117,8 +130,8 @@
                 :background="false"
                 layout="total, sizes, prev, pager, next"
                 :total="total"
-                @size-change="studentStore.setPageSize"
-                @current-change="studentStore.setPageNumber"
+                @size-change="entityStore.setPageSize"
+                @current-change="entityStore.setPageNumber"
             />
         </div>
     </div>
@@ -137,11 +150,11 @@ import PopupUpload from '@/components/common/PopupUpload.vue';
 import StudentDetail from "./StudentDetail.vue";
 
 const router = useRouter();
-const studentStore = useStudentStore();
+const entityStore = useStudentStore();
 const facultyStore = useFacultyStore();
 
 const { entities, total, loading, keySearch, pageNumber, pageSize } =
-    storeToRefs(studentStore);
+    storeToRefs(entityStore);
 
 const {entities: facultyEntities} = storeToRefs(facultyStore);
 
@@ -169,7 +182,7 @@ initData();
 
 async function initData() {
 
-    await studentStore.fetchList();
+    await entityStore.fetchList();
 
     facultyStore.setPageSize(0);
     await facultyStore.fetchList();
@@ -195,13 +208,88 @@ async function facultyOnChanged(value) {
         customWhere.pop();
     }
 
-    await studentStore.fetchList(customWhere);
+    await entityStore.fetchList(customWhere);
 }
 
 async function popupUploadOnClose(isUploadSuccess) {
     if (isUploadSuccess) {
-        await studentStore.fetchList();
+        await entityStore.fetchList();
     }
+}
+
+async function btnExportOnClick() {
+    const exportOpt = {
+        fileName: "danh_sach_sinh_vien.xlsx",
+        tableHeading: "Danh sách sinh viên",
+        columns:[
+            {
+                name: "STT",
+                caption: "STT",
+                width: 10,
+                align: "left",
+                type: "text",
+            },
+            {
+                name: "StudentCode",
+                caption: "Mã sinh viên",
+                width: 20,
+                align: "left",
+                type: "text"
+            },
+            {
+                name: "StudentName",
+                caption: "Tên sinh viên",
+                width: 30,
+                align: "left",
+                type: "text"
+            },
+            {
+                name: "FacultyName",
+                caption: "Khoa",
+                width: 40,
+                align: "left",
+                type: "text"
+            },
+            {
+                name: "Major",
+                caption: "Chuyên ngành",
+                width: 40,
+                align: "left",
+                type: "text"
+            },
+            {
+                name: "Class",
+                caption: "Lớp",
+                width: 20,
+                align: "left",
+                type: "text"
+            },
+            {
+                name: "GPA",
+                caption: "GPA",
+                width: 15,
+                align: "left",
+                type: "text"
+            },
+            {
+                name: "Email",
+                caption: "Email",
+                width: 30,
+                align: "left",
+                type: "text"
+            },
+            {
+                name: "PhoneNumber",
+                caption: "Số điện thoại",
+                width: 30,
+                align: "left",
+                type: "text"
+            }
+           
+        ]
+    }
+    const customWhere = [];
+    await entityStore.exportList(exportOpt, customWhere);
 }
 
 const btnImportOnClick = () => {
@@ -218,7 +306,7 @@ const btnDeleteItemOnClick = (row) => {
             type: "warning",
         }
     ).then(async () => {
-        const isDeleted = await studentStore.deleteOne(row.userId);
+        const isDeleted = await entityStore.deleteOne(row.userId);
         console.log(isDeleted);
         if (isDeleted) {
             ElMessage.success("Xóa thành công");
@@ -231,7 +319,7 @@ const btnDeleteItemOnClick = (row) => {
 async function searchTextOnInput() {
     if (!debouncedFunction) {
         debouncedFunction = debounce(() => {
-            studentStore.setKeySearch(searchText.value);
+            entityStore.setKeySearch(searchText.value);
         }, 800);
     }
     debouncedFunction();
@@ -254,7 +342,7 @@ const btnEditItemOnClick = (row) => {
 };
 
 async function btnRefreshOnClick() {
-    await studentStore.fetchList();
+    await entityStore.fetchList();
 }
 
 </script>

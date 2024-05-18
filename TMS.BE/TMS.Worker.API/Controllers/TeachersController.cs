@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TMS.BusinessLayer.DTO;
 using TMS.BusinessLayer.Interface;
+using TMS.BusinessLayer.Param;
 using TMS.BusinessLayer.Service;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -36,6 +37,14 @@ namespace TMS.Worker.API.Controllers
 
             return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "teacher_upload.xlsx");
 
+        }
+
+        [Route("export")]
+        [HttpPost]
+        public async Task<IActionResult> ExportReceipData(ExportParam exportExcelParam)
+        {
+            byte[] excelFileBytes = await _teacherService.ExportExcelAsync(exportExcelParam);
+            return File(excelFileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", exportExcelParam.FileName);
         }
 
     }

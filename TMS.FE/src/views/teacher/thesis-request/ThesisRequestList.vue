@@ -16,14 +16,14 @@
                 <el-button :icon="Refresh" circle @click="btnRefreshOnClick" />
             </div>
             <div class="search-input">
-                <el-input
+                <!-- <el-input
                     v-model="searchText"
                     style="width: 240px"
                     placeholder="Tìm kiếm"
                     :prefix-icon="Search"
                     @input="searchTextOnInput"
                     clearable
-                />
+                /> -->
             </div>
         </div>
         <div class="table__container fl-1">

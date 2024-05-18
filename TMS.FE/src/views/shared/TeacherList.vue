@@ -2,16 +2,25 @@
 <template>
     <div class="page__container flex-col rg-2">
         <PopupUpload
+            
             v-model:visible="popupUpload.visible"
             pUrlUpload="/worker/api/teachers/upload"
             pUrlDownloadSample="/worker/api/teachers/sample_upload_file"
             @close="popupUploadOnClose"
         ></PopupUpload>
+
+        <TeacherDetail
+            v-model:visible="popupDetail.visible"
+            :pEntityId="popupDetail.entityId"
+            :pMode="popupDetail.mode"
+        />
+
         <div class="page__header flex-row">
             <h1 class="page__title" style="font-size: 24px">
                 Danh sách Giảng viên
             </h1>
             <el-button type="primary" @click="btnImportOnClick"
+                v-if="loginInfo.user.role == 'ADMIN'"
                 >Nhập khẩu</el-button
             >
         </div>
@@ -59,9 +68,9 @@
                     fixed
                     prop="teacherCode"
                     label="Mã giảng viên"
-                    width="250"
+                    width="200"
                 />
-                <el-table-column prop="teacherName" label="Tên giảng viên" width="400" />
+                <el-table-column prop="teacherName" label="Tên giảng viên"/>
                 <el-table-column prop="facultyName" label="Khoa" width="300" />
                 <el-table-column prop="email" label="Email" width="300" />
                 <el-table-column
@@ -69,10 +78,34 @@
                     label="Số điện thoại"
                     width="300"
                 />
-                <el-table-column fixed="right" label="Thao tác">
+                <el-table-column fixed="right" label="Thao tác" width="120">
                     <template #default="scope">
-                        <el-button @click="btnDeleteItemOnClick(scope.row)"
-                            >Xóa</el-button>
+                        <el-dropdown
+                            v-if="loginInfo.user.role == 'ADMIN'"
+                            size="small"
+                            split-button
+                            type="default"
+                            @click="btnViewItemOnClick(scope.row)"
+                        >
+                            Xem
+                            <template #dropdown>
+                                <el-dropdown-menu>
+                                    <el-dropdown-item                                      
+                                        @click="btnEditItemOnClick(scope.row)"
+                                        >Sửa</el-dropdown-item                                  
+                                    >
+                                    <el-dropdown-item        
+                                        @click="btnDeleteItemOnClick(scope.row)"
+                                        >Xóa</el-dropdown-item
+                                    >
+                                </el-dropdown-menu>
+                            </template>
+                        </el-dropdown>
+                        <el-button
+                            v-else
+                            @click="btnViewItemOnClick(scope.row)"
+                            >Xem
+                        </el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -97,20 +130,24 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { useTeacherStore, useFacultyStore } from "@/stores";
+import { useTeacherStore, useFacultyStore, useAuthStore } from "@/stores";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { Refresh, Search } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { debounce } from "lodash";
 import PopupUpload from '@/components/common/PopupUpload.vue';
+import TeacherDetail from "./TeacherDetail.vue";
 
 const router = useRouter();
 const teacherStore = useTeacherStore();
 const facultyStore = useFacultyStore();
+const authStore = useAuthStore();
+
 const { entities, total, loading, keySearch, pageNumber, pageSize } =
     storeToRefs(teacherStore);
 let debouncedFunction = null;
+const {loginInfo} = storeToRefs(authStore);
 
 const {entities: facultyEntities} = storeToRefs(facultyStore);
 
@@ -123,6 +160,12 @@ const selectedFaculty = ref("-1");
 const searchText = ref("");
 const popupUpload = ref({
     visible: false,
+});
+
+const popupDetail = ref({
+    visible: false,
+    entityId: null,
+    mode: "view",
 });
 
 initData();
@@ -200,12 +243,21 @@ async function searchTextOnInput() {
 }
 
 const btnViewItemOnClick = (row) => {
-    router.push(`/tenant/view/${row.tenantId}`);
+    popupDetail.value = {
+        visible: true,
+        entityId: row['userId'],
+        mode: "view",
+    };
 };
 
 const btnEditItemOnClick = (row) => {
-    router.push(`/tenant/edit/${row.tenantId}`);
+    popupDetail.value = {
+        visible: true,
+        entityId: row['userId'],
+        mode: "edit",
+    };
 };
+
 
 async function btnRefreshOnClick() {
     await teacherStore.fetchList();

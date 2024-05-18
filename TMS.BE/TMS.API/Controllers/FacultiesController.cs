@@ -10,7 +10,6 @@ namespace TMS.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "ADMIN")]
     public class FacultiesController : BaseController<FacultyDto>
     {
         private readonly IFacultyService _facultyService;

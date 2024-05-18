@@ -31,18 +31,18 @@
                     <div class="flex-row cg-4">
                         <div class="form-group fl-1">
                             <el-form-item label="Mã giảng viên">
-                                <el-input v-model="entity.teacherCode" disabled />
+                                <el-input v-model="entity.teacherCode" disabled/>
                             </el-form-item>
                         </div>
 
                         <div class="form-group fl-4">
                             <el-form-item label="Họ và tên">
-                                <el-input v-model="entity.teacherName" disabled />
+                                <el-input v-model="entity.teacherName" />
                             </el-form-item>
                         </div>
                     </div>
                     <div class="flex-row cg-4">
-                        <div class="form-group fl-1">
+                        <div class="form-group fl-2">
                             <el-form-item label="Khoa">
                                 <el-input v-model="entity.facultyName" disabled />
                             </el-form-item>
@@ -78,7 +78,15 @@
         <template #footer>
             <div class="dialog-footer">
                 <el-button @click="btnCancelOnClick">
-                    Đóng
+                    {{ form.mode === "view" ? "Đóng" : "Hủy" }}
+                </el-button>
+                <el-button
+                    type="primary"
+                    @click="btnConfirmOnClick"
+                    :loading="loading"
+                    v-if="form.mode !== 'view'"
+                >
+                    Lưu
                 </el-button>
             </div>
         </template>
@@ -128,6 +136,24 @@ function gotoPageList() {
 function btnCancelOnClick() {
     visible.value = false;
 }
+
+async function btnConfirmOnClick() {
+    let result = false;
+    if (form.value.mode === "add") {
+        result = await entityStore.insert({ ...entity.value });
+    } else {
+        result = await entityStore.update({ ...entity.value });
+    }
+    if (result) {
+        let message =
+            form.value.mode === "add"
+                ? "Thêm mới thành công"
+                : "Cập nhật thành công";
+        ElMessage.success(message);
+        gotoPageList();
+    }
+}
+
 </script>
 
 <style scoped>
@@ -137,12 +163,6 @@ function btnCancelOnClick() {
     justify-content: flex-start;
 }
 
-:deep(.el-input__inner) {
-    cursor: default !important;
-}
-:deep(.el-textarea__inner) {
-    cursor: default !important;
-}
 
 
 

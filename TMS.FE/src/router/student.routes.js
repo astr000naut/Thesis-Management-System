@@ -1,7 +1,7 @@
 import Main from '@/views/Main.vue';
 const MyThesisList = () => import('@/views/student/mythesis/MyThesisList.vue');
 const StudentInfo = () => import('@/views/student/personal-info/StudentInfo.vue');
-const TeacherList = () => import('@/views/student/teacher-list/TeacherList.vue');
+const TeacherList = () => import('@/views/shared/TeacherList.vue');
 const ThesisSearchList = () => import('@/views/search/ThesisSearchList.vue');
 export default {
     path: '/s',

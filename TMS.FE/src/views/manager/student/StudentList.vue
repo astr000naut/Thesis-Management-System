@@ -7,6 +7,11 @@
             pUrlDownloadSample="/worker/api/students/sample_upload_file"
             @close="popupUploadOnClose"
         ></PopupUpload>
+        <StudentDetail
+            v-model:visible="popupDetail.visible"
+            :pEntityId="popupDetail.entityId"
+            :pMode="popupDetail.mode"
+        />
         <div class="page__header flex-row">
             <h1 class="page__title" style="font-size: 24px">
                 Danh sách Sinh viên
@@ -76,10 +81,28 @@
                     label="Số điện thoại"
                     width="120"
                 />
-                <el-table-column fixed="right" label="Thao tác">
+                <el-table-column fixed="right" label="Thao tác" width="120">
                     <template #default="scope">
-                        <el-button @click="btnDeleteItemOnClick(scope.row)"
-                            >Xóa</el-button>
+                        <el-dropdown
+                            size="small"
+                            split-button
+                            type="default"
+                            @click="btnViewItemOnClick(scope.row)"
+                        >
+                            Xem
+                            <template #dropdown>
+                                <el-dropdown-menu>
+                                    <el-dropdown-item                                      
+                                        @click="btnEditItemOnClick(scope.row)"
+                                        >Sửa</el-dropdown-item                                  
+                                    >
+                                    <el-dropdown-item        
+                                        @click="btnDeleteItemOnClick(scope.row)"
+                                        >Xóa</el-dropdown-item
+                                    >
+                                </el-dropdown-menu>
+                            </template>
+                        </el-dropdown>
                     </template>
                 </el-table-column>
             </el-table>
@@ -111,6 +134,7 @@ import { Refresh, Search } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { debounce } from "lodash";
 import PopupUpload from '@/components/common/PopupUpload.vue';
+import StudentDetail from "./StudentDetail.vue";
 
 const router = useRouter();
 const studentStore = useStudentStore();
@@ -131,6 +155,12 @@ const selectedFaculty = ref("-1");
 const searchText = ref("");
 const popupUpload = ref({
     visible: false,
+});
+
+const popupDetail = ref({
+    visible: false,
+    entityId: null,
+    mode: "view",
 });
 
 initData();
@@ -209,11 +239,19 @@ async function searchTextOnInput() {
 }
 
 const btnViewItemOnClick = (row) => {
-    router.push(`/tenant/view/${row.tenantId}`);
+    popupDetail.value = {
+        visible: true,
+        entityId: row['userId'],
+        mode: "view",
+    };
 };
 
 const btnEditItemOnClick = (row) => {
-    router.push(`/tenant/edit/${row.tenantId}`);
+    popupDetail.value = {
+        visible: true,
+        entityId: row['userId'],
+        mode: "edit",
+    };
 };
 
 async function btnRefreshOnClick() {

@@ -1,7 +1,7 @@
 import Main from '@/views/Main.vue';
 const FacultyList = () => import('@/views/manager/faculty/FacultyList.vue');
 const StudentList = () => import('@/views/manager/student/StudentList.vue');
-const TeacherList = () => import('@/views/manager/teacher/TeacherList.vue');
+const TeacherList = () => import('@/views/shared/TeacherList.vue');
 const ThesisList = () => import('@/views/manager/thesis/ThesisList.vue');
 const Setting = () => import('@/views/manager/setting/Setting.vue');
 const ThesisSearchList = () => import('@/views/search/ThesisSearchList.vue');

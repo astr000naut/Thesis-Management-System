@@ -69,7 +69,7 @@ namespace TMS.BaseService
             return result;
         }
 
-        public async Task<int> DeleteAsync(string id)
+        public virtual async Task<int> DeleteAsync(string id)
         {
             try
             {

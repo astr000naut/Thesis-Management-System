@@ -62,11 +62,8 @@
                 <el-table-column fixed="right" align="center" label="Thao tác" width="200">
                     <template #default="scope">
                         <div class="row-action-container">
-                            <el-tooltip content="Xem" placement="bottom" effect="light">
-                                <el-button :icon="View" circle 
-                                    @click="btnViewItemOnClick(scope.row)"
-                                />
-                            </el-tooltip>
+                            <el-button @click="btnViewItemOnClick(scope.row)"
+                            >Xem</el-button>
                             <!-- <el-tooltip content="Đồng ý" placement="bottom" effect="light">
                                 <el-button :icon="Check" circle />
                             </el-tooltip>

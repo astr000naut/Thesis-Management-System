@@ -251,13 +251,19 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useThesisStore, useAuthStore } from "@/stores";
 import { storeToRefs } from "pinia";
 import { ElMessage } from "element-plus";
 import $api from "@/api/index.js";
 import { httpClient } from "@/helpers";
 import {ThesisStatus, ThesisStatusEnum} from "@/common/enum";
+
+const listCoTeacher = computed(() => {
+    return listTeacher.value.filter((x) => entity.value.teacherId != x.userId);
+});
+
+const coTeacherIdSelected = ref([]);
 
 
 
@@ -304,6 +310,10 @@ async function initData() {
         entity.value = { ...e };
 
         listTeacher.value = [{ userId: e.teacherId, teacherName: e.teacherName }];
+        listTeacher.value = listTeacher.value.concat(e.coTeachers.map(
+            x => { return { userId: x.teacherId, teacherName: x.teacherName } 
+        }));
+        coTeacherIdSelected.value = e.coTeachers.map(x => x.teacherId);
 
     } else if (form.value.mode === "add") {
         form.value.title = "Đăng ký " + form.value.entityName;

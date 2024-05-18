@@ -7,7 +7,7 @@ const commonVal = {
     defaultDateFormat: "dmy",
     sidebarItems: [
       {
-        name: "Quản lý Tenant",
+        name: "Quản lý Khách hàng",
         link: "/tenant",
         icon: "mi-sidebar-dashboard",
       },

@@ -277,5 +277,32 @@ namespace TMS.BusinessLayer.Service
                 await _unitOfWork.CloseAsync();
             }
         }
+
+        public override async Task<int> DeleteAsync(string id)
+        {
+            try
+            {
+                await _unitOfWork.OpenAsync();
+                int studentDeleted = await _studentRepository.DeleteAsync(id);
+                int userDeleted = await _userRepository.DeleteAsync(id);
+                if (studentDeleted == userDeleted)
+                {
+                    await _unitOfWork.CommitAsync();
+                    return studentDeleted;
+                }
+                else
+                {
+                    throw new Exception("Error while deleting student");
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                await _unitOfWork.CloseAsync();
+            }
+        }
     }
 }

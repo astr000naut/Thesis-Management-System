@@ -77,6 +77,12 @@ namespace TMS.DataLayer.Repository
             return result.FirstOrDefault();
         }
 
+        public async Task<int> DeleteAsync(string id)
+        {
+            var query = $"DELETE FROM users WHERE userId = @id";
+            var deleted = await _unitOfWork.Connection.ExecuteAsync(query, new { id }, _unitOfWork.Transaction);
+            return deleted;
 
+        }
     }
 }

@@ -154,7 +154,7 @@
                 </div>
                 <div v-else class="form-view-footer">
                     <el-button v-show="curTabname === 'tenantSetting' && entity.status === 2" type="" @click="btnInactiveTenantOnClick">Ngừng hoạt động</el-button>
-                    <el-button v-show="curTabname === 'tenantSetting' && entity.status === 1" type="" @click="btnRemoveTenantResourceOnClick">Xóa tài nguyên</el-button>
+                    <el-button v-show="curTabname === 'tenantSetting' && entity.status === 1" type="" @click="btnRemoveTenantResourceOnClick">Giải phóng tài nguyên</el-button>
                     <el-button v-show="curTabname === 'tenantSetting' && entity.status === 1" type="" @click="btnReActiveTenantOnClick">Tiếp tục sử dụng</el-button>
                     <el-button v-show="curTabname === 'tenantSetting'" type="" @click="checkTenantConnection">Kiểm tra kết nối</el-button>
                     <el-button v-show="curTabname === 'tenantSetting' && entity.status === 0" type="primary" @click="btnActiveTenantOnClick">Kích hoạt</el-button>
@@ -236,7 +236,7 @@
     }
 
     async function btnRemoveTenantResourceOnClick() {
-        ElMessageBox.confirm('Bạn có chắc chắn muốn xóa tài nguyên của khách hàng này không?', 'Xác nhận', {
+        ElMessageBox.confirm('Bạn có chắc chắn muốn giải phóng tài nguyên của khách hàng này không?', 'Xác nhận', {
             confirmButtonText: 'Đồng ý',
             cancelButtonText: 'Hủy',
             type: 'warning'
@@ -245,7 +245,7 @@
             if (message) {
                 ElMessage.error(message);
             } else {
-                ElMessage.success('Đã xóa tài nguyên của khách hàng');
+                ElMessage.success('Đã giải phóng tài nguyên của khách hàng');
                 entity.value.status = 0;
             }
 

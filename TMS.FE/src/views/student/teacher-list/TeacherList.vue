@@ -49,11 +49,8 @@
                 />
                 <el-table-column fixed="right" align="center" label="Thao tác">
                     <template #default="scope">
-                        <el-tooltip content="Xem" placement="bottom" effect="light">
-                            <el-button :icon="View" circle 
-                                @click="btnViewItemOnClick(scope.row)"
-                            />
-                        </el-tooltip>
+                        <el-button @click="btnViewItemOnClick(scope.row)"
+                        >Xem</el-button>
                     </template>
                 </el-table-column>
             </el-table>

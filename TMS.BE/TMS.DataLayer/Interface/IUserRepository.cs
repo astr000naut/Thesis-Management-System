@@ -8,6 +8,7 @@ namespace TMS.DataLayer.Interface
         Task<bool> Update(User user);
         Task<bool> CreateAsync(User user);
         Task<int> DeleteMultipleAsync(List<string> ids);
+        Task<int> DeleteAsync(string id);
         Task<User?> GetByIdAsync(Guid id);
     }
 }

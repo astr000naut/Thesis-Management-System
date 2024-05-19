@@ -6,6 +6,7 @@
             v-model:visible="popupUpload.visible"
             pUrlUpload="/worker/api/teachers/upload"
             pUrlDownloadSample="/worker/api/teachers/sample_upload_file"
+            pSampleName="nhap_khau_giang_vien"
             @close="popupUploadOnClose"
         ></PopupUpload>
 

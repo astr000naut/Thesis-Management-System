@@ -97,6 +97,7 @@ import { UploadFilled } from "@element-plus/icons-vue";
 const props = defineProps({
     pUrlUpload: String,
     pUrlDownloadSample: String,
+    pSampleName: String,
 });
 
 const emit = defineEmits(['close']);
@@ -126,7 +127,7 @@ async function downloadSampleFile() {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = "Mau_nhap_khau.xlsx"; // or any other filename you want
+    a.download = `${props.pSampleName}.xlsx`; // or any other filename you want
     document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
     a.click();    
     a.remove();  //afterwards we remove the element again         

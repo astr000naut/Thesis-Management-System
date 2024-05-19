@@ -59,7 +59,7 @@ export function useBaseStore(props) {
             {
                 responseType: "blob",
             });
-            
+
             const url = window.URL.createObjectURL(new Blob([response]));
                 // Tạo thẻ a và gắn url blob data vào
             const link = document.createElement("a");
@@ -187,9 +187,13 @@ export function useBaseStore(props) {
         await fetchList();
     }
 
-    const setKeySearch = async (newKeySearch) => {
+    const setKeySearch = async (newKeySearch, customWhere) => {
         keySearch.value = newKeySearch;
-        await fetchList();
+        if (customWhere) {
+            await fetchList(customWhere);
+        } else {
+            await fetchList();
+        }
     }
 
     const getNew = async () => {

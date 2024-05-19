@@ -59,6 +59,7 @@ namespace TMS.BaseRepository
             if (!string.IsNullOrEmpty(fp.KeySearch) && fp.FilterColumns != null)
             {
                 filterWhere = string.Join(" OR ", fp.FilterColumns.Select(column => $"{column} LIKE @keySearch"));
+                filterWhere = "(" + filterWhere + ")";
             } else
             {
                 filterWhere = "1 = 1";

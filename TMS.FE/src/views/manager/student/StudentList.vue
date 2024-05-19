@@ -139,7 +139,7 @@
 
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { useStudentStore, useFacultyStore } from "@/stores";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
@@ -176,13 +176,27 @@ const popupDetail = ref({
     mode: "view",
 });
 
+const customWhere = computed(() => {
+    const where = [];
+    if (selectedFaculty.value !== "-1") {
+        where.push({
+            command: 'AND',
+            columnName: 'facultyCode',
+            operator: '=',
+            value: selectedFaculty.value
+        });
+    }
+    return where;
+});
+
+
 initData();
 
 
 
 async function initData() {
 
-    await entityStore.fetchList();
+    await entityStore.fetchList(customWhere.value);
 
     facultyStore.setPageSize(0);
     await facultyStore.fetchList();
@@ -195,25 +209,13 @@ async function initData() {
 }
 
 async function facultyOnChanged(value) {
-    const customWhere = [
-        {
-            command: 'AND',
-            columnName: 'facultyCode',
-            operator: '=',
-            value: value
-        }
-    ];
-
-    if (value === '-1') {
-        customWhere.pop();
-    }
-
-    await entityStore.fetchList(customWhere);
+    await entityStore.fetchList(customWhere.value);
 }
 
 async function popupUploadOnClose(isUploadSuccess) {
     if (isUploadSuccess) {
-        await entityStore.fetchList();
+        selectedFaculty.value = "-1";
+        await entityStore.fetchList(customWhere.value);
     }
 }
 
@@ -319,7 +321,7 @@ const btnDeleteItemOnClick = (row) => {
 async function searchTextOnInput() {
     if (!debouncedFunction) {
         debouncedFunction = debounce(() => {
-            entityStore.setKeySearch(searchText.value);
+            entityStore.setKeySearch(searchText.value, customWhere.value);
         }, 800);
     }
     debouncedFunction();
@@ -342,7 +344,7 @@ const btnEditItemOnClick = (row) => {
 };
 
 async function btnRefreshOnClick() {
-    await entityStore.fetchList();
+    await entityStore.fetchList(customWhere.value);
 }
 
 </script>

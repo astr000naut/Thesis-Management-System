@@ -88,7 +88,7 @@ const form = ref({
 const entity = ref({});
 
 const props = defineProps({
-    pEntityId: Object,
+    pEntityId: String,
     pMode: String
 });
 const emit = defineEmits(['close']);

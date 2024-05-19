@@ -158,7 +158,7 @@ namespace TMS.BaseService
                 {
                     ++rowIndex;
                     colIndex = 1;
-                    ws.Cells[rowIndex, colIndex++].Value = rowIndex - 2;
+                    ws.Cells[rowIndex, colIndex++].Value = rowIndex - 3;
 
                     for (int i = 1; i < exportParam.Columns.Count; i++)
                     {

@@ -298,8 +298,7 @@ async function btnExportOnClick() {
            
         ]
     }
-    const customWhere = [];
-    await entityStore.exportList(exportOpt, customWhere);
+    await entityStore.exportList(exportOpt, customWhere.value);
 }
 
 async function searchTextOnInput() {

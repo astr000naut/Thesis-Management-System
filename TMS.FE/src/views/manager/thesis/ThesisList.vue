@@ -100,7 +100,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { useThesisStore, useAuthStore } from "@/stores";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
@@ -128,6 +128,17 @@ const popupDetail = ref({
     mode: "add",
 });
 
+const customWhere = computed(() => {
+    return [
+        {
+            command: 'AND',
+            columnName: 'status',
+            operator: '=',
+            value: '3'
+        }
+    ];
+});
+
 const entityInfo = {
     keyName: "thesisId",
 };
@@ -141,6 +152,9 @@ let debouncedFunction = null;
 const searchText = ref("");
 
 initData();
+
+
+
 
 
 async function initData() {
@@ -175,7 +189,7 @@ const btnDeleteItemOnClick = (row) => {
 async function searchTextOnInput() {
     if (!debouncedFunction) {
         debouncedFunction = debounce(() => {
-            entityStore.setKeySearch(searchText.value);
+            entityStore.setKeySearch(searchText.value, customWhere.value);
         }, 800);
     }
     debouncedFunction();
@@ -260,21 +274,11 @@ async function btnExportOnClick() {
             }
         ]
     }
-    const customWhere = [];
-    await entityStore.exportList(exportOpt, customWhere);
+    await entityStore.exportList(exportOpt, customWhere.value);
 }
 
 async function getListThesis() {
-    const customWhere = [
-        {
-            command: 'AND',
-            columnName: 'status',
-            operator: '=',
-            value: '3'
-        }
-    ];
-
-    await entityStore.fetchList(customWhere);
+    await entityStore.fetchList(customWhere.value);
 }
 
 async function btnRefreshOnClick() {

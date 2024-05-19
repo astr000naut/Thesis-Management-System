@@ -188,7 +188,7 @@
                             </el-form-item>
                         </div>
 
-                        <div class="form-group fl-1">
+                        <div class="form-group fl-2">
                             <el-form-item label="Cán bộ đồng hướng dẫn">
                                 <el-select
                                     v-model="coTeacherIdSelected"
@@ -216,11 +216,11 @@
                             </el-form-item>
                         </div>
 
-                        <div class="form-group fl-1">
+                        <!-- <div class="form-group fl-1">
                             <el-form-item label="Trạng thái">
                                 <el-input v-model="entity.status" disabled :formatter="() => ThesisStatus[entity.status]"/>
                             </el-form-item>
-                        </div>
+                        </div> -->
                     </div>
 
                     <div class="form-group fl-1">

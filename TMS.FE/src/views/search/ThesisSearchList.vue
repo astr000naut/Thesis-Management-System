@@ -88,7 +88,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { useThesisStore } from "@/stores";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
@@ -107,6 +107,17 @@ const popupDetail = ref({
     visible: false,
     entityId: null,
     mode: "add",
+});
+
+const customWhere = computed(() => {
+    return [
+    {
+            command: 'AND',
+            columnName: 'status',
+            operator: '=',
+            value: '4'
+        }
+    ];
 });
 
 const entityInfo = {
@@ -151,22 +162,13 @@ const btnDeleteItemOnClick = (row) => {
 };
 
 async function getThesisCompletedList() {
-    const customWhere = [
-        {
-            command: 'AND',
-            columnName: 'status',
-            operator: '=',
-            value: '4'
-        }
-    ];
-
-    await entityStore.fetchList(customWhere);
+    await entityStore.fetchList(customWhere.value);
 }
 
 async function searchTextOnInput() {
     if (!debouncedFunction) {
         debouncedFunction = debounce(() => {
-            entityStore.setKeySearch(searchText.value);
+            entityStore.setKeySearch(searchText.value, customWhere.value);
         }, 800);
     }
     debouncedFunction();

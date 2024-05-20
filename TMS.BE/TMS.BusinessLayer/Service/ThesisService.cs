@@ -40,6 +40,11 @@ namespace TMS.BusinessLayer.Service
 
             // get connection string from httpcontext items
 
+            if (_httpContextAccessor.HttpContext.Items["ConnectionString"] == null)
+            {
+                throw new Exception("ConnectionString is not cofigured");
+            }
+
             var connectionString = _httpContextAccessor.HttpContext.Items["ConnectionString"].ToString();
 
             if (connectionString == null)
